@@ -23,16 +23,16 @@ void main() {
       sounds.play(Sfx.snore);
     }
     expect(assets, [
-      'sounds/snore_01.wav',
-      'sounds/snore_02.wav',
-      'sounds/snore_01.wav',
+      'sounds/snore_01.flac',
+      'sounds/snore_02.flac',
+      'sounds/snore_01.flac',
     ]);
   });
 
   test('single sounds keep their file', () {
     final assets = <String>[];
     SoundEffects(player: (_, asset) => assets.add(asset)).play(Sfx.coin);
-    expect(assets, ['sounds/coin.wav']);
+    expect(assets, ['sounds/coin.flac']);
   });
 
   test('every sound file exists', () {

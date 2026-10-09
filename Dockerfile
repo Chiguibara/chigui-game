@@ -15,4 +15,9 @@ RUN mkdir -p "$PUB_CACHE" \
  && chmod -R a+rwX "$HOME" \
  && git config --system --add safe.directory '*'
 
+# FLAC encoder for tools/make_sounds.py (all game audio is FLAC).
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends flac \
+ && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app

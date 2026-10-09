@@ -1,7 +1,8 @@
-"""Synthesizes Chigüi's sound effects as small 8-bit-style WAV files.
+"""Synthesizes Chigüi's sound effects as small 8-bit-style FLAC files.
 
-Pure standard library, so it runs anywhere (`make sounds` runs it in the
-Flutter container). Every sound here is made from tones and noise; the
+Synthesis uses only the standard library; each sound is written as WAV and
+then encoded to FLAC with the `flac` tool, so all game audio shares one
+format (`make sounds` runs it in the Flutter container, which has `flac`). Every sound here is made from tones and noise; the
 eating bites (assets/sounds/bite_*.flac) are the exception, cut from a real
 recording. Tweak a recipe and re-run.
 """
@@ -9,6 +10,7 @@ recording. Tweak a recipe and re-run.
 import math
 import random
 import struct
+import subprocess
 import wave
 from pathlib import Path
 
@@ -211,11 +213,18 @@ def write(name, samples):
         struct.pack("<h", int(max(-1, min(1, s * gain)) * 32767))
         for s in samples
     )
-    with wave.open(str(OUT / f"{name}.wav"), "wb") as f:
+    wav = OUT / f"{name}.wav"
+    with wave.open(str(wav), "wb") as f:
         f.setnchannels(1)
         f.setsampwidth(2)
         f.setframerate(RATE)
         f.writeframes(frames)
+    subprocess.run(
+        ["flac", "--best", "--silent", "--force", "-o",
+         str(OUT / f"{name}.flac"), str(wav)],
+        check=True,
+    )
+    wav.unlink()
 
 
 if __name__ == "__main__":

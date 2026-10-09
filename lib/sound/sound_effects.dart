@@ -2,13 +2,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Sound effects in `assets/sounds`: synthesized by tools/make_sounds.py,
-/// except the bites, cut from a real recording.
+/// Sound effects in `assets/sounds`, all FLAC: synthesized by
+/// tools/make_sounds.py, except the bites, cut from a real recording.
 enum Sfx {
   pet('pet'),
 
   /// Eating: cycles through ten different real bites.
-  chomp('bite', variants: 10, extension: 'flac'),
+  chomp('bite', variants: 10),
   refuse('refuse'),
   coin('coin'),
   buy('buy'),
@@ -28,19 +28,18 @@ enum Sfx {
   snore('snore', variants: 2),
   pop('pop');
 
-  const Sfx(this.file, {this.variants = 1, this.extension = 'wav'});
+  const Sfx(this.file, {this.variants = 1});
 
   final String file;
 
   /// How many recordings take turns (named `file_01`, `file_02`, …).
   final int variants;
-  final String extension;
 
   /// The asset for the [turn]-th time this effect plays.
   String asset(int turn) {
-    if (variants == 1) return 'sounds/$file.$extension';
+    if (variants == 1) return 'sounds/$file.flac';
     final n = (turn % variants + 1).toString().padLeft(2, '0');
-    return 'sounds/${file}_$n.$extension';
+    return 'sounds/${file}_$n.flac';
   }
 }
 
