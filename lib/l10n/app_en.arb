@@ -454,5 +454,73 @@
   "unmuteSounds": "Turn sounds on",
   "@unmuteSounds": {
     "description": "Tooltip of the button that turns sound effects back on."
+  },
+  "packsSection": "Packs",
+  "@packsSection": {
+    "description": "Shop section with real-money accessory packs (Android app only)."
+  },
+  "packGeekName": "Geek pack",
+  "@packGeekName": {
+    "description": "Name of a real-money pack."
+  },
+  "packSweetName": "Sweet pack",
+  "@packSweetName": {
+    "description": "Name of a real-money pack."
+  },
+  "packOwned": "Yours!",
+  "@packOwned": {
+    "description": "On a pack already bought."
+  },
+  "packWaiting": "Waiting for a grown-up to approve…",
+  "@packWaiting": {
+    "description": "While a parent's approval is pending."
+  },
+  "buyPackTitle": "This costs real money",
+  "@buyPackTitle": {
+    "description": "Title of the confirmation before buying a pack. Clear and calm."
+  },
+  "buyPackBody": "Ask a grown-up first. The store will ask them to confirm and pay.",
+  "@buyPackBody": {
+    "description": "Explains who pays and approves. No pressure."
+  },
+  "buyPackConfirm": "Ask the store",
+  "@buyPackConfirm": {
+    "description": "Confirms and opens the store's own purchase screen."
+  },
+  "buyPackCancel": "Not now",
+  "@buyPackCancel": {
+    "description": "Closes the confirmation without buying."
+  },
+  "packBoughtStatus": "New pack unlocked! Look in Accessories.",
+  "@packBoughtStatus": {
+    "description": "After a pack is bought."
+  },
+  "packErrorStatus": "The purchase didn't go through. Try again later.",
+  "@packErrorStatus": {
+    "description": "When the store reports a problem."
+  },
+  "itemPixelGlasses": "Pixel glasses",
+  "@itemPixelGlasses": {
+    "description": "Pack item."
+  },
+  "itemWizardHat": "Wizard hat",
+  "@itemWizardHat": {
+    "description": "Pack item."
+  },
+  "itemLaptop": "Laptop with stickers",
+  "@itemLaptop": {
+    "description": "Pack item."
+  },
+  "itemBunnyEars": "Bunny ears",
+  "@itemBunnyEars": {
+    "description": "Pack item."
+  },
+  "itemHeartGlasses": "Heart glasses",
+  "@itemHeartGlasses": {
+    "description": "Pack item."
+  },
+  "itemCupcake": "Cupcake",
+  "@itemCupcake": {
+    "description": "Pack item."
   }
 }

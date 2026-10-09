@@ -703,6 +703,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Turn sounds on'**
   String get unmuteSounds;
+
+  /// Shop section with real-money accessory packs (Android app only).
+  ///
+  /// In en, this message translates to:
+  /// **'Packs'**
+  String get packsSection;
+
+  /// Name of a real-money pack.
+  ///
+  /// In en, this message translates to:
+  /// **'Geek pack'**
+  String get packGeekName;
+
+  /// Name of a real-money pack.
+  ///
+  /// In en, this message translates to:
+  /// **'Sweet pack'**
+  String get packSweetName;
+
+  /// On a pack already bought.
+  ///
+  /// In en, this message translates to:
+  /// **'Yours!'**
+  String get packOwned;
+
+  /// While a parent's approval is pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for a grown-up to approve…'**
+  String get packWaiting;
+
+  /// Title of the confirmation before buying a pack. Clear and calm.
+  ///
+  /// In en, this message translates to:
+  /// **'This costs real money'**
+  String get buyPackTitle;
+
+  /// Explains who pays and approves. No pressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a grown-up first. The store will ask them to confirm and pay.'**
+  String get buyPackBody;
+
+  /// Confirms and opens the store's own purchase screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the store'**
+  String get buyPackConfirm;
+
+  /// Closes the confirmation without buying.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get buyPackCancel;
+
+  /// After a pack is bought.
+  ///
+  /// In en, this message translates to:
+  /// **'New pack unlocked! Look in Accessories.'**
+  String get packBoughtStatus;
+
+  /// When the store reports a problem.
+  ///
+  /// In en, this message translates to:
+  /// **'The purchase didn\'t go through. Try again later.'**
+  String get packErrorStatus;
+
+  /// Pack item.
+  ///
+  /// In en, this message translates to:
+  /// **'Pixel glasses'**
+  String get itemPixelGlasses;
+
+  /// Pack item.
+  ///
+  /// In en, this message translates to:
+  /// **'Wizard hat'**
+  String get itemWizardHat;
+
+  /// Pack item.
+  ///
+  /// In en, this message translates to:
+  /// **'Laptop with stickers'**
+  String get itemLaptop;
+
+  /// Pack item.
+  ///
+  /// In en, this message translates to:
+  /// **'Bunny ears'**
+  String get itemBunnyEars;
+
+  /// Pack item.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart glasses'**
+  String get itemHeartGlasses;
+
+  /// Pack item.
+  ///
+  /// In en, this message translates to:
+  /// **'Cupcake'**
+  String get itemCupcake;
 }
 
 class _AppLocalizationsDelegate

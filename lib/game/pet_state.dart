@@ -24,6 +24,7 @@ class PetState {
     this.stepsDay,
     this.owned = const {},
     this.equipped = const {},
+    this.ownedPacks = const {},
   });
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
@@ -74,6 +75,10 @@ class PetState {
   /// The item worn in each slot.
   final Map<Slot, String> equipped;
 
+  /// Real-money packs owned, as last reported by the store (Google Play is
+  /// the source of truth; this is the offline copy).
+  final Set<String> ownedPacks;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool asleepAt(DateTime time) =>
@@ -97,6 +102,7 @@ class PetState {
     DateTime? stepsDay,
     Set<String>? owned,
     Map<Slot, String>? equipped,
+    Set<String>? ownedPacks,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -120,5 +126,6 @@ class PetState {
     stepsDay: stepsDay ?? this.stepsDay,
     owned: owned ?? this.owned,
     equipped: equipped ?? this.equipped,
+    ownedPacks: ownedPacks ?? this.ownedPacks,
   );
 }

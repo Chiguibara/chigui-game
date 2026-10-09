@@ -197,6 +197,154 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
         canvas.drawLine(p(0.41, y), p(0.48, y), stripe);
       }
 
+    case ('pixelGlasses', Layer.overHead):
+      // 8-bit "deal with it" shades, drawn pixel by pixel.
+      final px = w * 0.022;
+      final ink = fill(Palette.ink);
+      final shine = fill(Palette.cloud);
+      const rows = ['########', '#.#.####', '########', '.######.'];
+      for (var row = 0; row < rows.length; row++) {
+        for (var col = 0; col < rows[row].length; col++) {
+          final c = rows[row][col];
+          if (c == ' ') continue;
+          canvas.drawRect(
+            Rect.fromLTWH(
+              w * 0.51 + col * px,
+              h * 0.3 + row * px,
+              px + 0.5,
+              px + 0.5,
+            ),
+            c == '#' ? ink : shine,
+          );
+        }
+      }
+      canvas.drawLine(
+        p(0.51, 0.32),
+        p(0.45, 0.3),
+        Paint()
+          ..color = Palette.ink
+          ..strokeWidth = px,
+      );
+
+    case ('wizardHat', Layer.overHead):
+      final hat = Path()
+        ..moveTo(w * 0.38, h * 0.22)
+        ..quadraticBezierTo(w * 0.5, h * 0.08, w * 0.5, h * -0.08)
+        ..quadraticBezierTo(w * 0.58, h * -0.02, w * 0.6, h * 0.0)
+        ..quadraticBezierTo(w * 0.62, h * 0.12, w * 0.74, h * 0.22)
+        ..close();
+      canvas.drawPath(hat, fill(Palette.wizard));
+      canvas.drawPath(hat, outline);
+      final brim = Rect.fromLTRB(w * 0.32, h * 0.18, w * 0.8, h * 0.27);
+      canvas.drawOval(brim, fill(Palette.wizardBrim));
+      canvas.drawOval(brim, outline);
+      for (final (x, y, r) in [(0.53, 0.07, 0.025), (0.62, 0.15, 0.018)]) {
+        _star(canvas, p(x, y), w * r, fill(Palette.sparkle));
+      }
+
+    case ('laptop', Layer.front):
+      // Seen from behind: the lid's back is covered in stickers.
+      final lid = RRect.fromLTRBR(
+        w * 0.75,
+        h * 0.7,
+        w * 0.97,
+        h * 0.87,
+        Radius.circular(w * 0.015),
+      );
+      canvas.drawRRect(lid, fill(Palette.laptop));
+      canvas.drawRRect(lid, outline);
+      canvas.drawCircle(p(0.8, 0.75), w * 0.018, fill(Palette.blush));
+      _star(canvas, p(0.91, 0.75), w * 0.022, fill(Palette.sparkle));
+      canvas.drawRRect(
+        RRect.fromLTRBR(
+          w * 0.83,
+          h * 0.8,
+          w * 0.9,
+          h * 0.84,
+          Radius.circular(w * 0.01),
+        ),
+        fill(Palette.mint),
+      );
+      final base = RRect.fromLTRBR(
+        w * 0.72,
+        h * 0.87,
+        w * 0.99,
+        h * 0.91,
+        Radius.circular(w * 0.015),
+      );
+      canvas.drawRRect(base, fill(Palette.laptopDark));
+      canvas.drawRRect(base, outline);
+
+    case ('bunnyEars', Layer.overHead):
+      canvas.drawArc(
+        Rect.fromLTRB(w * 0.38, h * 0.2, w * 0.78, h * 0.48),
+        math.pi * 1.1,
+        math.pi * 0.8,
+        false,
+        Paint()
+          ..color = Palette.flower
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = w * 0.03
+          ..strokeCap = StrokeCap.round,
+      );
+      for (final (x, tilt) in [(0.46, -0.25), (0.63, 0.15)]) {
+        canvas.save();
+        canvas.translate(w * x, h * 0.23);
+        canvas.rotate(tilt);
+        final ear = Rect.fromCenter(
+          center: Offset(0, -h * 0.12),
+          width: w * 0.09,
+          height: h * 0.26,
+        );
+        canvas.drawOval(ear, fill(Palette.bunny));
+        canvas.drawOval(ear.deflate(w * 0.02), fill(Palette.blush));
+        canvas.drawOval(ear, outline);
+        canvas.restore();
+      }
+
+    case ('heartGlasses', Layer.overHead):
+      final heart = _heartPath(p(0.6, 0.33), w * 0.075);
+      canvas.drawPath(heart, fill(Palette.heartLens));
+      canvas.drawPath(
+        heart,
+        Paint()
+          ..color = Palette.santaRed
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = w * 0.018,
+      );
+      canvas.drawLine(
+        p(0.53, 0.32),
+        p(0.46, 0.3),
+        Paint()
+          ..color = Palette.santaRed
+          ..strokeWidth = w * 0.018,
+      );
+
+    case ('cupcake', Layer.front):
+      final wrapper = Path()
+        ..moveTo(w * 0.78, h * 0.84)
+        ..lineTo(w * 0.96, h * 0.84)
+        ..lineTo(w * 0.93, h * 0.96)
+        ..lineTo(w * 0.81, h * 0.96)
+        ..close();
+      canvas.drawPath(wrapper, fill(Palette.wrapper));
+      for (final x in [0.83, 0.87, 0.91]) {
+        canvas.drawLine(
+          p(x, 0.85),
+          p(x - 0.005, 0.95),
+          Paint()
+            ..color = Palette.cloud.withValues(alpha: 0.7)
+            ..strokeWidth = w * 0.008,
+        );
+      }
+      canvas.drawPath(wrapper, outline);
+      final frosting = Rect.fromLTRB(w * 0.76, h * 0.74, w * 0.98, h * 0.88);
+      canvas.drawArc(frosting, math.pi, math.pi, true, fill(Palette.frosting));
+      canvas.drawCircle(p(0.87, 0.75), w * 0.035, fill(Palette.frosting));
+      canvas.drawArc(frosting, math.pi, math.pi, true, outline);
+      canvas.drawCircle(p(0.87, 0.71), w * 0.025, fill(Palette.santaRed));
+      canvas.drawCircle(p(0.87, 0.71), w * 0.025, outline);
+
     case ('pumpkin', Layer.front):
       final body = Rect.fromLTRB(w * 0.74, h * 0.76, w * 0.99, h * 0.96);
       canvas.drawRect(
@@ -321,6 +469,26 @@ void paintGhostSheet(Canvas canvas, Size size) {
       ..strokeJoin = StrokeJoin.round,
   );
 }
+
+Path _heartPath(Offset c, double r) => Path()
+  ..moveTo(c.dx, c.dy + r * 0.9)
+  ..cubicTo(
+    c.dx - r * 1.3,
+    c.dy - r * 0.1,
+    c.dx - r * 0.6,
+    c.dy - r * 1.1,
+    c.dx,
+    c.dy - r * 0.35,
+  )
+  ..cubicTo(
+    c.dx + r * 0.6,
+    c.dy - r * 1.1,
+    c.dx + r * 1.3,
+    c.dy - r * 0.1,
+    c.dx,
+    c.dy + r * 0.9,
+  )
+  ..close();
 
 void _star(Canvas canvas, Offset c, double r, Paint paint) {
   final path = Path();

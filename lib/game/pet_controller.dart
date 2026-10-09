@@ -74,6 +74,9 @@ class PetController extends ChangeNotifier {
     events: const [],
     ok: true,
   ));
+  bool grantPack(Pack pack) => _apply(rules.grantPack(_state, now, pack));
+  void syncPacks(Set<String> fromStore) =>
+      _apply(rules.syncPacks(_state, now, fromStore));
   bool finishRound(int caught) =>
       _apply(rules.finishRound(_state, now, caught: caught));
 

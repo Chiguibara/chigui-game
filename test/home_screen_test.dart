@@ -4,6 +4,8 @@ import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/sound/sound_effects.dart';
+import 'package:chigui_game/store/pack_store.dart';
+import 'package:chigui_game/store/packs_controller.dart';
 import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/ui/home_screen.dart';
@@ -11,6 +13,8 @@ import 'package:chigui_game/ui/poop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'fake_pack_store.dart';
 
 void main() {
   // Monday noon: no routine moment is active.
@@ -399,6 +403,62 @@ void main() {
       expect(prefs.getBool(SoundEffects.mutedKey), isTrue);
       expect(SoundEffects(prefs: prefs).muted, isTrue);
       expect(find.byTooltip('Turn sounds on'), findsOneWidget);
+    });
+  });
+
+  group('packs', () {
+    testWidgets('no packs where they are not sold', (tester) async {
+      await start(tester, same);
+      tester.view.physicalSize = const Size(1080, 4000);
+      await tester.pump();
+      await tester.tap(find.text('Shop'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Packs'), findsNothing);
+      expect(find.text('Wizard hat'), findsNothing);
+    });
+
+    testWidgets('buying a pack: confirm, wait for a grown-up, wear it', (
+      tester,
+    ) async {
+      final store = FakePackStore();
+      tester.view.physicalSize = const Size(1080, 5000);
+      addTearDown(tester.view.reset);
+      final controller = await controllerWith(same);
+      final packs = PacksController(store, controller);
+      await packs.start();
+      await tester.pumpWidget(ChiguiApp(controller: controller, packs: packs));
+
+      await tester.tap(find.text('Shop'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Geek pack'), findsOneWidget);
+
+      await tester.tap(find.text('0,99 €').first);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('This costs real money'), findsOneWidget);
+      await tester.tap(find.text('Ask the store'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(store.bought, ['pack_geek']);
+
+      store.report('pack_geek', PackStatus.pending);
+      await tester.pump();
+      expect(find.text('Waiting for a grown-up to approve…'), findsOneWidget);
+
+      store.report('pack_geek', PackStatus.purchased);
+      await tester.pump();
+      expect(
+        find.text('New pack unlocked! Look in Accessories.'),
+        findsOneWidget,
+      );
+      expect(find.text('Yours!'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 2));
+
+      await tester.tap(find.text('Wizard hat'));
+      await tester.pump(const Duration(seconds: 2));
+      expect(controller.state.equipped[Slot.head], 'wizardHat');
     });
   });
 

@@ -10,6 +10,7 @@ import '../game/rules.dart' show happyLevel, wishLevel;
 import '../l10n/app_localizations.dart';
 import '../minigame/minigame_screen.dart';
 import '../shop/shop_screen.dart';
+import '../store/packs_controller.dart';
 import '../walk/walk_screen.dart';
 import '../sound/sound_effects.dart';
 import 'action_tile.dart';
@@ -21,9 +22,12 @@ import 'game_frame.dart';
 import 'sprites.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.controller});
+  const HomeScreen({super.key, required this.controller, this.packs});
 
   final PetController controller;
+
+  /// Real-money packs; null where they are not sold.
+  final PacksController? packs;
 
   /// How often the routine catches up while the game is open.
   static const refreshEvery = Duration(seconds: 30);
@@ -159,9 +163,11 @@ class _HomeScreenState extends State<HomeScreen> {
     context,
   ).push(MaterialPageRoute<void>(builder: (_) => WalkScreen(controller: _pet)));
 
-  void _onShop() => Navigator.of(
-    context,
-  ).push(MaterialPageRoute<void>(builder: (_) => ShopScreen(controller: _pet)));
+  void _onShop() => Navigator.of(context).push(
+    MaterialPageRoute<void>(
+      builder: (_) => ShopScreen(controller: _pet, packs: widget.packs),
+    ),
+  );
 
   void _onPlay() => Navigator.of(context).push(
     MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),

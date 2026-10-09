@@ -37,5 +37,13 @@ abstract final class Palette {
   static const flower = Color(0xFFB58BE0);
   static const grass = Color(0xFF9FDDB0);
   static const path = Color(0xFFE8D3A8);
+  static const wizard = Color(0xFF6C4AB6);
+  static const wizardBrim = Color(0xFF553A94);
+  static const laptop = Color(0xFFB7C0C7);
+  static const laptopDark = Color(0xFF8A949C);
+  static const bunny = Color(0xFFF7F4F0);
+  static const heartLens = Color(0x99F6A5C0);
+  static const wrapper = Color(0xFF7FC8E8);
+  static const frosting = Color(0xFFF6A5C0);
   static const outside = Color(0xFF2E4A3F);
 }

@@ -374,4 +374,57 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unmuteSounds => 'Turn sounds on';
+
+  @override
+  String get packsSection => 'Packs';
+
+  @override
+  String get packGeekName => 'Geek pack';
+
+  @override
+  String get packSweetName => 'Sweet pack';
+
+  @override
+  String get packOwned => 'Yours!';
+
+  @override
+  String get packWaiting => 'Waiting for a grown-up to approve…';
+
+  @override
+  String get buyPackTitle => 'This costs real money';
+
+  @override
+  String get buyPackBody =>
+      'Ask a grown-up first. The store will ask them to confirm and pay.';
+
+  @override
+  String get buyPackConfirm => 'Ask the store';
+
+  @override
+  String get buyPackCancel => 'Not now';
+
+  @override
+  String get packBoughtStatus => 'New pack unlocked! Look in Accessories.';
+
+  @override
+  String get packErrorStatus =>
+      'The purchase didn\'t go through. Try again later.';
+
+  @override
+  String get itemPixelGlasses => 'Pixel glasses';
+
+  @override
+  String get itemWizardHat => 'Wizard hat';
+
+  @override
+  String get itemLaptop => 'Laptop with stickers';
+
+  @override
+  String get itemBunnyEars => 'Bunny ears';
+
+  @override
+  String get itemHeartGlasses => 'Heart glasses';
+
+  @override
+  String get itemCupcake => 'Cupcake';
 }

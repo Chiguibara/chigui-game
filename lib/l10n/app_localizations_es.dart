@@ -376,4 +376,57 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get unmuteSounds => 'Activar sonidos';
+
+  @override
+  String get packsSection => 'Packs';
+
+  @override
+  String get packGeekName => 'Pack friki';
+
+  @override
+  String get packSweetName => 'Pack dulce';
+
+  @override
+  String get packOwned => '¡Es tuyo!';
+
+  @override
+  String get packWaiting => 'Esperando a que un adulto lo apruebe…';
+
+  @override
+  String get buyPackTitle => 'Esto cuesta dinero de verdad';
+
+  @override
+  String get buyPackBody =>
+      'Pregunta antes a un adulto. La tienda le pedirá que lo confirme y lo pague.';
+
+  @override
+  String get buyPackConfirm => 'Ir a la tienda';
+
+  @override
+  String get buyPackCancel => 'Ahora no';
+
+  @override
+  String get packBoughtStatus => '¡Pack desbloqueado! Míralo en Accesorios.';
+
+  @override
+  String get packErrorStatus =>
+      'La compra no se ha completado. Prueba más tarde.';
+
+  @override
+  String get itemPixelGlasses => 'Gafas pixeladas';
+
+  @override
+  String get itemWizardHat => 'Sombrero de mago';
+
+  @override
+  String get itemLaptop => 'Portátil con pegatinas';
+
+  @override
+  String get itemBunnyEars => 'Orejas de conejo';
+
+  @override
+  String get itemHeartGlasses => 'Gafas de corazón';
+
+  @override
+  String get itemCupcake => 'Magdalena';
 }

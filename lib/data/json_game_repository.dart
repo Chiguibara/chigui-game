@@ -106,6 +106,7 @@ class JsonGameRepository implements GameRepository {
     'stepsDay': _encodeTime(s.stepsDay),
     'owned': s.owned.toList(),
     'equipped': {for (final e in s.equipped.entries) e.key.name: e.value},
+    'ownedPacks': s.ownedPacks.toList(),
   };
 
   /// Reads any schema version so far; version 1 only had needs and
@@ -144,6 +145,11 @@ class JsonGameRepository implements GameRepository {
       stepsToday: _count(json['stepsToday']),
       stepsDay: _decodeTime(json['stepsDay']),
       owned: owned,
+      ownedPacks: {
+        if (json['ownedPacks'] case final List list)
+          for (final id in list)
+            if (id is String && packsById.containsKey(id)) id,
+      },
       equipped: {
         for (final MapEntry(:key, :value) in equipped.entries)
           if (Slot.values.asNameMap()[key] case final slot?)

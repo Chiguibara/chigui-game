@@ -310,10 +310,11 @@ Outcome finishRound(PetState state, DateTime now, {required int caught}) {
   );
 }
 
-enum BuyResult { bought, alreadyOwned, outOfSeason, notEnoughCoins }
+enum BuyResult { bought, alreadyOwned, outOfSeason, notEnoughCoins, onlyInPack }
 
 BuyResult canBuy(PetState state, Item item, DateTime now) {
   if (state.owned.contains(item.id)) return BuyResult.alreadyOwned;
+  if (item.pack != null) return BuyResult.onlyInPack;
   final season = item.season;
   if (season != null && !inSeason(season, now)) return BuyResult.outOfSeason;
   if (state.coins < item.price) return BuyResult.notEnoughCoins;
@@ -359,6 +360,48 @@ PetState toggleWorn(PetState state, Item item) {
 
 /// Walks completed today (capped at [maxWalksPerDay]).
 int walksToday(PetState state, DateTime now) => walksFor(stepsOn(state, now));
+
+/// Gives the items of a pack the store says was just bought.
+Outcome grantPack(PetState state, DateTime now, Pack pack) {
+  if (state.ownedPacks.contains(pack.id)) {
+    return (state: state, events: [], ok: false);
+  }
+  return (
+    state: _withPack(state, pack),
+    events: [GameEvent(EventType.packBought, now)],
+    ok: true,
+  );
+}
+
+/// Matches owned packs to what the store reports: restores packs bought
+/// elsewhere (e.g. a new phone) and removes refunded ones, taking their
+/// items off.
+Outcome syncPacks(PetState state, DateTime now, Set<String> fromStore) {
+  var s = state;
+  final events = <GameEvent>[];
+  for (final pack in packs) {
+    final owned = s.ownedPacks.contains(pack.id);
+    final reported = fromStore.contains(pack.id);
+    if (reported && !owned) s = _withPack(s, pack);
+    if (owned && !reported) {
+      s = s.copyWith(
+        ownedPacks: {...s.ownedPacks}..remove(pack.id),
+        owned: {...s.owned}..removeAll(pack.items),
+        equipped: {
+          for (final e in s.equipped.entries)
+            if (!pack.items.contains(e.value)) e.key: e.value,
+        },
+      );
+      events.add(GameEvent(EventType.packRemoved, now));
+    }
+  }
+  return (state: s, events: events, ok: true);
+}
+
+PetState _withPack(PetState state, Pack pack) => state.copyWith(
+  ownedPacks: {...state.ownedPacks, pack.id},
+  owned: {...state.owned, ...pack.items},
+);
 
 int walksFor(int steps) => min(steps ~/ stepsPerWalk, maxWalksPerDay);
 

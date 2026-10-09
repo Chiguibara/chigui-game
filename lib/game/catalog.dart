@@ -21,16 +21,38 @@ enum Season {
 }
 
 class Item {
-  const Item(this.id, this.slot, this.price, {this.season});
+  const Item(this.id, this.slot, this.price, {this.season, this.pack});
 
   final String id;
   final Slot slot;
+
+  /// In coins; unused for pack items, which are never sold for coins.
   final int price;
 
   /// When set, the item can only be bought during this season (it can be
   /// worn at any time once owned).
   final Season? season;
+
+  /// When set, the item only comes in this real-money pack.
+  final String? pack;
 }
+
+/// A fixed-price pack of cosmetic items sold for real money through Google
+/// Play (Android only). [id] is the Google Play product id; the price shown
+/// always comes from the store, in the player's currency.
+class Pack {
+  const Pack(this.id, this.items);
+
+  final String id;
+  final List<String> items;
+}
+
+const packs = [
+  Pack('pack_geek', ['pixelGlasses', 'wizardHat', 'laptop']),
+  Pack('pack_sweet', ['bunnyEars', 'heartGlasses', 'cupcake']),
+];
+
+final packsById = {for (final pack in packs) pack.id: pack};
 
 const catalog = [
   Item('geekGlasses', Slot.face, 25),
@@ -45,6 +67,12 @@ const catalog = [
   Item('butterfly', Slot.side, 35, season: Season.spring),
   Item('surfboard', Slot.side, 45, season: Season.summer),
   Item('snorkel', Slot.face, 35, season: Season.summer),
+  Item('pixelGlasses', Slot.face, 0, pack: 'pack_geek'),
+  Item('wizardHat', Slot.head, 0, pack: 'pack_geek'),
+  Item('laptop', Slot.side, 0, pack: 'pack_geek'),
+  Item('bunnyEars', Slot.head, 0, pack: 'pack_sweet'),
+  Item('heartGlasses', Slot.face, 0, pack: 'pack_sweet'),
+  Item('cupcake', Slot.side, 0, pack: 'pack_sweet'),
   Item('stickerStar', Slot.sticker, 5),
   Item('stickerHeart', Slot.sticker, 5),
   Item('stickerRocket', Slot.sticker, 8),

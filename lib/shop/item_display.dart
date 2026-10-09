@@ -19,6 +19,12 @@ extension ItemTexts on AppLocalizations {
     'butterfly' => itemButterfly,
     'surfboard' => itemSurfboard,
     'snorkel' => itemSnorkel,
+    'pixelGlasses' => itemPixelGlasses,
+    'wizardHat' => itemWizardHat,
+    'laptop' => itemLaptop,
+    'bunnyEars' => itemBunnyEars,
+    'heartGlasses' => itemHeartGlasses,
+    'cupcake' => itemCupcake,
     'stickerStar' => itemStickerStar,
     'stickerHeart' => itemStickerHeart,
     'stickerRocket' => itemStickerRocket,
@@ -26,6 +32,12 @@ extension ItemTexts on AppLocalizations {
     'stickerMusic' => itemStickerMusic,
     'stickerIceCream' => itemStickerIceCream,
     _ => item.id,
+  };
+
+  String packName(Pack pack) => switch (pack.id) {
+    'pack_geek' => packGeekName,
+    'pack_sweet' => packSweetName,
+    _ => pack.id,
   };
 
   String seasonName(Season season) => switch (season) {

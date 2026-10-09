@@ -19,7 +19,7 @@ Seasonal items:
 - Seasons recur every year: say when an item comes back ("Back every October"), never use countdowns or "last chance" copy.
 - Out-of-season and not-enough-coins taps get a half-geeky, half-funny message instead of a disabled button.
 
-Accessory packs (real money, Android only, not built yet):
+Accessory packs (real money; coded in `lib/store/`, sold only in the Android app once it exists):
 - Fixed-price packs of cosmetic items (accessories, stickers), shown with their real price in euros as Google Play returns it; never a virtual currency, bundles of coins, or "value" comparisons.
 - Sold only through Google Play Billing (one-time, non-consumable products, so they can be restored on a new device). No Stripe or other providers, and nothing paid on the web or Windows (hide packs there rather than teasing them).
 - Parents approve through their Google account (Family Link "ask to buy"); the in-game pack screen must also be clearly a purchase, with no urgency, timers, or nagging, and only open on a deliberate tap.

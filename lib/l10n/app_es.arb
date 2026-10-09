@@ -100,5 +100,22 @@
   "walksToday": "{count, plural, =1{1 paseo hoy} other{{count} paseos hoy}}",
   "walksCapped": "¡Cuánto paseo! A Chigüi se le han gastado las pilas. ¡Mañana más!",
   "muteSounds": "Silenciar sonidos",
-  "unmuteSounds": "Activar sonidos"
+  "unmuteSounds": "Activar sonidos",
+  "packsSection": "Packs",
+  "packGeekName": "Pack friki",
+  "packSweetName": "Pack dulce",
+  "packOwned": "¡Es tuyo!",
+  "packWaiting": "Esperando a que un adulto lo apruebe…",
+  "buyPackTitle": "Esto cuesta dinero de verdad",
+  "buyPackBody": "Pregunta antes a un adulto. La tienda le pedirá que lo confirme y lo pague.",
+  "buyPackConfirm": "Ir a la tienda",
+  "buyPackCancel": "Ahora no",
+  "packBoughtStatus": "¡Pack desbloqueado! Míralo en Accesorios.",
+  "packErrorStatus": "La compra no se ha completado. Prueba más tarde.",
+  "itemPixelGlasses": "Gafas pixeladas",
+  "itemWizardHat": "Sombrero de mago",
+  "itemLaptop": "Portátil con pegatinas",
+  "itemBunnyEars": "Orejas de conejo",
+  "itemHeartGlasses": "Gafas de corazón",
+  "itemCupcake": "Magdalena"
 }
