@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'palette.dart';
 
-/// Placeholder Chigüi drawn in code (inspired by the brand logo) until the
+/// Placeholder Chigüi, a sitting capybara drawn in code, until the
 /// real artwork exists. It breathes and blinks while idle, and bounces with a
 /// happy face and a heart when tapped.
 class ChiguiView extends StatefulWidget {
@@ -135,7 +135,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
   Widget _heart(double size) {
     final t = _reduceMotion ? 0.0 : _react.value;
     return Positioned(
-      left: size * 0.62,
+      left: size * 0.66,
       top: size * (0.02 - 0.2 * t),
       child: Opacity(
         opacity: 1 - t,
@@ -155,105 +155,167 @@ class _ChiguiPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final w = size.width;
     final h = size.height;
-    final ink = Paint()..color = Palette.ink;
-    final mint = Paint()..color = Palette.mint;
-
-    // Ears.
-    for (final x in [0.28, 0.62]) {
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromLTWH(w * x, h * 0.12, w * 0.1, h * 0.14),
-          Radius.circular(w * 0.04),
-        ),
-        ink,
-      );
-    }
-
-    // Head: rounded dome, wider at the bottom, like the logo.
-    canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        Rect.fromLTRB(w * 0.14, h * 0.18, w * 0.86, h * 0.84),
-        topLeft: Radius.elliptical(w * 0.36, h * 0.42),
-        topRight: Radius.elliptical(w * 0.36, h * 0.42),
-        bottomLeft: Radius.circular(w * 0.16),
-        bottomRight: Radius.circular(w * 0.16),
-      ),
-      ink,
-    );
-
-    // Cheeks.
-    final blush = Paint()..color = Palette.blush.withValues(alpha: 0.7);
-    canvas.drawCircle(Offset(w * 0.28, h * 0.6), w * 0.05, blush);
-    canvas.drawCircle(Offset(w * 0.72, h * 0.6), w * 0.05, blush);
-
-    // Eyes: dots, closed lines when blinking, arcs when happy.
-    final eyeStroke = Paint()
-      ..color = Palette.mint
+    final fur = Paint()..color = Palette.fur;
+    final furDark = Paint()..color = Palette.furDark;
+    final outline = Paint()
+      ..color = Palette.furOutline
       ..style = PaintingStyle.stroke
-      ..strokeWidth = w * 0.025
-      ..strokeCap = StrokeCap.round;
-    for (final x in [0.36, 0.64]) {
-      final c = Offset(w * x, h * 0.47);
-      if (happy) {
-        canvas.drawArc(
-          Rect.fromCircle(center: c.translate(0, w * 0.02), radius: w * 0.045),
-          math.pi,
-          math.pi,
-          false,
-          eyeStroke,
-        );
-      } else if (blink) {
-        canvas.drawLine(
-          c.translate(-w * 0.04, 0),
-          c.translate(w * 0.04, 0),
-          eyeStroke,
-        );
-      } else {
-        canvas.drawCircle(c, w * 0.035, mint);
-      }
+      ..strokeWidth = w * 0.014
+      ..strokeJoin = StrokeJoin.round;
+
+    void shape(RRect r, Paint fill) {
+      canvas.drawRRect(r, fill);
+      canvas.drawRRect(r, outline);
     }
 
-    // Snout with nostrils.
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromCenter(
-          center: Offset(w * 0.5, h * 0.66),
-          width: w * 0.24,
-          height: h * 0.14,
-        ),
-        Radius.circular(w * 0.07),
-      ),
-      mint,
-    );
+    // Ground shadow.
     canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.45, h * 0.645),
-        width: w * 0.035,
-        height: h * 0.025,
-      ),
-      ink,
-    );
-    canvas.drawOval(
-      Rect.fromCenter(
-        center: Offset(w * 0.55, h * 0.645),
-        width: w * 0.035,
-        height: h * 0.025,
-      ),
-      ink,
+      Rect.fromLTRB(w * 0.1, h * 0.88, w * 0.82, h * 0.98),
+      Paint()..color = Palette.ink.withValues(alpha: 0.12),
     );
 
-    // Bow tie under the chin.
+    // Far front leg, behind the body.
+    shape(
+      RRect.fromLTRBR(
+        w * 0.6,
+        h * 0.74,
+        w * 0.7,
+        h * 0.93,
+        Radius.circular(w * 0.05),
+      ),
+      furDark,
+    );
+
+    // Body: a round, sitting loaf facing right.
+    shape(
+      RRect.fromLTRBAndCorners(
+        w * 0.1,
+        h * 0.4,
+        w * 0.72,
+        h * 0.93,
+        topLeft: Radius.elliptical(w * 0.3, h * 0.3),
+        topRight: Radius.elliptical(w * 0.2, h * 0.2),
+        bottomLeft: Radius.elliptical(w * 0.22, h * 0.2),
+        bottomRight: Radius.circular(w * 0.1),
+      ),
+      fur,
+    );
+
+    // Near front leg.
+    shape(
+      RRect.fromLTRBR(
+        w * 0.48,
+        h * 0.76,
+        w * 0.59,
+        h * 0.95,
+        Radius.circular(w * 0.05),
+      ),
+      fur,
+    );
+
+    // Far ear, peeking behind the head.
+    canvas.drawCircle(Offset(w * 0.56, h * 0.19), w * 0.05, furDark);
+    canvas.drawCircle(Offset(w * 0.56, h * 0.19), w * 0.05, outline);
+
+    // Head: long and boxy, ending in a blunt muzzle.
+    final head = RRect.fromLTRBAndCorners(
+      w * 0.34,
+      h * 0.2,
+      w * 0.88,
+      h * 0.6,
+      topLeft: Radius.elliptical(w * 0.18, h * 0.18),
+      topRight: Radius.circular(w * 0.12),
+      bottomLeft: Radius.circular(w * 0.14),
+      bottomRight: Radius.circular(w * 0.12),
+    );
+    canvas.drawRRect(head, fur);
+
+    // Muzzle patch, slightly darker, with a nostril.
+    canvas.drawRRect(
+      RRect.fromLTRBR(
+        w * 0.7,
+        h * 0.3,
+        w * 0.88,
+        h * 0.56,
+        Radius.circular(w * 0.09),
+      ),
+      Paint()..color = Palette.muzzle,
+    );
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: Offset(w * 0.83, h * 0.36),
+        width: w * 0.04,
+        height: h * 0.022,
+      ),
+      Paint()..color = Palette.ink,
+    );
+
+    canvas.drawRRect(head, outline);
+
+    // Near ear.
+    canvas.drawCircle(Offset(w * 0.44, h * 0.22), w * 0.055, fur);
+    canvas.drawCircle(Offset(w * 0.44, h * 0.22), w * 0.055, outline);
+    canvas.drawCircle(Offset(w * 0.44, h * 0.225), w * 0.028, furDark);
+
+    // Cheek.
+    canvas.drawCircle(
+      Offset(w * 0.6, h * 0.45),
+      w * 0.045,
+      Paint()..color = Palette.blush.withValues(alpha: 0.8),
+    );
+
+    // Eye: dot, closed line when blinking, arc when happy.
+    final eyeStroke = Paint()
+      ..color = Palette.ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.02
+      ..strokeCap = StrokeCap.round;
+    final eye = Offset(w * 0.6, h * 0.34);
+    if (happy) {
+      canvas.drawArc(
+        Rect.fromCircle(center: eye.translate(0, w * 0.015), radius: w * 0.035),
+        math.pi,
+        math.pi,
+        false,
+        eyeStroke,
+      );
+    } else if (blink) {
+      canvas.drawLine(
+        eye.translate(-w * 0.03, 0),
+        eye.translate(w * 0.03, 0),
+        eyeStroke,
+      );
+    } else {
+      canvas.drawCircle(eye, w * 0.028, Paint()..color = Palette.ink);
+    }
+
+    // Small smile under the muzzle.
+    canvas.drawArc(
+      Rect.fromCenter(
+        center: Offset(w * 0.76, h * 0.5),
+        width: w * 0.08,
+        height: h * 0.06,
+      ),
+      0.2,
+      math.pi - 0.4,
+      false,
+      eyeStroke..strokeWidth = w * 0.012,
+    );
+
+    // Chigüi's signature bow tie at the neck.
+    final ink = Paint()..color = Palette.ink;
+    final knot = Offset(w * 0.52, h * 0.64);
     final bow = Path()
-      ..moveTo(w * 0.5, h * 0.9)
-      ..lineTo(w * 0.36, h * 0.84)
-      ..lineTo(w * 0.36, h * 0.96)
+      ..moveTo(knot.dx, knot.dy)
+      ..lineTo(knot.dx - w * 0.09, knot.dy - h * 0.045)
+      ..lineTo(knot.dx - w * 0.09, knot.dy + h * 0.045)
       ..close()
-      ..moveTo(w * 0.5, h * 0.9)
-      ..lineTo(w * 0.64, h * 0.84)
-      ..lineTo(w * 0.64, h * 0.96)
+      ..moveTo(knot.dx, knot.dy)
+      ..lineTo(knot.dx + w * 0.09, knot.dy - h * 0.045)
+      ..lineTo(knot.dx + w * 0.09, knot.dy + h * 0.045)
       ..close();
     canvas.drawPath(bow, ink);
-    canvas.drawCircle(Offset(w * 0.5, h * 0.9), w * 0.03, ink);
+    canvas.drawCircle(knot, w * 0.022, ink);
   }
 
   @override

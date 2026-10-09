@@ -9,11 +9,13 @@ This file is the project's source of truth for working principles and confirmed 
 - Windows builds cannot be produced from Linux Docker; they will come from a Windows CI runner (e.g. GitHub Actions) when Windows is added.
 - Design for the phone even on web and desktop: portrait, phone-shaped layout; touch-sized targets (≥48 dp); nothing may depend on hover, right-click, or keyboard shortcuts.
 - Android application ID: `es.chiguibara.chigui_game` (pass `--org es.chiguibara` when adding the platform).
+- Pet needs: hunger, affection, and fun. They decay gently while away, never to zero, and never block actions or harm Chigüi.
 - Offline and local saves only, using storage that works on web, Windows, and Android.
 - Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art without approval.
 
 ## Open questions
-- Confirmed MVP scope (current working hypothesis: Chigüi with hunger/affection/fun, petting, feeding, one minigame with coins, earnable cosmetics, local save).
+- Rest of the MVP scope (working hypothesis: petting, feeding, one minigame with coins, earnable cosmetics, local save).
+- Whether needs are shown as meters or mainly through Chigüi's mood.
 - When the Windows build is needed, and how it reaches the children (zip, installer).
 - Who produces the art and with which tool (defines asset formats).
 - Target player age (affects store policies for children before the Android release).
