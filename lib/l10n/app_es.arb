@@ -93,6 +93,7 @@
   "walkIntroTapping": "¡Pulsa los pies uno detrás de otro para pasear con Chigüi!",
   "startWalkButton": "¡Vamos!",
   "sensorWalkHint": "¡Paseo de verdad! Lleva el móvil en la mano.",
+  "pedometerWalkHint": "¡Paseo de verdad! Tus pasos cuentan, aunque lleves el móvil en el bolsillo.",
   "tapFeetHint": "Izquierdo, derecho, izquierdo, derecho…",
   "otherFoot": "¡El otro pie!",
   "leftFoot": "pie izquierdo",

@@ -13,6 +13,7 @@ import '../shop/shop_screen.dart';
 import '../store/packs_controller.dart';
 import '../walk/walk_screen.dart';
 import '../sound/sound_effects.dart';
+import '../walk/pedometer.dart';
 import '../walk/step_watcher.dart';
 import 'action_tile.dart';
 import 'chigui_view.dart';
@@ -28,6 +29,7 @@ class HomeScreen extends StatefulWidget {
     required this.controller,
     this.packs,
     this.steps,
+    this.pedometer,
   });
 
   final PetController controller;
@@ -37,6 +39,9 @@ class HomeScreen extends StatefulWidget {
 
   /// Real steps from the phone's sensor; walking for a bit opens the walk.
   final StepWatcher? steps;
+
+  /// The Android system step counter; walking about 100 m opens the walk.
+  final Pedometer? pedometer;
 
   /// After leaving an automatic walk, wait this long before opening another.
   static const autoWalkCooldown = Duration(minutes: 2);
@@ -75,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _messes = _pet.state.messes;
     _pet.addListener(_soundRoutine);
     _stepsSubscription = widget.steps?.steps.listen((_) => _onRealStep());
+    _pedometerSubscription = widget.pedometer?.liveSteps.listen(_onRealStep);
   }
 
   /// Snores only while Chigüi sleeps on this screen and the game is
@@ -85,22 +91,36 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   StreamSubscription<void>? _stepsSubscription;
-  final _walkStart = WalkStartDetector();
+  StreamSubscription<int>? _pedometerSubscription;
+  late final _walkStart = widget.pedometer != null
+      ? WalkStartDetector(
+          steps: pedometerWalkStartSteps,
+          maxGap: pedometerWalkStartMaxGap,
+        )
+      : WalkStartDetector();
   DateTime? _noAutoWalkUntil;
   bool _walkOpen = false;
 
   /// Opens the walk on its own once the player is clearly walking (about
   /// 10 m in a row) on this screen, awake. Never during the minigame or in
   /// the shop, where shaking the phone is not walking.
-  void _onRealStep() {
+  void _onRealStep([int count = 1]) {
     final now = DateTime.now();
     final onTop = ModalRoute.of(context)?.isCurrent ?? true;
     final waiting = _noAutoWalkUntil != null && now.isBefore(_noAutoWalkUntil!);
-    if (!mounted || !onTop || _walkOpen || _pet.asleep || waiting) {
+    if (!mounted ||
+        !_visible ||
+        !onTop ||
+        _walkOpen ||
+        _pet.asleep ||
+        waiting) {
       _walkStart.reset();
       return;
     }
-    if (_walkStart.step(now)) _openWalk(startedWalking: walkStartSteps);
+    if (_walkStart.step(now, count)) {
+      // The pedometer already counted these steps; the web sensor did not.
+      _openWalk(startedWalking: widget.pedometer != null ? 0 : walkStartSteps);
+    }
   }
 
   Future<void> _openWalk({int? startedWalking}) async {
@@ -110,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_) => WalkScreen(
           controller: _pet,
           watcher: widget.steps,
+          pedometer: widget.pedometer,
           startedWalking: startedWalking,
         ),
       ),
@@ -138,6 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _pet.removeListener(_soundRoutine);
     _stepsSubscription?.cancel();
+    _pedometerSubscription?.cancel();
     _clearReaction?.cancel();
     _snorer.cancel();
     _ticker.cancel();

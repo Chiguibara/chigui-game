@@ -49,21 +49,28 @@ class StepWatcher {
 const walkStartSteps = 16;
 const walkStartMaxGap = Duration(seconds: 2);
 
-/// Notices when the player starts walking for real: [walkStartSteps] steps
-/// in a row, with no pause longer than [walkStartMaxGap].
+/// Notices when the player starts walking for real: [steps] steps in a row,
+/// with no pause longer than [maxGap].
 class WalkStartDetector {
+  WalkStartDetector({
+    this.steps = walkStartSteps,
+    this.maxGap = walkStartMaxGap,
+  });
+
+  final int steps;
+  final Duration maxGap;
   int _streak = 0;
   DateTime? _last;
 
-  /// Feeds a step at [time]; returns true when the streak reaches the
-  /// threshold (then starts over).
-  bool step(DateTime time) {
+  /// Feeds [count] steps at [time] (sensors may report in batches); returns
+  /// true when the streak reaches the threshold (then starts over).
+  bool step(DateTime time, [int count = 1]) {
     final last = _last;
     _last = time;
-    _streak = last != null && time.difference(last) <= walkStartMaxGap
-        ? _streak + 1
-        : 1;
-    if (_streak < walkStartSteps) return false;
+    _streak = last != null && time.difference(last) <= maxGap
+        ? _streak + count
+        : count;
+    if (_streak < steps) return false;
     _streak = 0;
     return true;
   }

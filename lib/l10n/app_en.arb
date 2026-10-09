@@ -410,6 +410,10 @@
   "@sensorWalkHint": {
     "description": "Shown while real steps are counted from the phone's motion sensor."
   },
+  "pedometerWalkHint": "Walking for real! Your steps count, even with the phone in your pocket.",
+  "@pedometerWalkHint": {
+    "description": "Shown in the walk on the Android app, which counts real steps with the system pedometer."
+  },
   "tapFeetHint": "Left, right, left, right…",
   "@tapFeetHint": {
     "description": "Shown while the player taps the feet to walk."

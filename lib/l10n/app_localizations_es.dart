@@ -344,6 +344,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get sensorWalkHint => '¡Paseo de verdad! Lleva el móvil en la mano.';
 
   @override
+  String get pedometerWalkHint =>
+      '¡Paseo de verdad! Tus pasos cuentan, aunque lleves el móvil en el bolsillo.';
+
+  @override
   String get tapFeetHint => 'Izquierdo, derecho, izquierdo, derecho…';
 
   @override

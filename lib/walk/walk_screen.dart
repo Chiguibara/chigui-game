@@ -14,6 +14,7 @@ import '../ui/game_frame.dart';
 import '../ui/palette.dart';
 import '../ui/sprites.dart';
 import 'motion_source.dart';
+import 'pedometer.dart';
 import 'step_watcher.dart';
 
 enum _Mode { intro, sensor, tapping }
@@ -28,6 +29,7 @@ class WalkScreen extends StatefulWidget {
     super.key,
     required this.controller,
     this.watcher,
+    this.pedometer,
     this.onPhone,
     this.startedWalking,
   });
@@ -37,6 +39,10 @@ class WalkScreen extends StatefulWidget {
   /// The game's shared step listener; without one, the screen listens to
   /// the platform's sensor itself.
   final StepWatcher? watcher;
+
+  /// The Android system step counter. It already adds every step to the
+  /// game, so with it the scene only shows and celebrates them.
+  final Pedometer? pedometer;
 
   /// Set when the game opened the walk on its own because the player was
   /// already walking: the scene starts counting right away, including
@@ -77,9 +83,22 @@ class _WalkScreenState extends State<WalkScreen> {
 
   PetController get _pet => widget.controller;
 
+  StreamSubscription<int>? _pedometerSubscription;
+  int _walksBefore = 0;
+
+  bool get _usesPedometer => widget.pedometer?.running ?? false;
+
   @override
   void initState() {
     super.initState();
+    if (_usesPedometer) {
+      _mode = _Mode.sensor;
+      _walksBefore = _pet.walksToday;
+      _pedometerSubscription = widget.pedometer!.liveSteps.listen(
+        _onPedometerSteps,
+      );
+      return;
+    }
     final already = widget.startedWalking;
     if (already != null) {
       _mode = _Mode.sensor;
@@ -93,6 +112,7 @@ class _WalkScreenState extends State<WalkScreen> {
   void dispose() {
     _sensorCheck?.cancel();
     _stepsSubscription?.cancel();
+    _pedometerSubscription?.cancel();
     if (widget.watcher == null) _watcher.dispose();
     // Save the last steps right after this screen is gone: the widget tree
     // is locked while disposing, and saving notifies the home screen.
@@ -140,6 +160,23 @@ class _WalkScreenState extends State<WalkScreen> {
     // Save in small batches rather than on every step.
     _pendingSteps++;
     _stepped(1, save: _pendingSteps >= 10);
+  }
+
+  /// Steps the pedometer has already added to the game: animate them and
+  /// celebrate any walk they completed.
+  void _onPedometerSteps(int steps) {
+    if (!mounted) return;
+    final walks = _pet.walksToday;
+    final walked = walks > _walksBefore;
+    _walksBefore = walks;
+    _leftStep = !_leftStep;
+    sfx.play(walked ? Sfx.reward : (_leftStep ? Sfx.stepLeft : Sfx.stepRight));
+    setState(() {
+      _scroll += steps / stepsPerWalk;
+      _message = walked ? AppLocalizations.of(context).walkedStatus : null;
+      _reaction = walked ? Reaction.love : Reaction.walk;
+      _reactionId++;
+    });
   }
 
   void _onFoot(_Foot foot, AppLocalizations l10n) {
@@ -328,7 +365,9 @@ class _WalkScreenState extends State<WalkScreen> {
   Widget _controls(AppLocalizations l10n, TextTheme textTheme) {
     final hint = switch (_mode) {
       _Mode.intro => _onPhone ? l10n.walkIntro : l10n.walkIntroTapping,
-      _Mode.sensor => _message ?? l10n.sensorWalkHint,
+      _Mode.sensor =>
+        _message ??
+            (_usesPedometer ? l10n.pedometerWalkHint : l10n.sensorWalkHint),
       _Mode.tapping => _message ?? l10n.tapFeetHint,
     };
     return Column(

@@ -21,6 +21,7 @@ Do not add a backend, accounts, sync, or multiplayer architecture to the MVP. Be
 
 ## Android (platform added)
 - Done: `android/` created with ID `es.chiguibara.chigui_game`; `minSdk` 24 (Android 7.0), the lowest Flutter 3.44 allows (it raises anything lower); `targetSdk` 36; label "Chigüi". The Docker image includes the NDK, platform 35, and CMake the build needs. `make apk` builds a debug-signed test APK.
+- Steps: `MainActivity.kt` exposes the system step counter (TYPE_STEP_COUNTER, method channel `chigui/steps`, event channel `chigui/steps/total`) and asks for ACTIVITY_RECOGNITION on Android 10+; `Pedometer` adds new steps (also those taken while closed, and after phone restarts) and reports live ones. Step data stays on the phone: declare it accordingly in Play's Data safety form (physical activity, not collected or shared).
 - INTERNET and ACCESS_NETWORK_STATE are removed in `AndroidManifest.xml` with `tools:node="remove"` (Google Play Billing's telemetry library adds them). After every dependency change, check the release APK with `aapt2 dump permissions`.
 
 ## Adding Android (original checklist)

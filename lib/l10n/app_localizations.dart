@@ -656,6 +656,12 @@ abstract class AppLocalizations {
   /// **'Walking for real! Keep the phone in your hand.'**
   String get sensorWalkHint;
 
+  /// Shown in the walk on the Android app, which counts real steps with the system pedometer.
+  ///
+  /// In en, this message translates to:
+  /// **'Walking for real! Your steps count, even with the phone in your pocket.'**
+  String get pedometerWalkHint;
+
   /// Shown while the player taps the feet to walk.
   ///
   /// In en, this message translates to:

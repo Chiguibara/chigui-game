@@ -5,6 +5,10 @@
          do not need them, since the Play Store app does the networking. -->
     <uses-permission android:name="android.permission.INTERNET" tools:node="remove" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove" />
+    <!-- Walks: the system step counter. The permission is asked at runtime on
+         Android 10+; phones without the sensor can still install the app. -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-feature android:name="android.hardware.sensor.stepcounter" android:required="false" />
 
     <application
         android:label="Chigüi"

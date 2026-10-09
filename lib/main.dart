@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
 import 'data/json_game_repository.dart';
@@ -11,6 +12,7 @@ import 'sound/sound_effects.dart';
 import 'store/create_pack_store.dart';
 import 'store/packs_controller.dart';
 import 'walk/motion_source.dart';
+import 'walk/pedometer.dart';
 import 'walk/step_watcher.dart';
 
 Future<void> main() async {
@@ -28,11 +30,18 @@ Future<void> main() async {
           defaultTargetPlatform == TargetPlatform.iOS);
   final steps = onPhoneWeb ? StepWatcher(createMotionSource()) : null;
   unawaited(steps?.start());
+  // The Android app: the system step counter, which also counts while the
+  // app is closed (asks for "physical activity" on first launch).
+  final pedometer = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+      ? Pedometer(controller, await SharedPreferences.getInstance())
+      : null;
+  unawaited(pedometer?.start());
   runApp(
     ChiguiApp(
       controller: controller,
       packs: packs,
       steps: steps,
+      pedometer: pedometer,
       locale: _localeFromUrl(),
     ),
   );

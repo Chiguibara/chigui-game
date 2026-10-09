@@ -9,6 +9,7 @@ import 'package:chigui_game/store/packs_controller.dart';
 import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/ui/home_screen.dart';
+import 'package:chigui_game/walk/pedometer.dart';
 import 'package:chigui_game/walk/step_watcher.dart';
 import 'package:chigui_game/ui/poop.dart';
 import 'package:flutter/material.dart';
@@ -508,6 +509,42 @@ void main() {
       expect(controller.stepsToday, greaterThanOrEqualTo(walkStartSteps));
       await walk(tester, motion, 20);
       expect(find.text('Walk with Chigüi'), findsNothing);
+    });
+
+    testWidgets('Android pedometer: about 100 m opens the walk', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(1080, 2340);
+      addTearDown(tester.view.reset);
+      final controller = await controllerWith(same);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(Pedometer.lastTotalKey, 5000);
+      final pedometer = Pedometer(controller, prefs);
+      await tester.pumpWidget(
+        ChiguiApp(controller: controller, pedometer: pedometer),
+      );
+      pedometer.onTotal(5000); // Catching up: nothing new.
+      var total = 5000;
+      Future<void> walkBatch(int steps) async {
+        pedometer.onTotal(total += steps);
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+
+      for (var i = 0; i < 7; i++) {
+        await walkBatch(20);
+      }
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text('Walk with Chigüi'), findsNothing);
+
+      await walkBatch(30);
+      await tester.pump(const Duration(seconds: 1));
+      expect(
+        find.text(
+          'Walking for real! Your steps count, even with the phone in your pocket.',
+        ),
+        findsOneWidget,
+      );
+      expect(controller.stepsToday, 170, reason: 'counted once, not twice');
     });
 
     testWidgets('not while Chigüi sleeps', (tester) async {
