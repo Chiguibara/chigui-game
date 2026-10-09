@@ -6,7 +6,7 @@ RUN := docker compose run --rm flutter
 FLUTTER := $(RUN) flutter
 
 .DEFAULT_GOAL := help
-.PHONY: help image shell deps l10n web build-web build-site test analyze format clean
+.PHONY: help image shell deps l10n sounds web build-web build-site test analyze format clean
 
 help: ## Show available targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -22,6 +22,9 @@ deps: ## Fetch Dart/Flutter packages
 
 l10n: ## Regenerate localization code from lib/l10n/*.arb
 	$(FLUTTER) gen-l10n
+
+sounds: ## Regenerate the synthesized sound effects in assets/sounds
+	$(RUN) python3 tools/make_sounds.py
 
 web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r = reload, q = quit)
 	docker compose run --rm --service-ports flutter \

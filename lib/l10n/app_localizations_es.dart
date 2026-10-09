@@ -370,4 +370,10 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get walksCapped =>
       '¡Cuánto paseo! A Chigüi se le han gastado las pilas. ¡Mañana más!';
+
+  @override
+  String get muteSounds => 'Silenciar sonidos';
+
+  @override
+  String get unmuteSounds => 'Activar sonidos';
 }

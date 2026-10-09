@@ -11,6 +11,7 @@ import '../l10n/app_localizations.dart';
 import '../minigame/minigame_screen.dart';
 import '../shop/shop_screen.dart';
 import '../walk/walk_screen.dart';
+import '../sound/sound_effects.dart';
 import 'action_tile.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
@@ -45,10 +46,27 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _lifecycle = AppLifecycleListener(onResume: _pet.refresh);
     _ticker = Timer.periodic(HomeScreen.refreshEvery, (_) => _pet.refresh());
+    _wasNeedingPotty = _pet.state.needsPotty;
+    _messes = _pet.state.messes;
+    _pet.addListener(_soundRoutine);
+  }
+
+  late bool _wasNeedingPotty;
+  late int _messes;
+
+  /// Audible cues when the routine changes on its own: "uh-oh" when Chigüi
+  /// needs the toilet, "plop" for an accident.
+  void _soundRoutine() {
+    final state = _pet.state;
+    if (state.needsPotty && !_wasNeedingPotty) sfx.play(Sfx.uhOh);
+    if (state.messes > _messes) sfx.play(Sfx.plop);
+    _wasNeedingPotty = state.needsPotty;
+    _messes = state.messes;
   }
 
   @override
   void dispose() {
+    _pet.removeListener(_soundRoutine);
     _ticker.cancel();
     _lifecycle.dispose();
     super.dispose();
@@ -62,21 +80,43 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _onPet() => _react(_pet.pet() ? Reaction.love : null);
+  void _onPet() {
+    if (!_pet.pet()) return;
+    sfx.play(Sfx.pet);
+    _react(Reaction.love);
+  }
 
-  void _onFeed() => _react(_pet.feed() ? Reaction.eat : Reaction.refuse);
+  void _onFeed() {
+    final ate = _pet.feed();
+    sfx.play(ate ? Sfx.chomp : Sfx.refuse);
+    _react(ate ? Reaction.eat : Reaction.refuse);
+  }
 
-  void _onToilet() => _react(_pet.takeToToilet() ? Reaction.relief : null);
+  void _onToilet() {
+    if (!_pet.takeToToilet()) return;
+    sfx.play(Sfx.flush);
+    _react(Reaction.relief);
+  }
 
-  void _onClean() => _react(_pet.cleanUp() ? Reaction.cleaned : null);
+  void _onClean() {
+    if (!_pet.cleanUp()) return;
+    sfx.play(Sfx.sparkle);
+    _react(Reaction.cleaned);
+  }
 
-  void _onVet() => _react(_pet.visitVet() ? Reaction.cured : null);
+  void _onVet() {
+    if (!_pet.visitVet()) return;
+    sfx.play(Sfx.vet);
+    _react(Reaction.cured);
+  }
 
-  void _onBed() => _pet.sendToBed();
+  void _onBed() {
+    if (_pet.sendToBed()) sfx.play(Sfx.lullaby);
+  }
 
   /// Real steps from the pedometer (Android, not wired yet) or the dev panel.
   void _onSteps(int steps) {
-    _pet.addSteps(steps);
+    sfx.play(_pet.addSteps(steps) ? Sfx.reward : Sfx.stepLeft);
     _react(Reaction.walk);
   }
 
@@ -330,6 +370,16 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           counter(l10n.stepsLabel(steps), const Footprints(size: 26), steps),
           const Spacer(),
+          ListenableBuilder(
+            listenable: sfx,
+            builder: (context, _) => IconButton(
+              onPressed: sfx.toggleMuted,
+              tooltip: sfx.muted ? l10n.unmuteSounds : l10n.muteSounds,
+              icon: Icon(sfx.muted ? Icons.volume_off : Icons.volume_up),
+              color: Palette.ink,
+            ),
+          ),
+          const SizedBox(width: 8),
           counter(l10n.coinsLabel(coins), const Coin(size: 26), coins),
         ],
       ),

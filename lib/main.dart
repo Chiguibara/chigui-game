@@ -4,10 +4,12 @@ import 'app.dart';
 import 'data/json_game_repository.dart';
 import 'game/pet_controller.dart';
 import 'l10n/app_localizations.dart';
+import 'sound/sound_effects.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final controller = await PetController.load(await JsonGameRepository.open());
+  sfx = await SoundEffects.load();
   runApp(ChiguiApp(controller: controller, locale: _localeFromUrl()));
 }
 

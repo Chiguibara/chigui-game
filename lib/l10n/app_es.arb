@@ -98,5 +98,7 @@
   "rightFoot": "pie derecho",
   "nextWalkProgress": "{steps} de {goal} pasos para el próximo paseo",
   "walksToday": "{count, plural, =1{1 paseo hoy} other{{count} paseos hoy}}",
-  "walksCapped": "¡Cuánto paseo! A Chigüi se le han gastado las pilas. ¡Mañana más!"
+  "walksCapped": "¡Cuánto paseo! A Chigüi se le han gastado las pilas. ¡Mañana más!",
+  "muteSounds": "Silenciar sonidos",
+  "unmuteSounds": "Activar sonidos"
 }

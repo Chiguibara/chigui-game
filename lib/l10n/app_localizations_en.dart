@@ -368,4 +368,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get walksCapped =>
       'So many walks! Chigüi\'s batteries are flat. More tomorrow!';
+
+  @override
+  String get muteSounds => 'Mute sounds';
+
+  @override
+  String get unmuteSounds => 'Turn sounds on';
 }

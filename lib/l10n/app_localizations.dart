@@ -691,6 +691,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'So many walks! Chigüi\'s batteries are flat. More tomorrow!'**
   String get walksCapped;
+
+  /// Tooltip of the button that turns sound effects off.
+  ///
+  /// In en, this message translates to:
+  /// **'Mute sounds'**
+  String get muteSounds;
+
+  /// Tooltip of the button that turns sound effects back on.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn sounds on'**
+  String get unmuteSounds;
 }
 
 class _AppLocalizationsDelegate

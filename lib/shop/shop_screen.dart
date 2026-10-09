@@ -6,6 +6,7 @@ import '../game/catalog.dart';
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show BuyResult;
 import '../l10n/app_localizations.dart';
+import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
 import '../ui/palette.dart';
 import '../ui/game_frame.dart';
@@ -39,19 +40,23 @@ class _ShopScreenState extends State<ShopScreen> {
     if (_pet.state.owned.contains(item.id)) {
       if (item.slot == Slot.sticker) return;
       _pet.toggleWorn(item);
+      sfx.play(Sfx.pop);
       _say(l10n.shopHint, Reaction.love);
       return;
     }
     switch (_pet.canBuy(item)) {
       case BuyResult.outOfSeason:
+        sfx.play(Sfx.bonk);
         _say(l10n.tooEarly(item.season!), Reaction.refuse);
       case BuyResult.notEnoughCoins:
+        sfx.play(Sfx.bonk);
         _say(
           l10n.notEnoughCoins(item.price - _pet.state.coins),
           Reaction.refuse,
         );
       case BuyResult.bought:
         _pet.buy(item);
+        sfx.play(Sfx.buy);
         _say(
           item.slot == Slot.sticker
               ? l10n.stickerBoughtStatus

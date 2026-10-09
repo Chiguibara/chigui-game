@@ -3,6 +3,7 @@ import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
+import 'package:chigui_game/sound/sound_effects.dart';
 import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/ui/poop.dart';
@@ -318,6 +319,51 @@ void main() {
         await tester.pump(const Duration(milliseconds: 100));
       }
       expect(find.text('Great game!'), findsOneWidget);
+    });
+  });
+
+  group('sounds', () {
+    late List<Sfx> played;
+
+    setUp(() {
+      played = [];
+      sfx = SoundEffects(player: played.add);
+    });
+    tearDown(() => sfx = SoundEffects());
+
+    testWidgets('actions make their sounds', (tester) async {
+      await start(tester, same);
+      await tester.tap(chigui());
+      await tester.pump();
+      await tester.tap(find.text('Feed'));
+      await tester.pump(const Duration(seconds: 2));
+      expect(played, [Sfx.pet, Sfx.chomp]);
+    });
+
+    testWidgets('an "uh-oh" when Chigüi needs the toilet', (tester) async {
+      final controller = await start(tester, same);
+      // Skip to just past the first potty urge of the day.
+      for (var i = 0; i < 4 * 12 && !controller.state.needsPotty; i++) {
+        await tester.tap(find.text('+15m'));
+        await tester.pump();
+      }
+      expect(controller.state.needsPotty, isTrue);
+      expect(played, contains(Sfx.uhOh));
+    });
+
+    testWidgets('muting silences everything and is remembered', (tester) async {
+      final prefs = await SharedPreferences.getInstance();
+      sfx = SoundEffects(player: played.add, prefs: prefs);
+      await start(tester, same);
+
+      await tester.tap(find.byTooltip('Mute sounds'));
+      await tester.pump();
+      await tester.tap(chigui());
+      await tester.pump(const Duration(seconds: 2));
+      expect(played, isEmpty);
+      expect(prefs.getBool(SoundEffects.mutedKey), isTrue);
+      expect(SoundEffects(prefs: prefs).muted, isTrue);
+      expect(find.byTooltip('Turn sounds on'), findsOneWidget);
     });
   });
 

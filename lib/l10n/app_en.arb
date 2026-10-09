@@ -446,5 +446,13 @@
   "walksCapped": "So many walks! Chigüi's batteries are flat. More tomorrow!",
   "@walksCapped": {
     "description": "When the daily walk rewards are used up. Half geeky, half funny; steps still count."
+  },
+  "muteSounds": "Mute sounds",
+  "@muteSounds": {
+    "description": "Tooltip of the button that turns sound effects off."
+  },
+  "unmuteSounds": "Turn sounds on",
+  "@unmuteSounds": {
+    "description": "Tooltip of the button that turns sound effects back on."
   }
 }

@@ -7,6 +7,7 @@ import '../game/pet_controller.dart';
 import '../game/rules.dart'
     show coinsPerWalk, maxWalksPerDay, stepsPerFootTap, stepsPerWalk;
 import '../l10n/app_localizations.dart';
+import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
 import '../ui/game_frame.dart';
 import '../ui/palette.dart';
@@ -43,6 +44,7 @@ class _WalkScreenState extends State<WalkScreen> {
   _Mode _mode = _Mode.intro;
   _Foot? _lastFoot;
   int _pendingSteps = 0;
+  bool _leftStep = false;
   String? _message;
   Reaction? _reaction;
   int _reactionId = 0;
@@ -94,6 +96,7 @@ class _WalkScreenState extends State<WalkScreen> {
 
   void _onFoot(_Foot foot, AppLocalizations l10n) {
     if (foot == _lastFoot) {
+      sfx.play(Sfx.refuse);
       setState(() => _message = l10n.otherFoot);
       return;
     }
@@ -104,6 +107,8 @@ class _WalkScreenState extends State<WalkScreen> {
 
   void _stepped(int steps, {required bool save}) {
     final walked = save && _flush();
+    _leftStep = !_leftStep;
+    sfx.play(walked ? Sfx.reward : (_leftStep ? Sfx.stepLeft : Sfx.stepRight));
     setState(() {
       _scroll += steps / stepsPerWalk;
       _message = walked ? AppLocalizations.of(context).walkedStatus : null;

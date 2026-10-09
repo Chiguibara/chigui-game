@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show coinsPerFruit;
 import '../l10n/app_localizations.dart';
+import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
 import '../ui/palette.dart';
 import '../ui/game_frame.dart';
@@ -42,6 +43,7 @@ class _MinigameScreenState extends State<MinigameScreen>
   }
 
   void _start() {
+    sfx.play(Sfx.start);
     setState(() {
       if (_phase == _Phase.done) _game = CatchGame();
       _phase = _Phase.playing;
@@ -54,11 +56,15 @@ class _MinigameScreenState extends State<MinigameScreen>
     final dt = (elapsed - _last).inMicroseconds / 1e6;
     _last = elapsed;
     setState(() {
-      if (_game.update(dt) > 0) _catchId++;
+      if (_game.update(dt) > 0) {
+        _catchId++;
+        sfx.play(Sfx.chomp);
+      }
       if (_game.over) {
         _ticker.stop();
         _phase = _Phase.done;
         widget.controller.finishRound(_game.caught);
+        sfx.play(_game.caught > 0 ? Sfx.reward : Sfx.pop);
       }
     });
   }
