@@ -1,7 +1,7 @@
 services:
   flutter:
     build: .
-    image: chigui-game-flutter:3.41.9
+    image: chigui-game-flutter:3.44.0
     user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - .:/app

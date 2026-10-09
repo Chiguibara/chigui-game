@@ -16,8 +16,8 @@ class PetController extends ChangeNotifier {
     this._repository,
     this._clock,
     PetState loaded, {
-    Duration debugOffset = Duration.zero,
-  }) : _debugOffset = debugOffset {
+    this._debugOffset = Duration.zero,
+  }) {
     _apply(rules.advance(loaded, now));
   }
 
@@ -45,7 +45,7 @@ class PetController extends ChangeNotifier {
   final GameRepository _repository;
   final DateTime Function() _clock;
   late PetState _state;
-  Duration _debugOffset = Duration.zero;
+  Duration _debugOffset;
 
   DateTime get now => _clock().add(_debugOffset);
   PetState get state => _state;

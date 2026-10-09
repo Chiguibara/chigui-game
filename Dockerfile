@@ -1,4 +1,4 @@
-FROM ghcr.io/cirruslabs/flutter:3.41.9
+FROM ghcr.io/cirruslabs/flutter:3.44.0
 
 # The container runs as the host user (see compose.yaml), so the SDK, the
 # home directory, and git checkouts must be usable by any UID.

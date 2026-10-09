@@ -30,9 +30,8 @@ enum Sfx {
 /// Plays sound effects unless the player muted them. The mute choice is a
 /// device preference, kept apart from the game save.
 class SoundEffects extends ChangeNotifier {
-  SoundEffects({void Function(Sfx)? player, SharedPreferences? prefs})
-    : _player = player,
-      _prefs = prefs,
+  SoundEffects({this._player, SharedPreferences? prefs})
+    : _prefs = prefs,
       _muted = prefs?.getBool(mutedKey) ?? false;
 
   /// Real audio, used by the app. Tests use the silent default.
