@@ -10,7 +10,8 @@ This file holds the project's working principles and confirmed decisions; anythi
 - Android: application ID `es.chiguibara.chigui_game`; the app must work fully offline and its release build must not request the INTERNET permission. The web version only needs a connection to load.
 - Pet needs (hunger, affection, fun) decay gently, never to zero, and never block actions or harm Chigüi on their own.
 - Daily routine (mealtimes, potty, bedtime, sickness and a free, cute vet) teaches responsibility, but only outside school hours and never at night. Consequences stay mild and curable, nothing is permanent, and time away counts only up to a cap, pausing after a day without playing. Times and thresholds live in `lib/game/routine.dart` and `lib/game/rules.dart`.
-- Coins come from playing (minigame, walks) and buy accessories and stickers in the shop; no real-money purchases. Seasonal items return every year and are never sold with urgency. Catalog, prices, and season dates live in `lib/game/catalog.dart`.
+- Coins come only from playing (minigame, walks) and buy accessories and stickers in the shop; coins are never sold. Seasonal items return every year and are never sold with urgency. Catalog, prices, and season dates live in `lib/game/catalog.dart`.
+- Real money (not built yet): only fixed-price accessory packs, priced in euros, through Google Play Billing in the Android app, with parents' approval through their Google account (Family Link). No other payment providers, no purchases on the web or Windows, and paid content is only cosmetic (never needs, cures, or skipping the routine). See the `progression-monetization` skill.
 - Walks turn real steps (or tapped feet on PCs) into fun and coins, capped per day. Only rewards: no penalties for not walking and no weight or body changes.
 - All game audio is FLAC; players can mute it (see the `sound-effects` skill).
 - Persistence goes through `GameRepository` (domain types only); today it is JSON in `shared_preferences`, and moving to SQLite with drift must only need a new implementation. Saves are local only. An event log keeps the last 90 days.
@@ -27,7 +28,7 @@ This file holds the project's working principles and confirmed decisions; anythi
 ## Working principles
 - Inspect the repository and its configuration before proposing changes.
 - Keep scope small and prioritize a playable prototype.
-- Do not add a backend, accounts, invasive analytics, payments, or commerce integrations without a demonstrated need.
+- Do not add a backend, accounts, invasive analytics, or commerce integrations without a demonstrated need; payments only as decided above.
 - Avoid premature abstractions and unnecessary dependencies; use the newest versions that resolve with the pinned Flutter SDK.
 - Respect Chigüibara's visual identity: handmade-feeling kawaii, geeky, and playful; not generic or excessively childish.
 - Consequences for neglect stay mild, curable, and capped; no guilt-tripping copy. Never pressure players to spend.
