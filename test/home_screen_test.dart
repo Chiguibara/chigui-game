@@ -327,7 +327,7 @@ void main() {
 
     setUp(() {
       played = [];
-      sfx = SoundEffects(player: played.add);
+      sfx = SoundEffects(player: (s, _) => played.add(s));
     });
     tearDown(() => sfx = SoundEffects());
 
@@ -353,7 +353,7 @@ void main() {
 
     testWidgets('muting silences everything and is remembered', (tester) async {
       final prefs = await SharedPreferences.getInstance();
-      sfx = SoundEffects(player: played.add, prefs: prefs);
+      sfx = SoundEffects(player: (s, _) => played.add(s), prefs: prefs);
       await start(tester, same);
 
       await tester.tap(find.byTooltip('Mute sounds'));

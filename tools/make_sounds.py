@@ -1,8 +1,9 @@
 """Synthesizes Chigüi's sound effects as small 8-bit-style WAV files.
 
 Pure standard library, so it runs anywhere (`make sounds` runs it in the
-Flutter container). Every sound is made here from tones and noise: no
-third-party audio, no licensing questions. Tweak a recipe and re-run.
+Flutter container). Every sound here is made from tones and noise; the
+eating bites (assets/sounds/bite_*.mp3) are the exception, cut from a real
+recording. Tweak a recipe and re-run.
 """
 
 import math
@@ -85,25 +86,6 @@ def _hz(name):
     return 440 * 2 ** (semis / 12)
 
 
-def _bubble(low, high, dur):
-    """One liquid bubble: pitch rises quickly (a "bloop") with a wobble."""
-    return mix(
-        tone(low, dur, "sine", 0.6, attack=0.003, release=dur * 0.5,
-             freq_end=high, vibrato=0.04),
-        tone(low * 2, dur, "sine", 0.12, attack=0.003, release=dur * 0.5,
-             freq_end=high * 2),
-    )
-
-
-def _gulu(pitch):
-    """ "Gu" (lower bubble) then "lu" (higher bubble)."""
-    return seq(
-        _bubble(180 * pitch, 380 * pitch, 0.07),
-        silence(0.02),
-        _bubble(260 * pitch, 560 * pitch, 0.08),
-    )
-
-
 # --- The sounds. ---
 
 SOUNDS = {
@@ -111,12 +93,6 @@ SOUNDS = {
     "pet": seq(
         tone(600, 0.05, "sine", 0.4, release=0.02, freq_end=900),
         tone(900, 0.12, "sine", 0.45, freq_end=1300, vibrato=0.02),
-    ),
-    # Eating: a bubbly "gulu gulu" (two "gu-lu" pairs of rising bubbles).
-    "chomp": seq(
-        _gulu(1.0),
-        silence(0.06),
-        _gulu(0.85),
     ),
     # "Nuh-uh": two soft falling blips.
     "refuse": seq(
