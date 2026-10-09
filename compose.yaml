@@ -1,0 +1,13 @@
+services:
+  flutter:
+    build: .
+    image: chigui-game-flutter:3.41.9
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/app
+      - pub-cache:/home/dev/.pub-cache
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+
+volumes:
+  pub-cache:

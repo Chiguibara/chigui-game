@@ -4,16 +4,17 @@ This file is the project's source of truth for working principles and confirmed 
 
 ## Confirmed decisions
 - Engine: Flutter + Dart. Flame is not a default dependency; add it only for a minigame that needs a game loop, and only inside that minigame.
-- Platform order: desktop first (Linux, then Windows) for the MVP, then Android. iOS is deferred (no macOS available).
-- Tooling runs in Docker. Do not require Flutter, SDKs, or other toolchains installed on the host.
-- Windows builds cannot be produced from Linux Docker; they come from a Windows CI runner (e.g. GitHub Actions) when needed.
-- Design for the phone even on desktop: portrait, phone-shaped window with a fixed aspect ratio; touch-sized targets (≥48 dp); nothing may depend on hover, right-click, or keyboard shortcuts.
-- Offline and local saves only, using storage that works the same on desktop and Android.
+- Platforms: the team develops and tests on Flutter web for now. Children will play on Windows desktop; Android comes after. iOS is deferred (no macOS available). Only the `web` platform exists until the others are added.
+- Tooling runs in Docker through the `Makefile`. Do not require Flutter, SDKs, or other toolchains installed on the host.
+- Windows builds cannot be produced from Linux Docker; they will come from a Windows CI runner (e.g. GitHub Actions) when Windows is added.
+- Design for the phone even on web and desktop: portrait, phone-shaped layout; touch-sized targets (≥48 dp); nothing may depend on hover, right-click, or keyboard shortcuts.
+- Offline and local saves only, using storage that works on web, Windows, and Android.
 - Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art without approval.
 
 ## Open questions
 - Confirmed MVP scope (current working hypothesis: Chigüi with hunger/affection/fun, petting, feeding, one minigame with coins, earnable cosmetics, local save).
-- Who will play the Windows build, and when it is needed.
+- When the Windows build is needed, and how it reaches the children (zip, installer).
+- Android application ID (proposed: `es.chiguibara.chigui_game`; pass `--org es.chiguibara` when adding the platform).
 - Who produces the art and with which tool (defines asset formats).
 - Target player age (affects store policies for children before the Android release).
 
