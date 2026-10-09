@@ -6,10 +6,10 @@ RUN := docker compose run --rm flutter
 FLUTTER := $(RUN) flutter
 
 .DEFAULT_GOAL := help
-.PHONY: help image shell deps web build-web test analyze format clean
+.PHONY: help image shell deps l10n web build-web test analyze format clean
 
 help: ## Show available targets
-	@grep -E '^[a-z-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
+	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
 
 image: ## Build the Flutter Docker image
 	docker compose build
@@ -20,6 +20,9 @@ shell: ## Open a shell in the Flutter container
 deps: ## Fetch Dart/Flutter packages
 	$(FLUTTER) pub get
 
+l10n: ## Regenerate localization code from lib/l10n/*.arb
+	$(FLUTTER) gen-l10n
+
 web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r = reload, q = quit)
 	docker compose run --rm --service-ports flutter \
 		flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080
@@ -27,10 +30,10 @@ web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r 
 build-web: ## Build the release web version into build/web
 	$(FLUTTER) build web --release
 
-test: ## Run all tests
+test: l10n ## Run all tests
 	$(FLUTTER) test
 
-analyze: ## Run static analysis
+analyze: l10n ## Run static analysis
 	$(FLUTTER) analyze
 
 format: ## Format Dart code

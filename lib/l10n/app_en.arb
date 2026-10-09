@@ -1,0 +1,23 @@
+{
+  "@@locale": "en",
+  "appTitle": "Chigüi",
+  "@appTitle": {
+    "description": "Game title, shown in the browser tab and window title."
+  },
+  "chiguiName": "Chigüi",
+  "@chiguiName": {
+    "description": "The pet's name. Chigüi is gender-neutral."
+  },
+  "tapHint": "Tap Chigüi to say hi",
+  "@tapHint": {
+    "description": "Idle prompt under the pet inviting the player to tap it."
+  },
+  "happyStatus": "Chigüi is happy!",
+  "@happyStatus": {
+    "description": "Shown briefly after the player pets Chigüi."
+  },
+  "petAction": "pet Chigüi",
+  "@petAction": {
+    "description": "Screen reader hint for the tap action on the pet."
+  }
+}
