@@ -5,7 +5,7 @@ description: Reviews MVP proposals and changes for scope creep, inconsistencies,
 
 # MVP Reviewer
 
-Read `AGENT.md` and `.claude/CLAUDE.md` before reviewing.
+Read `CLAUDE.md` before reviewing.
 
 Check:
 - Confirmed decisions and scope are respected.

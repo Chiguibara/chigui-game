@@ -5,7 +5,7 @@ description: Reviews quality, scope, save behavior, and mobile experience for th
 
 # MVP QA
 
-Turn `AGENT.md` into a small set of tests.
+Turn the confirmed decisions and MVP scope in `CLAUDE.md` into a small set of tests.
 
 Check at least:
 - launch and resume;
@@ -15,7 +15,7 @@ Check at least:
 - equipping and removing cosmetics;
 - save/load and missing or corrupted data;
 - elapsed time while offline;
-- small screens and touch accessibility;
+- small screens and touch accessibility, including the phone-shaped desktop window and no reliance on hover or keyboard;
 - offline behavior and recoverable errors;
 - performance and reasonable resource use;
 - localization coverage and fallback behavior.

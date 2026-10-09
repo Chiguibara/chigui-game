@@ -5,7 +5,7 @@ description: Designs the core loop and interactions for a relaxed virtual pet wi
 
 # Game Design
 
-Read `AGENT.md` for product decisions.
+Read `CLAUDE.md` for product decisions.
 
 When working:
 1. Define the session goal and expected reward.

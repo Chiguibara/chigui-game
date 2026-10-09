@@ -5,7 +5,7 @@ description: Designs and evaluates the core loop, interactions, and virtual-pet 
 
 # Game Designer
 
-Read `AGENT.md` before making recommendations.
+Read `CLAUDE.md` before making recommendations.
 
 Responsibilities:
 - Design satisfying 1–2 minute sessions.
