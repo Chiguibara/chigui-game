@@ -70,6 +70,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onBed() => _pet.sendToBed();
 
+  /// Real steps from the pedometer (Android, not wired yet) or the dev panel.
+  void _onSteps(int steps) {
+    _pet.addSteps(steps);
+    _react(Reaction.walk);
+  }
+
   void _onPlay() => Navigator.of(context).push(
     MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
   );
@@ -110,6 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Reaction.relief => l10n.reliefStatus,
       Reaction.cured => l10n.curedStatus,
       Reaction.cleaned => l10n.cleanedStatus,
+      Reaction.chomp => l10n.ateStatus,
+      Reaction.walk => l10n.walkedStatus,
       null when _pet.asleep => l10n.asleepStatus,
       null when state.sick => l10n.sickStatus,
       null when state.needsPotty => l10n.pottyStatus,
@@ -145,8 +153,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SafeArea(
                 child: Column(
                   children: [
-                    if (kDebugMode) DevPanel(controller: _pet),
-                    _coins(l10n, textTheme, state.coins),
+                    if (kDebugMode)
+                      DevPanel(controller: _pet, onSteps: _onSteps),
+                    _counters(l10n, textTheme, state.coins),
                     Expanded(
                       child: LayoutBuilder(
                         builder: (context, constraints) => Column(
@@ -230,31 +239,38 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _coins(AppLocalizations l10n, TextTheme textTheme, int coins) =>
-      Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Semantics(
-            label: l10n.coinsLabel(coins),
-            excludeSemantics: true,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Coin(size: 26),
-                const SizedBox(width: 6),
-                Text(
-                  '$coins',
-                  style: textTheme.titleMedium?.copyWith(
-                    color: Palette.ink,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
+  /// Coins, and today's steps once a step counter exists (for now only in
+  /// debug builds, fed by the dev panel; Android's pedometer comes later).
+  Widget _counters(AppLocalizations l10n, TextTheme textTheme, int coins) {
+    final style = textTheme.titleMedium?.copyWith(
+      color: Palette.ink,
+      fontWeight: FontWeight.w700,
+    );
+    Widget counter(String label, Widget icon, int value) => Semantics(
+      label: label,
+      excludeSemantics: true,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          icon,
+          const SizedBox(width: 6),
+          Text('$value', style: style),
+        ],
+      ),
+    );
+    final steps = _pet.stepsToday;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Row(
+        children: [
+          if (kDebugMode)
+            counter(l10n.stepsLabel(steps), const Footprints(size: 26), steps),
+          const Spacer(),
+          counter(l10n.coinsLabel(coins), const Coin(size: 26), coins),
+        ],
+      ),
+    );
+  }
 
   /// Feed and Play are always first; the others appear only when they are needed.
   Widget _actions(AppLocalizations l10n, {required bool asleep}) {

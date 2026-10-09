@@ -250,6 +250,40 @@ void main() {
     });
   });
 
+  group('walks', () {
+    test('every 1000 steps is a walk: more fun and coins', () {
+      final o = addSteps(pet0(at(12), level: 0.4), at(12), 2500);
+      expect(o.ok, isTrue);
+      expect(o.state.stepsToday, 2500);
+      expect(o.state.coins, 2 * coinsPerWalk);
+      expect(o.state.level(Need.fun), closeTo(0.4 + 2 * walkFunGain, 1e-9));
+      expect(types(o), [EventType.walked, EventType.walked]);
+    });
+
+    test('steps add up during the day', () {
+      final first = addSteps(pet0(at(12)), at(12), 600).state;
+      final o = addSteps(first, at(13), 600);
+      expect(o.ok, isTrue);
+      expect(stepsOn(o.state, at(13)), 1200);
+      expect(o.state.coins, coinsPerWalk);
+    });
+
+    test('rewards stop at the daily cap; not walking costs nothing', () {
+      final o = addSteps(pet0(at(12)), at(12), 50000);
+      expect(o.state.coins, maxWalksPerDay * coinsPerWalk);
+      expect(addSteps(o.state, at(12, 30), 1000).ok, isFalse);
+    });
+
+    test('a new day starts from zero', () {
+      final yesterday = addSteps(pet0(at(12)), at(12), 900).state;
+      final today = at(12, 0, 13);
+      expect(stepsOn(yesterday, today), 0);
+      final o = addSteps(yesterday, today, 200);
+      expect(o.ok, isFalse);
+      expect(o.state.stepsToday, 200);
+    });
+  });
+
   group('wish', () {
     test('is null when every need is fine', () {
       expect(wish(pet0(at(12), level: 0.6)), isNull);

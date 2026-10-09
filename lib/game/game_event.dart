@@ -11,6 +11,7 @@ enum EventType {
   sentToBed,
   wentToBedAlone,
   played,
+  walked,
 }
 
 class GameEvent {

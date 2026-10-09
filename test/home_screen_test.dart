@@ -230,6 +230,20 @@ void main() {
     expect(play.onPressed, isNull);
   });
 
+  testWidgets('the dev panel simulates steps, and Chigüi walks', (
+    tester,
+  ) async {
+    final controller = await start(tester, same);
+
+    await tester.tap(find.text('+1000 steps'));
+    await tester.pump();
+    expect(find.text('What a lovely walk!'), findsOneWidget);
+    expect(controller.stepsToday, 1000);
+    expect(controller.state.coins, 5);
+    expect(find.bySemanticsLabel('1000 steps today'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+  });
+
   testWidgets('the dev panel skips time', (tester) async {
     final controller = await start(tester, same);
     final before = controller.now;

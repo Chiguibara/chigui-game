@@ -20,6 +20,13 @@ const playFunGain = 0.3;
 /// Coins per fruit caught in the minigame.
 const coinsPerFruit = 1;
 
+/// Every [stepsPerWalk] real steps in a day count as a walk with Chigüi,
+/// up to [maxWalksPerDay]. Walks only reward; not walking costs nothing.
+const stepsPerWalk = 1000;
+const maxWalksPerDay = 10;
+const walkFunGain = 0.1;
+const coinsPerWalk = 5;
+
 /// Snacks at or above this level are politely refused (meals never are).
 const fullLevel = 0.95;
 
@@ -292,6 +299,45 @@ Outcome finishRound(PetState state, DateTime now, {required int caught}) {
     ).copyWith(coins: s.coins + caught * coinsPerFruit),
     events: [...current.events, GameEvent(EventType.played, now)],
     ok: true,
+  );
+}
+
+int walksFor(int steps) => min(steps ~/ stepsPerWalk, maxWalksPerDay);
+
+/// Steps today so far, starting from zero on a new local day.
+int stepsOn(PetState state, DateTime now) {
+  final day = state.stepsDay?.toLocal();
+  final today = now.toLocal();
+  final sameDay =
+      day != null &&
+      day.year == today.year &&
+      day.month == today.month &&
+      day.day == today.day;
+  return sameDay ? state.stepsToday : 0;
+}
+
+/// Real steps from the device pedometer (or the dev panel). Each new walk
+/// reached today raises fun and earns coins. [ok] is true when at least one
+/// new walk was completed.
+Outcome addSteps(PetState state, DateTime now, int steps) {
+  final current = advance(state, now);
+  final s = current.state;
+  final before = stepsOn(s, now);
+  final after = before + (steps > 0 ? steps : 0);
+  final walks = walksFor(after) - walksFor(before);
+  final local = now.toLocal();
+  final next = s.copyWith(
+    stepsToday: after,
+    stepsDay: DateTime(local.year, local.month, local.day),
+    coins: s.coins + walks * coinsPerWalk,
+  );
+  return (
+    state: _raise(next, Need.fun, walks * walkFunGain),
+    events: [
+      ...current.events,
+      for (var i = 0; i < walks; i++) GameEvent(EventType.walked, now),
+    ],
+    ok: walks > 0,
   );
 }
 

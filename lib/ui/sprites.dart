@@ -101,3 +101,38 @@ class _FruitPainter extends CustomPainter {
   @override
   bool shouldRepaint(_FruitPainter old) => old.kind != kind;
 }
+
+/// Two little footprints, drawn in code, for the step counter.
+class Footprints extends StatelessWidget {
+  const Footprints({super.key, this.size = 24});
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) =>
+      CustomPaint(size: Size.square(size), painter: _FootprintsPainter());
+}
+
+class _FootprintsPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final paint = Paint()..color = Palette.furDark;
+    for (final (x, y) in [(0.3, 0.55), (0.68, 0.3)]) {
+      canvas.drawOval(
+        Rect.fromCenter(
+          center: Offset(w * x, w * (y + 0.12)),
+          width: w * 0.26,
+          height: w * 0.34,
+        ),
+        paint,
+      );
+      for (final dx in [-0.09, 0.0, 0.09]) {
+        canvas.drawCircle(Offset(w * (x + dx), w * (y - 0.1)), w * 0.05, paint);
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(_FootprintsPainter old) => false;
+}

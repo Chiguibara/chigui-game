@@ -7,9 +7,12 @@ import 'palette.dart';
 /// routine can be tried without waiting. Not player-facing, so its labels are
 /// intentionally not localized.
 class DevPanel extends StatelessWidget {
-  const DevPanel({super.key, required this.controller});
+  const DevPanel({super.key, required this.controller, required this.onSteps});
 
   final PetController controller;
+
+  /// Simulates the pedometer, which browsers and desktops do not have.
+  final ValueChanged<int> onSteps;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,7 @@ class DevPanel extends StatelessWidget {
             label: 'Next event',
             onPressed: controller.debugSkipToNextEvent,
           ),
+          _DevButton(label: '+1000 steps', onPressed: () => onSteps(1000)),
           _DevButton(label: 'Reset', onPressed: controller.debugReset),
         ],
       ),

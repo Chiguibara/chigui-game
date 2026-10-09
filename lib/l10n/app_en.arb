@@ -195,5 +195,22 @@
   "backHomeButton": "Back home",
   "@backHomeButton": {
     "description": "Leaves the minigame."
+  },
+  "chompSound": "Chomp!",
+  "@chompSound": {
+    "description": "Big, cute eating sound shown when Chigüi catches fruit in the minigame. Keep very short."
+  },
+  "walkedStatus": "What a lovely walk!",
+  "@walkedStatus": {
+    "description": "Shown when the player's real steps complete a walk with Chigüi."
+  },
+  "stepsLabel": "{count, plural, =1{1 step today} other{{count} steps today}}",
+  "@stepsLabel": {
+    "description": "Screen reader label for today's step counter.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   }
 }

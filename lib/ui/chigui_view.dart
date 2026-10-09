@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import 'palette.dart';
 import 'poop.dart';
+import 'sprites.dart';
 
-enum Reaction { love, eat, refuse, relief, cured, cleaned }
+enum Reaction { love, eat, refuse, relief, cured, cleaned, chomp, walk }
 
 enum Face { normal, happy, asleep, sick, grumpy }
 
@@ -73,6 +74,11 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
   void didUpdateWidget(ChiguiView old) {
     super.didUpdateWidget(old);
     if (widget.reactionId != old.reactionId && widget.reaction != null) {
+      _react.duration = switch (widget.reaction!) {
+        Reaction.chomp => const Duration(milliseconds: 700),
+        Reaction.walk => const Duration(milliseconds: 1600),
+        _ => const Duration(milliseconds: 1200),
+      };
       _react.forward(from: 0);
     }
   }
@@ -101,6 +107,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
           final reaction = _react.isAnimating ? widget.reaction : null;
           final t = _reduceMotion ? 0.0 : _react.value;
           final (scaleX, scaleY) = _scales(reaction);
+          final (dx, dy) = _offset(reaction);
+          final walking = reaction == Reaction.walk && !_reduceMotion;
           return Stack(
             clipBehavior: Clip.none,
             children: [
@@ -114,15 +122,19 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                     onTap: widget.onTap,
                     child: Transform(
                       alignment: Alignment.bottomCenter,
-                      transform: Matrix4.translationValues(
-                        _shake(reaction),
-                        0,
-                        0,
-                      )..multiply(Matrix4.diagonal3Values(scaleX, scaleY, 1)),
+                      transform: Matrix4.translationValues(dx, dy, 0)
+                        ..multiply(Matrix4.diagonal3Values(scaleX, scaleY, 1)),
                       child: CustomPaint(
                         painter: _ChiguiPainter(
                           face: _face(reaction),
                           blink: _isBlinking(),
+                          mouthOpen: reaction == Reaction.chomp
+                              ? _chompOpen(t)
+                              : 0,
+                          cheekPuff: reaction == Reaction.chomp
+                              ? _chompPuff(t)
+                              : 0,
+                          legLift: walking ? math.sin(t * 4 * math.pi) : 0,
                         ),
                       ),
                     ),
@@ -152,6 +164,18 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
               if (reaction == Reaction.relief || reaction == Reaction.cleaned)
                 _floating(size, t, Icons.auto_awesome, Palette.sparkle),
               if (reaction == Reaction.cured) ..._vet(size, t),
+              if (reaction == Reaction.chomp) ..._chomp(size, t, l10n),
+              if (reaction == Reaction.walk)
+                Positioned(
+                  left: size * (0.05 + 0.1 * t),
+                  top: size * 0.86,
+                  child: ExcludeSemantics(
+                    child: Opacity(
+                      opacity: 1 - t,
+                      child: Footprints(size: size * 0.14),
+                    ),
+                  ),
+                ),
               if (reaction == null && widget.bubble != null)
                 _bubble(size, widget.bubble!),
             ],
@@ -167,6 +191,9 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     Reaction.relief ||
     Reaction.cleaned => Face.happy,
     Reaction.cured => _react.value > 0.5 ? Face.happy : Face.sick,
+    // Wide-eyed while opening wide, blissful while chewing.
+    Reaction.chomp => _react.value < 0.3 ? Face.normal : Face.happy,
+    Reaction.walk => Face.happy,
     _ => widget.face,
   };
 
@@ -188,6 +215,11 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       Reaction.cured => 0.5,
       _ => null,
     };
+    if (reaction == Reaction.chomp) return _chompScales(_react.value);
+    if (reaction == Reaction.walk) {
+      final landing = 1 - math.sin(_react.value * 4 * math.pi).abs();
+      return (1 + 0.03 * landing, 1 - 0.04 * landing);
+    }
     if (bounceFrom != null && _react.value >= bounceFrom) {
       // Squash, stretch, then settle.
       final t = ((_react.value - bounceFrom) / 0.5).clamp(0.0, 1.0);
@@ -200,7 +232,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
         scaleX = lerpDouble(1.12, 0.94, k)!;
         scaleY = lerpDouble(0.88, 1.10, k)!;
       } else {
-        final k = Curves.easeOut.transform((t - 0.55) / 0.45);
+        final k = Curves.easeOut.transform(((t - 0.55) / 0.45).clamp(0.0, 1.0));
         scaleX = lerpDouble(0.94, scaleX, k)!;
         scaleY = lerpDouble(1.10, scaleY, k)!;
       }
@@ -208,11 +240,120 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     return (scaleX, scaleY);
   }
 
-  /// A gentle "no, thanks" side-to-side wobble.
-  double _shake(Reaction? reaction) {
-    if (_reduceMotion || reaction != Reaction.refuse) return 0;
+  (double, double) _offset(Reaction? reaction) {
+    if (_reduceMotion) return (0, 0);
     final t = _react.value;
-    return math.sin(t * 6 * math.pi) * widget.size * 0.03 * (1 - t);
+    final size = widget.size;
+    return switch (reaction) {
+      // A gentle "no, thanks" side-to-side wobble.
+      Reaction.refuse => (math.sin(t * 6 * math.pi) * size * 0.03 * (1 - t), 0),
+      // Four little hops forward and back.
+      Reaction.walk => (
+        math.sin(t * 2 * math.pi) * size * 0.08,
+        -math.sin(t * 4 * math.pi).abs() * size * 0.05,
+      ),
+      _ => (0, 0),
+    };
+  }
+
+  // The chomp: open very wide (0–0.3), snap shut (0.3–0.42), then chew with
+  // puffed cheeks while crumbs fly and a "Chomp!" pops out.
+
+  double _chompOpen(double t) {
+    if (_reduceMotion) return 0;
+    if (t < 0.3) return Curves.easeOut.transform(t / 0.3);
+    if (t < 0.4) return 1 - (t - 0.3) / 0.1;
+    return 0;
+  }
+
+  double _chompPuff(double t) {
+    if (t < 0.38) return 0;
+    final k = (t - 0.38) / 0.62;
+    final chew = _reduceMotion ? 1 : 0.85 + 0.15 * math.sin(k * 6 * math.pi);
+    return (1 - k * k) * chew;
+  }
+
+  (double, double) _chompScales(double t) {
+    if (t < 0.3) {
+      final k = Curves.easeOut.transform(t / 0.3);
+      return (1 - 0.06 * k, 1 + 0.14 * k);
+    }
+    if (t < 0.42) {
+      final k = (t - 0.3) / 0.12;
+      return (lerpDouble(0.94, 1.2, k)!, lerpDouble(1.14, 0.82, k)!);
+    }
+    final k = ((t - 0.42) / 0.58).clamp(0.0, 1.0);
+    final settle = Curves.easeOut.transform(k);
+    final wobble = 0.04 * math.sin(k * 6 * math.pi) * (1 - k);
+    return (
+      lerpDouble(1.2, 1, settle)! + wobble,
+      lerpDouble(0.82, 1, settle)! - wobble,
+    );
+  }
+
+  List<Widget> _chomp(double size, double t, AppLocalizations l10n) {
+    if (t < 0.32) return const [];
+    final k = (t - 0.32) / 0.68;
+    final pop = k < 0.2
+        ? lerpDouble(0.3, 1.3, k / 0.2)!
+        : k < 0.35
+        ? lerpDouble(1.3, 1, (k - 0.2) / 0.15)!
+        : 1.0;
+    final fade = k > 0.7 ? 1 - (k - 0.7) / 0.3 : 1.0;
+    const colors = [Palette.melon, Palette.orange, Palette.leaf];
+    final mouth = Offset(size * 0.84, size * 0.48);
+    return [
+      // Crumbs fly out of the mouth and fall.
+      for (var i = 0; i < 7; i++)
+        () {
+          final angle = -math.pi * (0.15 + 0.7 * i / 6);
+          final reach = size * 0.32 * k;
+          return Positioned(
+            left: mouth.dx + math.cos(angle) * reach,
+            top: mouth.dy + math.sin(angle) * reach + size * 0.3 * k * k,
+            child: ExcludeSemantics(
+              child: Opacity(
+                opacity: 1 - k,
+                child: Container(
+                  width: size * 0.045,
+                  height: size * 0.045,
+                  decoration: BoxDecoration(
+                    color: colors[i % colors.length],
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+          );
+        }(),
+      Positioned(
+        left: size * 0.5,
+        top: -size * 0.14,
+        child: ExcludeSemantics(
+          child: Opacity(
+            opacity: fade,
+            child: Transform.rotate(
+              angle: -0.2,
+              child: Transform.scale(
+                scale: _reduceMotion ? 1 : pop,
+                child: Text(
+                  l10n.chompSound,
+                  style: TextStyle(
+                    fontSize: size * 0.18,
+                    fontWeight: FontWeight.w900,
+                    color: Palette.ink,
+                    decoration: TextDecoration.none,
+                    shadows: const [
+                      Shadow(color: Palette.cloud, offset: Offset(2, 2)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _floating(double size, double t, IconData icon, Color color) {
@@ -384,10 +525,25 @@ class _ZPainter extends CustomPainter {
 }
 
 class _ChiguiPainter extends CustomPainter {
-  _ChiguiPainter({required this.face, required this.blink});
+  _ChiguiPainter({
+    required this.face,
+    required this.blink,
+    this.mouthOpen = 0,
+    this.cheekPuff = 0,
+    this.legLift = 0,
+  });
 
   final Face face;
   final bool blink;
+
+  /// 0 closed … 1 wide open, for the chomp.
+  final double mouthOpen;
+
+  /// 0 normal … 1 cheek full of fruit.
+  final double cheekPuff;
+
+  /// -1 … 1: positive lifts the near front leg, negative the far one.
+  final double legLift;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -415,13 +571,17 @@ class _ChiguiPainter extends CustomPainter {
       Paint()..color = Palette.ink.withValues(alpha: 0.12),
     );
 
+    // Legs step forward in turn while walking.
+    final nearLift = math.max(0.0, legLift) * h * 0.05;
+    final farLift = math.max(0.0, -legLift);
+
     // Far front leg, behind the body.
     shape(
       RRect.fromLTRBR(
-        w * 0.6,
-        h * 0.74,
-        w * 0.7,
-        h * 0.93,
+        w * (0.6 + 0.06 * farLift),
+        h * 0.74 - farLift * h * 0.05,
+        w * (0.7 + 0.06 * farLift),
+        h * 0.93 - farLift * h * 0.05,
         Radius.circular(w * 0.05),
       ),
       furDark,
@@ -446,9 +606,9 @@ class _ChiguiPainter extends CustomPainter {
     shape(
       RRect.fromLTRBR(
         w * 0.48,
-        h * 0.76,
+        h * 0.76 - nearLift,
         w * 0.59,
-        h * 0.95,
+        h * 0.95 - nearLift,
         Radius.circular(w * 0.05),
       ),
       fur,
@@ -498,10 +658,22 @@ class _ChiguiPainter extends CustomPainter {
     canvas.drawCircle(Offset(w * 0.44, h * 0.22), w * 0.055, outline);
     canvas.drawCircle(Offset(w * 0.44, h * 0.225), w * 0.028, furDark);
 
-    // Cheek.
+    // Cheek, bulging when full of fruit.
+    if (cheekPuff > 0) {
+      final bulge = Offset(w * 0.64, h * 0.5);
+      final radius = w * (0.06 + 0.05 * cheekPuff);
+      canvas.drawCircle(bulge, radius, fur);
+      canvas.drawArc(
+        Rect.fromCircle(center: bulge, radius: radius),
+        0.2,
+        math.pi - 0.4,
+        false,
+        outline,
+      );
+    }
     canvas.drawCircle(
-      Offset(w * 0.6, h * 0.45),
-      w * 0.045,
+      Offset(w * 0.6, h * (0.45 + 0.04 * cheekPuff)),
+      w * (0.045 + 0.02 * cheekPuff),
       Paint()..color = Palette.blush.withValues(alpha: 0.8),
     );
 
@@ -572,18 +744,40 @@ class _ChiguiPainter extends CustomPainter {
       height: h * 0.05,
     );
     stroke.strokeWidth = w * 0.012;
-    switch (face) {
-      case Face.grumpy || Face.sick:
-        // A small pout.
-        canvas.drawArc(
-          mouth.shift(Offset(0, h * 0.03)),
-          math.pi + 0.5,
-          math.pi - 1,
-          false,
-          stroke,
-        );
-      case _:
-        canvas.drawArc(mouth, 0.2, math.pi - 0.4, false, stroke);
+    if (mouthOpen > 0.05) {
+      // Wide open for the chomp, jaw dropping below the muzzle.
+      final open = Rect.fromLTWH(
+        w * (0.76 - 0.02 * mouthOpen),
+        h * 0.44,
+        w * (0.1 + 0.04 * mouthOpen),
+        h * (0.03 + 0.17 * mouthOpen),
+      );
+      final rounded = RRect.fromRectAndRadius(open, Radius.circular(w * 0.05));
+      canvas.drawRRect(rounded, Paint()..color = Palette.mouth);
+      canvas.drawOval(
+        Rect.fromLTWH(
+          open.left + open.width * 0.2,
+          open.bottom - open.height * 0.4,
+          open.width * 0.6,
+          open.height * 0.35,
+        ),
+        Paint()..color = Palette.blush,
+      );
+      canvas.drawRRect(rounded, outline);
+    } else {
+      switch (face) {
+        case Face.grumpy || Face.sick:
+          // A small pout.
+          canvas.drawArc(
+            mouth.shift(Offset(0, h * 0.03)),
+            math.pi + 0.5,
+            math.pi - 1,
+            false,
+            stroke,
+          );
+        case _:
+          canvas.drawArc(mouth, 0.2, math.pi - 0.4, false, stroke);
+      }
     }
 
     // Chigüi's signature bow tie at the neck.
@@ -604,5 +798,9 @@ class _ChiguiPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_ChiguiPainter old) =>
-      old.face != face || old.blink != blink;
+      old.face != face ||
+      old.blink != blink ||
+      old.mouthOpen != mouthOpen ||
+      old.cheekPuff != cheekPuff ||
+      old.legLift != legLift;
 }

@@ -18,6 +18,8 @@ class PetState {
     this.asleepUntil,
     this.grumpy = false,
     this.coins = 0,
+    this.stepsToday = 0,
+    this.stepsDay,
   });
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
@@ -58,6 +60,10 @@ class PetState {
 
   final int coins;
 
+  /// Steps counted on [stepsDay] (a local calendar day).
+  final int stepsToday;
+  final DateTime? stepsDay;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool asleepAt(DateTime time) =>
@@ -77,6 +83,8 @@ class PetState {
     Object? asleepUntil = _keep,
     bool? grumpy,
     int? coins,
+    int? stepsToday,
+    DateTime? stepsDay,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -96,5 +104,7 @@ class PetState {
         : asleepUntil as DateTime?,
     grumpy: grumpy ?? this.grumpy,
     coins: coins ?? this.coins,
+    stepsToday: stepsToday ?? this.stepsToday,
+    stepsDay: stepsDay ?? this.stepsDay,
   );
 }

@@ -349,6 +349,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Back home'**
   String get backHomeButton;
+
+  /// Big, cute eating sound shown when Chigüi catches fruit in the minigame. Keep very short.
+  ///
+  /// In en, this message translates to:
+  /// **'Chomp!'**
+  String get chompSound;
+
+  /// Shown when the player's real steps complete a walk with Chigüi.
+  ///
+  /// In en, this message translates to:
+  /// **'What a lovely walk!'**
+  String get walkedStatus;
+
+  /// Screen reader label for today's step counter.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 step today} other{{count} steps today}}'**
+  String stepsLabel(int count);
 }
 
 class _AppLocalizationsDelegate

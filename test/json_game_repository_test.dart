@@ -37,6 +37,8 @@ void main() {
       asleepUntil: now.add(const Duration(hours: 8)),
       grumpy: true,
       coins: 12,
+      stepsToday: 3400,
+      stepsDay: now,
     );
     await repo.saveState(saved);
 

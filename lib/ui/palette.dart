@@ -20,5 +20,6 @@ abstract final class Palette {
   static const coinRim = Color(0xFFC9932E);
   static const melon = Color(0xFFF07A7A);
   static const orange = Color(0xFFF5A23C);
+  static const mouth = Color(0xFF5A2E2A);
   static const outside = Color(0xFF2E4A3F);
 }

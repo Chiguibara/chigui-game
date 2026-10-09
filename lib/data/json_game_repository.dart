@@ -101,6 +101,8 @@ class JsonGameRepository implements GameRepository {
     'asleepUntil': _encodeTime(s.asleepUntil),
     'grumpy': s.grumpy,
     'coins': s.coins,
+    'stepsToday': s.stepsToday,
+    'stepsDay': _encodeTime(s.stepsDay),
   };
 
   /// Reads any schema version so far; version 1 only had needs and
@@ -127,6 +129,8 @@ class JsonGameRepository implements GameRepository {
       asleepUntil: _decodeTime(json['asleepUntil']),
       grumpy: json['grumpy'] == true,
       coins: _count(json['coins']),
+      stepsToday: _count(json['stepsToday']),
+      stepsDay: _decodeTime(json['stepsDay']),
     );
   }
 

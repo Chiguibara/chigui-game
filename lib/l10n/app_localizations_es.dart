@@ -165,4 +165,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get backHomeButton => 'Volver';
+
+  @override
+  String get chompSound => '¡Ñam!';
+
+  @override
+  String get walkedStatus => '¡Qué paseo más bonito!';
+
+  @override
+  String stepsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pasos hoy',
+      one: '1 paso hoy',
+    );
+    return '$_temp0';
+  }
 }

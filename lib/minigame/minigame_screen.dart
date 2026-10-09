@@ -185,7 +185,7 @@ class _MinigameScreenState extends State<MinigameScreen>
                 child: IgnorePointer(
                   child: ChiguiView(
                     size: chiguiSize,
-                    reaction: Reaction.eat,
+                    reaction: Reaction.chomp,
                     reactionId: _catchId,
                   ),
                 ),

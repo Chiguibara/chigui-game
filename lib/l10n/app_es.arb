@@ -41,5 +41,8 @@
   "coinsEarned": "{count, plural, =0{¡Chigüi se lo ha pasado bien igualmente!} =1{+1 moneda} other{+{count} monedas}}",
   "roundDone": "¡Buena partida!",
   "playAgainButton": "Otra vez",
-  "backHomeButton": "Volver"
+  "backHomeButton": "Volver",
+  "chompSound": "¡Ñam!",
+  "walkedStatus": "¡Qué paseo más bonito!",
+  "stepsLabel": "{count, plural, =1{1 paso hoy} other{{count} pasos hoy}}"
 }
