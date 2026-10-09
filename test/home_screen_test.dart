@@ -9,11 +9,13 @@ import 'package:chigui_game/store/packs_controller.dart';
 import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/ui/home_screen.dart';
+import 'package:chigui_game/walk/step_watcher.dart';
 import 'package:chigui_game/ui/poop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'fake_motion.dart';
 import 'fake_pack_store.dart';
 
 void main() {
@@ -459,6 +461,63 @@ void main() {
       await tester.tap(find.text('Wizard hat'));
       await tester.pump(const Duration(seconds: 2));
       expect(controller.state.equipped[Slot.head], 'wizardHat');
+    });
+  });
+
+  group('walking for real opens the walk', () {
+    Future<(PetController, FakeMotion)> startWalker(
+      WidgetTester tester, {
+      PetState Function(PetState)? setUp,
+    }) async {
+      final motion = FakeMotion();
+      final steps = StepWatcher(motion);
+      await steps.start();
+      tester.view.physicalSize = const Size(1080, 2340);
+      addTearDown(tester.view.reset);
+      final controller = await controllerWith(setUp ?? same);
+      await tester.pumpWidget(ChiguiApp(controller: controller, steps: steps));
+      return (controller, motion);
+    }
+
+    Future<void> walk(WidgetTester tester, FakeMotion motion, int steps) async {
+      for (var i = 0; i < steps; i++) {
+        motion.walk(1);
+        await tester.pump(const Duration(milliseconds: 16));
+      }
+      await tester.pump(const Duration(seconds: 1));
+    }
+
+    testWidgets('after about 10 m, without pressing anything', (tester) async {
+      final (controller, motion) = await startWalker(tester);
+      await walk(tester, motion, 8);
+      expect(
+        find.text('Walking for real! Keep the phone in your hand.'),
+        findsNothing,
+      );
+
+      await walk(tester, motion, 12);
+      expect(
+        find.text('Walking for real! Keep the phone in your hand.'),
+        findsOneWidget,
+      );
+
+      // Leaving keeps the steps, and it does not reopen right away.
+      await tester.tap(find.byTooltip('Back home'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(controller.stepsToday, greaterThanOrEqualTo(walkStartSteps));
+      await walk(tester, motion, 20);
+      expect(find.text('Walk with Chigüi'), findsNothing);
+    });
+
+    testWidgets('not while Chigüi sleeps', (tester) async {
+      final (_, motion) = await startWalker(
+        tester,
+        setUp: (s) =>
+            s.copyWith(asleepUntil: noon.add(const Duration(hours: 1))),
+      );
+      await walk(tester, motion, 20);
+      expect(find.text('Walk with Chigüi'), findsNothing);
     });
   });
 

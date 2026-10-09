@@ -13,6 +13,7 @@ import '../shop/shop_screen.dart';
 import '../store/packs_controller.dart';
 import '../walk/walk_screen.dart';
 import '../sound/sound_effects.dart';
+import '../walk/step_watcher.dart';
 import 'action_tile.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
@@ -22,12 +23,23 @@ import 'game_frame.dart';
 import 'sprites.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.controller, this.packs});
+  const HomeScreen({
+    super.key,
+    required this.controller,
+    this.packs,
+    this.steps,
+  });
 
   final PetController controller;
 
   /// Real-money packs; null where they are not sold.
   final PacksController? packs;
+
+  /// Real steps from the phone's sensor; walking for a bit opens the walk.
+  final StepWatcher? steps;
+
+  /// After leaving an automatic walk, wait this long before opening another.
+  static const autoWalkCooldown = Duration(minutes: 2);
 
   /// How often the routine catches up while the game is open.
   static const refreshEvery = Duration(seconds: 30);
@@ -62,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _wasNeedingPotty = _pet.state.needsPotty;
     _messes = _pet.state.messes;
     _pet.addListener(_soundRoutine);
+    _stepsSubscription = widget.steps?.steps.listen((_) => _onRealStep());
   }
 
   /// Snores only while Chigüi sleeps on this screen and the game is
@@ -69,6 +82,43 @@ class _HomeScreenState extends State<HomeScreen> {
   void _snore() {
     final onTop = ModalRoute.of(context)?.isCurrent ?? true;
     if (_visible && onTop && _pet.asleep) sfx.play(Sfx.snore);
+  }
+
+  StreamSubscription<void>? _stepsSubscription;
+  final _walkStart = WalkStartDetector();
+  DateTime? _noAutoWalkUntil;
+  bool _walkOpen = false;
+
+  /// Opens the walk on its own once the player is clearly walking (about
+  /// 10 m in a row) on this screen, awake. Never during the minigame or in
+  /// the shop, where shaking the phone is not walking.
+  void _onRealStep() {
+    final now = DateTime.now();
+    final onTop = ModalRoute.of(context)?.isCurrent ?? true;
+    final waiting = _noAutoWalkUntil != null && now.isBefore(_noAutoWalkUntil!);
+    if (!mounted || !onTop || _walkOpen || _pet.asleep || waiting) {
+      _walkStart.reset();
+      return;
+    }
+    if (_walkStart.step(now)) _openWalk(startedWalking: walkStartSteps);
+  }
+
+  Future<void> _openWalk({int? startedWalking}) async {
+    _walkOpen = true;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => WalkScreen(
+          controller: _pet,
+          watcher: widget.steps,
+          startedWalking: startedWalking,
+        ),
+      ),
+    );
+    _walkOpen = false;
+    _walkStart.reset();
+    if (startedWalking != null) {
+      _noAutoWalkUntil = DateTime.now().add(HomeScreen.autoWalkCooldown);
+    }
   }
 
   late bool _wasNeedingPotty;
@@ -87,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _pet.removeListener(_soundRoutine);
+    _stepsSubscription?.cancel();
     _clearReaction?.cancel();
     _snorer.cancel();
     _ticker.cancel();
@@ -159,9 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _react(Reaction.walk);
   }
 
-  void _onWalk() => Navigator.of(
-    context,
-  ).push(MaterialPageRoute<void>(builder: (_) => WalkScreen(controller: _pet)));
+  void _onWalk() => _openWalk();
 
   void _onShop() => Navigator.of(context).push(
     MaterialPageRoute<void>(

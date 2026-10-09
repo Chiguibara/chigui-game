@@ -14,7 +14,7 @@ import '../ui/game_frame.dart';
 import '../ui/palette.dart';
 import '../ui/sprites.dart';
 import 'motion_source.dart';
-import 'step_detector.dart';
+import 'step_watcher.dart';
 
 enum _Mode { intro, sensor, tapping }
 
@@ -27,14 +27,21 @@ class WalkScreen extends StatefulWidget {
   const WalkScreen({
     super.key,
     required this.controller,
-    this.motion,
+    this.watcher,
     this.onPhone,
+    this.startedWalking,
   });
 
   final PetController controller;
 
-  /// For tests; defaults to the platform's sensor, if any.
-  final MotionSource? motion;
+  /// The game's shared step listener; without one, the screen listens to
+  /// the platform's sensor itself.
+  final StepWatcher? watcher;
+
+  /// Set when the game opened the walk on its own because the player was
+  /// already walking: the scene starts counting right away, including
+  /// these first steps.
+  final int? startedWalking;
 
   /// Whether this is a phone or tablet, which may have a motion sensor.
   /// Defaults to the operating system (also detected in browsers): PCs go
@@ -49,12 +56,13 @@ class WalkScreen extends StatefulWidget {
 }
 
 class _WalkScreenState extends State<WalkScreen> {
-  late final MotionSource? _motion = widget.motion ?? createMotionSource();
+  late final StepWatcher _watcher =
+      widget.watcher ?? StepWatcher(createMotionSource());
+  StreamSubscription<void>? _stepsSubscription;
   late final bool _onPhone =
       widget.onPhone ??
       (defaultTargetPlatform == TargetPlatform.android ||
           defaultTargetPlatform == TargetPlatform.iOS);
-  final _detector = StepDetector();
   Timer? _sensorCheck;
   _Mode _mode = _Mode.intro;
   _Foot? _lastFoot;
@@ -70,43 +78,68 @@ class _WalkScreenState extends State<WalkScreen> {
   PetController get _pet => widget.controller;
 
   @override
+  void initState() {
+    super.initState();
+    final already = widget.startedWalking;
+    if (already != null) {
+      _mode = _Mode.sensor;
+      _listen();
+      _pendingSteps = already;
+      _scroll = already / stepsPerWalk;
+    }
+  }
+
+  @override
   void dispose() {
     _sensorCheck?.cancel();
-    _motion?.stop();
-    _flush();
+    _stepsSubscription?.cancel();
+    if (widget.watcher == null) _watcher.dispose();
+    // Save the last steps right after this screen is gone: the widget tree
+    // is locked while disposing, and saving notifies the home screen.
+    final pending = _pendingSteps;
+    _pendingSteps = 0;
+    if (pending > 0) {
+      final pet = _pet;
+      scheduleMicrotask(() => pet.addSteps(pending));
+    }
     super.dispose();
   }
 
   Future<void> _start() async {
-    final motion = _motion;
-    if (!_onPhone || motion == null || !await motion.start(_onSample)) {
+    if (!_onPhone || !await _watcher.start()) {
       _useTapping();
       return;
     }
-    // A browser can accept but never send samples (no sensor, e.g. PCs).
+    _listen();
+    if (_watcher.receiving) {
+      setState(() => _mode = _Mode.sensor);
+      return;
+    }
+    // A browser can accept but never send samples (no sensor).
     _sensorCheck = Timer(WalkScreen.sensorTimeout, () {
-      if (_mode == _Mode.intro) {
-        motion.stop();
-        _useTapping();
-      }
+      if (_mode == _Mode.intro && !_watcher.receiving) _useTapping();
     });
   }
 
+  void _listen() {
+    _stepsSubscription ??= _watcher.steps.listen((_) => _onRealStep());
+  }
+
   void _useTapping() {
+    _stepsSubscription?.cancel();
+    _stepsSubscription = null;
     if (mounted) setState(() => _mode = _Mode.tapping);
   }
 
-  void _onSample(double seconds, double magnitude) {
-    if (!mounted) return;
+  void _onRealStep() {
+    if (!mounted || _mode == _Mode.tapping) return;
     if (_mode == _Mode.intro) {
       _sensorCheck?.cancel();
       setState(() => _mode = _Mode.sensor);
     }
-    if (_detector.add(seconds, magnitude)) {
-      // Save in small batches rather than on every step.
-      _pendingSteps++;
-      _stepped(1, save: _pendingSteps >= 10);
-    }
+    // Save in small batches rather than on every step.
+    _pendingSteps++;
+    _stepped(1, save: _pendingSteps >= 10);
   }
 
   void _onFoot(_Foot foot, AppLocalizations l10n) {

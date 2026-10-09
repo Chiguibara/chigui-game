@@ -3,25 +3,13 @@ import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/rules.dart';
 import 'package:chigui_game/l10n/app_localizations.dart';
 import 'package:chigui_game/walk/motion_source.dart';
+import 'package:chigui_game/walk/step_watcher.dart';
 import 'package:chigui_game/walk/walk_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// A pretend phone sensor the test can shake.
-class FakeMotion implements MotionSource {
-  MotionListener? listener;
-  bool stopped = false;
-
-  @override
-  Future<bool> start(MotionListener onSample) async {
-    listener = onSample;
-    return true;
-  }
-
-  @override
-  void stop() => stopped = true;
-}
+import 'fake_motion.dart';
 
 void main() {
   final now = DateTime(2026, 10, 12, 12);
@@ -41,7 +29,10 @@ void main() {
       MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: WalkScreen(controller: controller, motion: motion),
+        home: WalkScreen(
+          controller: controller,
+          watcher: motion == null ? null : StepWatcher(motion),
+        ),
       ),
     );
     await tester.tap(find.text("Let's go!"));
@@ -93,7 +84,7 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         home: WalkScreen(
           controller: controller,
-          motion: motion,
+          watcher: StepWatcher(motion),
           onPhone: false,
         ),
       ),
@@ -125,11 +116,11 @@ void main() {
       findsOneWidget,
     );
 
-    // Steps are saved in batches, and the rest when leaving.
+    // Steps are saved in batches, and the rest when leaving. The shared
+    // watcher keeps listening for the rest of the game.
     await tester.tap(find.byTooltip('Back home'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
     expect(controller.stepsToday, inInclusiveRange(15, 21));
-    expect(motion.stopped, isTrue);
   });
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'game/pet_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'store/packs_controller.dart';
+import 'walk/step_watcher.dart';
 import 'ui/home_screen.dart';
 import 'ui/palette.dart';
 
@@ -11,6 +12,7 @@ class ChiguiApp extends StatelessWidget {
     super.key,
     required this.controller,
     this.packs,
+    this.steps,
     this.locale,
   });
 
@@ -18,6 +20,9 @@ class ChiguiApp extends StatelessWidget {
 
   /// Real-money packs; null where they are not sold.
   final PacksController? packs;
+
+  /// Real steps from the phone's sensor (web on phones); null elsewhere.
+  final StepWatcher? steps;
 
   /// Forces a language (e.g. from the website's URL); null follows the device.
   final Locale? locale;
@@ -34,7 +39,13 @@ class ChiguiApp extends StatelessWidget {
         fontFamily: 'Roboto',
       ),
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(controller: controller, packs: packs),
+      // Any first tap lets iPhone show its motion-permission prompt.
+      builder: (context, child) => Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (_) => steps?.start(),
+        child: child,
+      ),
+      home: HomeScreen(controller: controller, packs: packs, steps: steps),
     );
   }
 }
