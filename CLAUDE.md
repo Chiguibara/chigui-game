@@ -9,6 +9,7 @@ This file is the project's source of truth for working principles and confirmed 
 - Windows builds cannot be produced from Linux Docker; they will come from a Windows CI runner (e.g. GitHub Actions) when Windows is added.
 - Responsive layout with one breakpoint: narrow or portrait screens use the phone layout (single column, what Android will use); wide landscape screens (PCs) use a wide layout. Every screen must work and be tested in both. Touch-sized targets (≥48 dp) everywhere; nothing may depend on hover, right-click, or keyboard shortcuts.
 - Android application ID: `es.chiguibara.chigui_game` (pass `--org es.chiguibara` when adding the platform).
+- The Android app must work fully offline: everything bundled, and the release build does not request the INTERNET permission (Flutter only adds it to debug/profile builds). The web version only needs a connection to load; it does not need to open offline.
 - Pet needs: hunger, affection, and fun. They decay gently while away, never to zero, and never block actions or harm Chigüi on their own.
 - Daily routine (decided by the product owner to teach responsibility; tuning is provisional and lives in `lib/game/routine.dart` and `lib/game/rules.dart`):
   - Only outside school hours, in local time: weekdays 17:00–21:00, weekends 10:00–21:00; never at night.
