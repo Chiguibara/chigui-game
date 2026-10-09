@@ -28,6 +28,9 @@ class HomeScreen extends StatefulWidget {
   /// How often the routine catches up while the game is open.
   static const refreshEvery = Duration(seconds: 30);
 
+  /// A snore per slow, sleepy breath.
+  static const snoreEvery = Duration(seconds: 4);
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -35,6 +38,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late final AppLifecycleListener _lifecycle;
   late final Timer _ticker;
+  late final Timer _snorer;
+  bool _visible = true;
 
   Reaction? _reaction;
   int _reactionId = 0;
@@ -44,11 +49,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _lifecycle = AppLifecycleListener(onResume: _pet.refresh);
+    _lifecycle = AppLifecycleListener(
+      onResume: _pet.refresh,
+      onStateChange: (state) => _visible = state == AppLifecycleState.resumed,
+    );
+    _snorer = Timer.periodic(HomeScreen.snoreEvery, (_) => _snore());
     _ticker = Timer.periodic(HomeScreen.refreshEvery, (_) => _pet.refresh());
     _wasNeedingPotty = _pet.state.needsPotty;
     _messes = _pet.state.messes;
     _pet.addListener(_soundRoutine);
+  }
+
+  /// Snores only while Chigüi sleeps on this screen and the game is
+  /// visible (not under the shop or minigame, not in a background tab).
+  void _snore() {
+    final onTop = ModalRoute.of(context)?.isCurrent ?? true;
+    if (_visible && onTop && _pet.asleep) sfx.play(Sfx.snore);
   }
 
   late bool _wasNeedingPotty;
@@ -68,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     _pet.removeListener(_soundRoutine);
     _clearReaction?.cancel();
+    _snorer.cancel();
     _ticker.cancel();
     _lifecycle.dispose();
     super.dispose();

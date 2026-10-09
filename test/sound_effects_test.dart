@@ -16,22 +16,34 @@ void main() {
     expect(assets.take(10).toSet(), hasLength(10));
   });
 
+  test('snores alternate between two variants', () {
+    final assets = <String>[];
+    final sounds = SoundEffects(player: (_, asset) => assets.add(asset));
+    for (var i = 0; i < 3; i++) {
+      sounds.play(Sfx.snore);
+    }
+    expect(assets, [
+      'sounds/snore_01.wav',
+      'sounds/snore_02.wav',
+      'sounds/snore_01.wav',
+    ]);
+  });
+
   test('single sounds keep their file', () {
     final assets = <String>[];
     SoundEffects(player: (_, asset) => assets.add(asset)).play(Sfx.coin);
     expect(assets, ['sounds/coin.wav']);
   });
 
-  test('every bite file exists', () {
-    for (var i = 0; i < Sfx.chomp.variants; i++) {
-      expect(
-        File('assets/${Sfx.chomp.asset(i)}').existsSync(),
-        isTrue,
-        reason: Sfx.chomp.asset(i),
-      );
-    }
-    for (final sfx in Sfx.values.where((s) => s.variants == 1)) {
-      expect(File('assets/${sfx.asset(0)}').existsSync(), isTrue);
+  test('every sound file exists', () {
+    for (final sfx in Sfx.values) {
+      for (var i = 0; i < sfx.variants; i++) {
+        expect(
+          File('assets/${sfx.asset(i)}').existsSync(),
+          isTrue,
+          reason: sfx.asset(i),
+        );
+      }
     }
   });
 }

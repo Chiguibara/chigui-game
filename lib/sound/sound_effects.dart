@@ -23,6 +23,9 @@ enum Sfx {
   sparkle('sparkle'),
   vet('vet'),
   lullaby('lullaby'),
+
+  /// A quiet, cute snore while Chigüi sleeps; two variants take turns.
+  snore('snore', variants: 2),
   pop('pop');
 
   const Sfx(this.file, {this.variants = 1, this.extension = 'wav'});

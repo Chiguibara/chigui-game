@@ -86,6 +86,37 @@ def _hz(name):
     return 440 * 2 ** (semis / 12)
 
 
+def _breath(dur, vol, smooth, rattle_hz=0.0, rattle=0.0, rise=True, seed=1):
+    """Soft breathy noise; `rattle` adds the flutter that makes a snore."""
+    rng = random.Random(seed)
+    n = int(dur * RATE)
+    out, last = [], 0.0
+    for i in range(n):
+        t = i / RATE
+        last = last * smooth + rng.uniform(-1, 1) * (1 - smooth)
+        shape = math.sin(math.pi * (t / dur)) ** (0.7 if rise else 1.5)
+        flutter = 1 + rattle * math.sin(2 * math.pi * rattle_hz * t)
+        out.append(vol * shape * flutter * last / (1 - smooth) ** 0.5)
+    return out
+
+
+def _snore(whistle, squeak=False, seed=1):
+    """A tiny rodent snore: a low, fluttery in-breath, then a soft whistle
+    on the way out (and maybe a little squeak)."""
+    parts = [
+        _breath(0.8, 0.5, 0.92, rattle_hz=26, rattle=0.6, seed=seed),
+        silence(0.12),
+        mix(_breath(0.6, 0.25, 0.85, rise=False, seed=seed + 1),
+            tone(whistle, 0.55, "sine", 0.18, attack=0.08, release=0.3,
+                 freq_end=whistle * 0.75, vibrato=0.03)),
+    ]
+    if squeak:
+        parts += [silence(0.05),
+                  tone(1900, 0.07, "sine", 0.15, attack=0.01, release=0.04,
+                       freq_end=2300)]
+    return seq(*parts)
+
+
 # --- The sounds. ---
 
 SOUNDS = {
@@ -161,14 +192,21 @@ SOUNDS = {
     # Lullaby for bedtime.
     "lullaby": notes(["G5", "E5", "C5"], 0.22, gap=0.03, shape="sine",
                      vol=0.35, release=0.12),
+    # Snoring while asleep: soft and quiet (see QUIET), two variants.
+    "snore_01": _snore(1500, seed=21),
+    "snore_02": _snore(1300, squeak=True, seed=23),
     # Wearing or taking off an accessory.
     "pop": tone(400, 0.08, "sine", 0.4, freq_end=800),
 }
 
 
+# Background sounds peak lower than the rest.
+QUIET = {"snore_01": 0.3, "snore_02": 0.3}
+
+
 def write(name, samples):
     peak = max(1e-9, max(abs(s) for s in samples))
-    gain = min(1.0, 0.9 / peak)
+    gain = QUIET[name] / peak if name in QUIET else min(1.0, 0.9 / peak)
     frames = b"".join(
         struct.pack("<h", int(max(-1, min(1, s * gain)) * 32767))
         for s in samples

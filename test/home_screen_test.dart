@@ -6,6 +6,7 @@ import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/sound/sound_effects.dart';
 import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
+import 'package:chigui_game/ui/home_screen.dart';
 import 'package:chigui_game/ui/poop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -356,6 +357,33 @@ void main() {
       }
       expect(controller.state.needsPotty, isTrue);
       expect(played, contains(Sfx.uhOh));
+    });
+
+    testWidgets('a sleeping Chigüi snores softly, but not under the shop', (
+      tester,
+    ) async {
+      final controller = await start(
+        tester,
+        (s) => s.copyWith(asleepUntil: noon.add(const Duration(hours: 1))),
+      );
+      await tester.pump(HomeScreen.snoreEvery);
+      await tester.pump(HomeScreen.snoreEvery);
+      expect(played.where((s) => s == Sfx.snore), hasLength(2));
+
+      // Not while the shop covers the home screen.
+      played.clear();
+      await tester.tap(find.text('Shop'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(HomeScreen.snoreEvery);
+      expect(played, isNot(contains(Sfx.snore)));
+      expect(controller.asleep, isTrue);
+    });
+
+    testWidgets('an awake Chigüi does not snore', (tester) async {
+      await start(tester, same);
+      await tester.pump(HomeScreen.snoreEvery * 3);
+      expect(played, isNot(contains(Sfx.snore)));
     });
 
     testWidgets('muting silences everything and is remembered', (tester) async {
