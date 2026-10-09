@@ -25,6 +25,7 @@ abstract final class Palette {
   static const beanieBand = Color(0xFF3B8183);
   static const headphones = Color(0xFFE86A92);
   static const santaRed = Color(0xFFD94848);
+  static const santaShade = Color(0xFFB53A3A);
   static const lens = Color(0x5593D4F0);
   static const diving = Color(0xFF2F7FC1);
   static const snorkel = Color(0xFFF2C14E);

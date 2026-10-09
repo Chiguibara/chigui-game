@@ -64,26 +64,39 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
       canvas.drawCircle(p(0.44, 0.25), w * 0.045, fill(Palette.headphones));
 
     case ('santaHat', Layer.overHead):
+      // A cone that rises from the head, flops backwards, and hangs its
+      // tip behind the head.
       final hat = Path()
-        ..moveTo(w * 0.37, h * 0.22)
-        ..quadraticBezierTo(w * 0.42, h * 0.02, w * 0.62, h * 0.06)
-        ..quadraticBezierTo(w * 0.42, h * 0.0, w * 0.3, h * 0.1)
-        ..lineTo(w * 0.33, h * 0.12)
-        ..quadraticBezierTo(w * 0.5, h * 0.06, w * 0.74, h * 0.22)
+        ..moveTo(w * 0.4, h * 0.22)
+        ..quadraticBezierTo(w * 0.42, h * 0.1, w * 0.47, h * 0.07)
+        ..quadraticBezierTo(w * 0.36, h * 0.08, w * 0.31, h * 0.19)
+        ..lineTo(w * 0.25, h * 0.16)
+        ..quadraticBezierTo(w * 0.34, h * -0.04, w * 0.6, h * 0.0)
+        ..quadraticBezierTo(w * 0.77, h * 0.03, w * 0.76, h * 0.22)
         ..close();
       canvas.drawPath(hat, fill(Palette.santaRed));
+      // A soft shadow on the fold.
+      canvas.drawPath(
+        Path()
+          ..moveTo(w * 0.47, h * 0.07)
+          ..quadraticBezierTo(w * 0.36, h * 0.08, w * 0.31, h * 0.19)
+          ..lineTo(w * 0.36, h * 0.15)
+          ..quadraticBezierTo(w * 0.42, h * 0.08, w * 0.5, h * 0.06)
+          ..close(),
+        fill(Palette.santaShade),
+      );
       canvas.drawPath(hat, outline);
       final trim = RRect.fromLTRBR(
         w * 0.35,
         h * 0.19,
-        w * 0.77,
-        h * 0.27,
-        Radius.circular(w * 0.04),
+        w * 0.79,
+        h * 0.28,
+        Radius.circular(w * 0.045),
       );
       canvas.drawRRect(trim, fill(Palette.cloud));
       canvas.drawRRect(trim, outline);
-      canvas.drawCircle(p(0.3, 0.11), w * 0.045, fill(Palette.cloud));
-      canvas.drawCircle(p(0.3, 0.11), w * 0.045, outline);
+      canvas.drawCircle(p(0.27, 0.19), w * 0.05, fill(Palette.cloud));
+      canvas.drawCircle(p(0.27, 0.19), w * 0.05, outline);
 
     case ('geekGlasses', Layer.overHead):
       final frame = Paint()
