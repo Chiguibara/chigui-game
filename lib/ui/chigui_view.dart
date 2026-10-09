@@ -512,15 +512,17 @@ class ChiguiPortrait extends StatelessWidget {
     super.key,
     required this.size,
     this.wearing = const {},
+    this.face = Face.normal,
   });
 
   final double size;
   final Map<Slot, String> wearing;
+  final Face face;
 
   @override
   Widget build(BuildContext context) => CustomPaint(
     size: Size.square(size),
-    painter: _ChiguiPainter(face: Face.normal, blink: false, wearing: wearing),
+    painter: _ChiguiPainter(face: face, blink: false, wearing: wearing),
   );
 }
 
@@ -818,6 +820,10 @@ class _ChiguiPainter extends CustomPainter {
       }
     }
 
+    if (wearing[Slot.body] == 'ghost') {
+      paintGhostSheet(canvas, size);
+      _ghostFace(canvas, size);
+    }
     _accessories(canvas, size, Layer.overHead);
 
     // Chigüi's signature bow tie at the neck, unless covered.
@@ -839,6 +845,84 @@ class _ChiguiPainter extends CustomPainter {
     canvas.drawPath(bow, ink);
     canvas.drawCircle(knot, w * 0.022, ink);
     _accessories(canvas, size, Layer.front);
+  }
+
+  /// A front-facing ghost face on the sheet that still shows the mood.
+  void _ghostFace(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final ink = Paint()..color = Palette.ink;
+    final stroke = Paint()
+      ..color = Palette.ink
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.02
+      ..strokeCap = StrokeCap.round;
+    final blush = Paint()..color = Palette.blush.withValues(alpha: 0.7);
+    canvas.drawCircle(
+      Offset(w * 0.55, h * 0.43),
+      w * (0.035 + 0.015 * cheekPuff),
+      blush,
+    );
+    canvas.drawCircle(
+      Offset(w * 0.83, h * 0.43),
+      w * (0.035 + 0.015 * cheekPuff),
+      blush,
+    );
+
+    for (final x in [0.62, 0.76]) {
+      final eye = Offset(w * x, h * 0.34);
+      final box = Rect.fromCircle(center: eye, radius: w * 0.03);
+      switch (face) {
+        case Face.happy:
+          canvas.drawArc(box, math.pi, math.pi, false, stroke);
+        case Face.asleep:
+          canvas.drawArc(box, 0, math.pi, false, stroke);
+        case Face.sick:
+          canvas.drawArc(
+            Rect.fromCenter(center: eye, width: w * 0.05, height: h * 0.06),
+            0,
+            math.pi,
+            true,
+            ink,
+          );
+          canvas.drawLine(
+            eye.translate(-w * 0.03, 0),
+            eye.translate(w * 0.03, 0),
+            stroke,
+          );
+        case _ when blink:
+          canvas.drawLine(
+            eye.translate(-w * 0.025, 0),
+            eye.translate(w * 0.025, 0),
+            stroke,
+          );
+        case _:
+          canvas.drawOval(
+            Rect.fromCenter(center: eye, width: w * 0.05, height: h * 0.075),
+            ink,
+          );
+      }
+      if (face == Face.grumpy) {
+        // Brows tilted down towards the middle.
+        final inner = x < 0.7 ? 0.03 : -0.03;
+        canvas.drawLine(
+          Offset(w * (x - inner), h * 0.27),
+          Offset(w * (x + inner), h * 0.295),
+          stroke,
+        );
+      }
+    }
+
+    // A little "o" mouth; wide open for the chomp.
+    final mouth = Offset(w * 0.69, h * (0.44 + 0.03 * mouthOpen));
+    canvas.drawOval(
+      Rect.fromCenter(
+        center: mouth,
+        width: w * (0.04 + 0.05 * mouthOpen),
+        height: h * (0.04 + 0.1 * mouthOpen),
+      ),
+      Paint()..color = Palette.mouth,
+    );
   }
 
   @override

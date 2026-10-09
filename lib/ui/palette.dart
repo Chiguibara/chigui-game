@@ -29,7 +29,7 @@ abstract final class Palette {
   static const diving = Color(0xFF2F7FC1);
   static const snorkel = Color(0xFFF2C14E);
   static const scarf = Color(0xFFD95D5D);
-  static const ghost = Color(0xF2FFFFFF);
+  static const ghost = Color(0xFFFAFDFC);
   static const ghostOutline = Color(0xFFB9C4C2);
   static const tree = Color(0xFF3E8E57);
   static const surf = Color(0xFF5CC6D0);

@@ -184,115 +184,6 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
         canvas.drawLine(p(0.41, y), p(0.48, y), stripe);
       }
 
-    case ('ghost', Layer.overBody):
-      // A sheet over the body with a wavy hem and a cute ghost face.
-      final sheet = Path()
-        ..moveTo(w * 0.08, h * 0.95)
-        ..lineTo(w * 0.08, h * 0.6)
-        ..quadraticBezierTo(w * 0.1, h * 0.36, w * 0.4, h * 0.36)
-        ..lineTo(w * 0.7, h * 0.5)
-        ..lineTo(w * 0.75, h * 0.95);
-      for (var i = 0; i < 4; i++) {
-        final x0 = 0.75 - i * 0.1675;
-        sheet.quadraticBezierTo(
-          w * (x0 - 0.084),
-          h * (i.isEven ? 0.89 : 1.0),
-          w * (x0 - 0.1675),
-          h * 0.95,
-        );
-      }
-      sheet.close();
-      canvas.drawPath(sheet, fill(Palette.ghost));
-      canvas.drawPath(sheet, outline..color = Palette.ghostOutline);
-      final ink = fill(Palette.ink);
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: p(0.3, 0.66),
-          width: w * 0.05,
-          height: h * 0.08,
-        ),
-        ink,
-      );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: p(0.42, 0.66),
-          width: w * 0.05,
-          height: h * 0.08,
-        ),
-        ink,
-      );
-      canvas.drawOval(
-        Rect.fromCenter(
-          center: p(0.36, 0.76),
-          width: w * 0.05,
-          height: h * 0.05,
-        ),
-        ink,
-      );
-
-    case ('ghost', Layer.overHead):
-      // The hood: Chigüi's face peeks out.
-      final hood = Path()
-        ..moveTo(w * 0.33, h * 0.5)
-        ..quadraticBezierTo(w * 0.3, h * 0.12, w * 0.56, h * 0.12)
-        ..quadraticBezierTo(w * 0.7, h * 0.12, w * 0.72, h * 0.22)
-        ..quadraticBezierTo(w * 0.52, h * 0.2, w * 0.48, h * 0.32)
-        ..quadraticBezierTo(w * 0.44, h * 0.44, w * 0.46, h * 0.56)
-        ..close();
-      canvas.drawPath(hood, fill(Palette.ghost));
-      canvas.drawPath(hood, outline..color = Palette.ghostOutline);
-
-    case ('flowerCrown', Layer.overHead):
-      final stem = Paint()
-        ..color = Palette.leaf
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = w * 0.02
-        ..strokeCap = StrokeCap.round;
-      canvas.drawArc(
-        Rect.fromLTRB(w * 0.36, h * 0.17, w * 0.8, h * 0.4),
-        math.pi * 1.05,
-        math.pi * 0.8,
-        false,
-        stem,
-      );
-      for (final (x, y, c) in [
-        (0.4, 0.25, Palette.blush),
-        (0.48, 0.19, Palette.sparkle),
-        (0.57, 0.17, Palette.flower),
-        (0.66, 0.18, Palette.blush),
-        (0.74, 0.22, Palette.sparkle),
-      ]) {
-        for (var i = 0; i < 5; i++) {
-          final a = i * 2 * math.pi / 5;
-          canvas.drawCircle(
-            p(x, y) + Offset(math.cos(a), math.sin(a)) * w * 0.022,
-            w * 0.018,
-            fill(c),
-          );
-        }
-        canvas.drawCircle(p(x, y), w * 0.014, fill(Palette.cloud));
-      }
-
-    case ('butterfly', Layer.front):
-      final c = p(0.9, 0.12);
-      for (final (dx, dy, r, color) in [
-        (-0.03, -0.025, 0.035, Palette.flower),
-        (0.03, -0.025, 0.035, Palette.flower),
-        (-0.025, 0.025, 0.025, Palette.blush),
-        (0.025, 0.025, 0.025, Palette.blush),
-      ]) {
-        final wing = c + Offset(w * dx, h * dy);
-        canvas.drawCircle(wing, w * r, fill(color));
-        canvas.drawCircle(wing, w * r, outline);
-      }
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(
-          Rect.fromCenter(center: c, width: w * 0.015, height: h * 0.07),
-          Radius.circular(w * 0.01),
-        ),
-        fill(Palette.ink),
-      );
-
     case ('pumpkin', Layer.front):
       final body = Rect.fromLTRB(w * 0.74, h * 0.76, w * 0.99, h * 0.96);
       canvas.drawRect(
@@ -376,6 +267,46 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
     default:
       break;
   }
+}
+
+/// The ghost costume: a sheet over all of Chigüi, ears poking up beneath
+/// it, with a wavy hem. The face on it is drawn by Chigüi's painter so it
+/// keeps showing the mood.
+void paintGhostSheet(Canvas canvas, Size size) {
+  final w = size.width;
+  final h = size.height;
+  final sheet = Path()
+    ..moveTo(w * 0.06, h * 0.95)
+    ..lineTo(w * 0.06, h * 0.62)
+    ..quadraticBezierTo(w * 0.07, h * 0.38, w * 0.3, h * 0.38)
+    ..quadraticBezierTo(w * 0.3, h * 0.2, w * 0.38, h * 0.18)
+    ..quadraticBezierTo(w * 0.44, h * 0.08, w * 0.5, h * 0.15)
+    ..quadraticBezierTo(w * 0.56, h * 0.08, w * 0.62, h * 0.14)
+    ..quadraticBezierTo(w * 0.86, h * 0.13, w * 0.91, h * 0.3)
+    ..quadraticBezierTo(w * 0.95, h * 0.6, w * 0.78, h * 0.64)
+    ..lineTo(w * 0.78, h * 0.95);
+  // Wavy hem back to the start.
+  const waves = 4;
+  final step = (0.78 - 0.06) / waves;
+  for (var i = 0; i < waves; i++) {
+    final x0 = 0.78 - i * step;
+    sheet.quadraticBezierTo(
+      w * (x0 - step / 2),
+      h * (i.isEven ? 0.89 : 1.0),
+      w * (x0 - step),
+      h * 0.95,
+    );
+  }
+  sheet.close();
+  canvas.drawPath(sheet, Paint()..color = Palette.ghost);
+  canvas.drawPath(
+    sheet,
+    Paint()
+      ..color = Palette.ghostOutline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.012
+      ..strokeJoin = StrokeJoin.round,
+  );
 }
 
 void _star(Canvas canvas, Offset c, double r, Paint paint) {
