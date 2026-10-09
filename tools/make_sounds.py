@@ -2,7 +2,7 @@
 
 Pure standard library, so it runs anywhere (`make sounds` runs it in the
 Flutter container). Every sound here is made from tones and noise; the
-eating bites (assets/sounds/bite_*.mp3) are the exception, cut from a real
+eating bites (assets/sounds/bite_*.flac) are the exception, cut from a real
 recording. Tweak a recipe and re-run.
 """
 

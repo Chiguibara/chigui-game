@@ -8,7 +8,7 @@ enum Sfx {
   pet('pet'),
 
   /// Eating: cycles through ten different real bites.
-  chomp('bite', variants: 10, extension: 'mp3'),
+  chomp('bite', variants: 10, extension: 'flac'),
   refuse('refuse'),
   coin('coin'),
   buy('buy'),

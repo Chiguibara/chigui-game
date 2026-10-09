@@ -10,9 +10,9 @@ void main() {
     for (var i = 0; i < 11; i++) {
       sounds.play(Sfx.chomp);
     }
-    expect(assets.first, 'sounds/bite_01.mp3');
-    expect(assets[9], 'sounds/bite_10.mp3');
-    expect(assets[10], 'sounds/bite_01.mp3');
+    expect(assets.first, 'sounds/bite_01.flac');
+    expect(assets[9], 'sounds/bite_10.flac');
+    expect(assets[10], 'sounds/bite_01.flac');
     expect(assets.take(10).toSet(), hasLength(10));
   });
 
