@@ -17,4 +17,10 @@ Evaluate only what is needed for:
 
 Prefer a clear source of truth for game state, versionable persistence that tolerates missing data, offline play, and small maintained dependencies.
 
-Do not add a backend, accounts, sync, or multiplayer architecture to the MVP. Before recommending a package, check that it supports Linux, Windows, and Android (iOS is deferred) and runs in the Docker toolchain. Ensure player-facing strings are localizable.
+Do not add a backend, accounts, sync, or multiplayer architecture to the MVP. Before recommending a package, check that it supports web, Windows, and Android (iOS is deferred), runs in the Docker toolchain, and is the newest version that resolves with the pinned Flutter SDK (`flutter pub outdated`). Ensure player-facing strings are localizable.
+
+## Adding Android
+- Create the platform with `flutter create --platforms android --org es.chiguibara .` so the ID is `es.chiguibara.chigui_game` (without `--org`, Flutter uses `com.example`).
+- The app must work fully offline: check the merged manifest of the **release** APK and confirm there is no `android.permission.INTERNET` (Flutter adds it only to debug/profile; plugins may add it). Test the release build in airplane mode.
+- Steps come from the system step counter (it counts while the app is closed; add the steps since the last visit). Before building it, review Google Play policies for children's activity data, Families requirements, and parental consent.
+- Re-check that every plugin in use supports Android and adds no unexpected permissions.

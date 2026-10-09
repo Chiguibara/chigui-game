@@ -8,14 +8,15 @@ description: Adds or changes Chigüi's sound effects: synthesized FLAC sounds, r
 All game audio lives in `assets/sounds/` and is **FLAC** (one format for everything). Read `CLAUDE.md` first.
 
 ## Synthesized sounds (default)
+- Synthesized sounds need no entry beyond the existing row in `assets/SOURCES.md`.
 - Recipes are in `tools/make_sounds.py` (pure standard-library Python, 8-bit style, built from tones and noise). It writes a temporary WAV and encodes it with `flac`, which is installed in the Docker image.
 - Add or tweak a recipe in `SOUNDS`, then run `make sounds`. Background sounds (e.g. snores) go in `QUIET` so they peak lower than the rest.
 - Variants that take turns are named `name_01`, `name_02`, ….
 
 ## Real recordings (when synthesis is not convincing)
-- Only use recordings supplied or approved by the product owner; record where each one came from in `CLAUDE.md` and ask about its license before publishing.
+- Only use recordings supplied or approved by the product owner; record where each file came from (and its license) in `assets/SOURCES.md`, and ask about the license before publishing.
 - Copy the source into the scratchpad, never into the repo. Do not commit the original recording, only the cuts.
-- With `ffmpeg` (on the host): find the pauses with `silencedetect` (e.g. `noise=-35dB:d=0.3`), cut each sound with ~30 ms before and ~80 ms after, add short fades (5 ms in, 80 ms out), cap overly long cuts, then **measure the peak after the fades** and normalize to -1 dB. Encode straight to FLAC (`-c:a flac -sample_fmt s16`); never re-encode a lossy source to another lossy format.
+- With `ffmpeg` (installed on the host; only for these one-off cuts, never needed to build): find the pauses with `silencedetect` (e.g. `noise=-35dB:d=0.3`), cut each sound with ~30 ms before and ~80 ms after, add short fades (5 ms in, 80 ms out), cap overly long cuts, then **measure the peak after the fades** and normalize to -1 dB. Encode straight to FLAC (`-c:a flac -sample_fmt s16`); never re-encode a lossy source to another lossy format.
 - Keep about ten distinct variants; skip cuts that contain several sounds or are only tails.
 
 ## Wiring

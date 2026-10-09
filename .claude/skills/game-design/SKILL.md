@@ -5,7 +5,7 @@ description: Designs the core loop and interactions for a relaxed virtual pet wi
 
 # Game Design
 
-Read `CLAUDE.md` for product decisions.
+Read `CLAUDE.md` for product decisions. Tuning values (decay rates, routine times, thresholds, rewards, prices, season dates) live in the code: `lib/game/rules.dart`, `lib/game/routine.dart`, and `lib/game/catalog.dart`; change and test them there.
 
 When working:
 1. Define the session goal and expected reward.

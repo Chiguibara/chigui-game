@@ -1,47 +1,38 @@
 # Claude Code Project Instructions
 
-This file is the project's source of truth for working principles and confirmed decisions. The MVP scope is not fully documented yet; anything not listed under "Confirmed decisions" is a hypothesis or an open question until the user confirms it.
+This file holds the project's working principles and confirmed decisions; anything not listed here is a hypothesis or an open question until the user confirms it. How-to details live in the skills under `.claude/skills/`, and tuning values live in the code.
 
 ## Confirmed decisions
-- Engine: Flutter + Dart. Flame is not a default dependency; add it only for a minigame that needs a game loop, and only inside that minigame.
+- Engine: Flutter + Dart, with everything (Chigüi, accessories, sprites) drawn in code; no game engine. Flame only if a future minigame truly needs a game loop, and only inside it.
 - Platforms: children play on the web first, embedded in https://chiguibara.es/juego/ (mostly from PCs). A Windows build may follow; Android comes after. iOS is deferred (no macOS available). Only the `web` platform exists until the others are added.
-- Tooling runs in Docker through the `Makefile`. Do not require Flutter, SDKs, or other toolchains installed on the host.
-- Windows builds cannot be produced from Linux Docker; they will come from a Windows CI runner (e.g. GitHub Actions) when Windows is added.
-- Responsive layout with one breakpoint: narrow or portrait screens use the phone layout (single column, what Android will use); wide landscape screens (PCs) use a wide layout. Every screen must work and be tested in both. Touch-sized targets (≥48 dp) everywhere; nothing may depend on hover, right-click, or keyboard shortcuts.
-- Android application ID: `es.chiguibara.chigui_game` (pass `--org es.chiguibara` when adding the platform).
-- The Android app must work fully offline: everything bundled, and the release build does not request the INTERNET permission (Flutter only adds it to debug/profile builds). The web version only needs a connection to load; it does not need to open offline.
-- Pet needs: hunger, affection, and fun. They decay gently while away, never to zero, and never block actions or harm Chigüi on their own.
-- Daily routine (decided by the product owner to teach responsibility; tuning is provisional and lives in `lib/game/routine.dart` and `lib/game/rules.dart`):
-  - Only outside school hours, in local time: weekdays 17:00–21:00, weekends 10:00–21:00; never at night.
-  - Mealtimes: feeding inside the window counts as on time. Potty urges at random times: taking Chigüi to the toilet in time avoids an accident (a mess that smells until cleaned).
-  - Bedtime (21:00, or 21:30 before a non-school day): sending Chigüi to bed raises fun; otherwise Chigüi goes alone, grumpy, without the bonus.
-  - 3 accidents in 24 h or 2 missed meals in a row make Chigüi sick. The vet is always free, cute (no blood), and cures instantly. Being sick blocks nothing and is never permanent.
-  - Time away counts, but with limits: at most 1 accident and 1 missed meal per absence, and the routine pauses after 24 h without playing.
-- Coins are earned by playing (minigame, walks) and spent in the shop on accessories (one per slot, worn on Chigüi) and collectible stickers. No real-money purchases. Catalog and prices live in `lib/game/catalog.dart`.
-- Seasonal items can only be bought in their season (Spooktober 1 Oct–1 Nov, Christmas 1 Dec–6 Jan, spring 20 Mar–20 Jun, summer 21 Jun–22 Sep) but can be worn any time, and buying one gives a one-off fun boost. Seasons recur yearly: the shop says when an item comes back, never uses countdowns or "last chance" copy. Out-of-season and not-enough-coins messages are half geeky, half funny.
-- Walks turn daily steps into walks that raise fun and earn coins (capped per day). Only rewards, never penalties for not walking, and no weight or body changes. Step sources: on the web, a walk scene counts real steps from the phone's motion sensor while open, or, without a sensor (PCs), steps from tapping the feet; on Android, the device pedometer (not built yet; check Play policies for children's activity data and parental consent first).
-- All game audio is FLAC. Sound effects are synthesized by `tools/make_sounds.py` (`make sounds`), 8-bit style, and encoded with `flac` in the container. Exception: the eating sound cycles through ten real bites (`assets/sounds/bite_*.flac`), cut from a recording supplied by the product owner (`mordisco_multiples.mp3`). Players can mute them; the choice is remembered on the device.
-- Persistence goes through `GameRepository` (domain types only). The current implementation is JSON in `shared_preferences`; switching to SQLite with drift must only require a new implementation. An event log (meals, accidents, vet visits, bedtime…) keeps the last 90 days.
-- Offline and local saves only, using storage that works on web, Windows, and Android.
-- Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art without approval.
+- Tooling runs in Docker through the `Makefile`. Do not require Flutter, SDKs, or other toolchains installed on the host. Windows builds will come from a Windows CI runner.
+- Responsive layout with one breakpoint: narrow or portrait screens use the phone layout (what Android will use); wide landscape screens (PCs) use a wide layout. Every screen must work in both. Touch-sized targets (≥48 dp); nothing may depend on hover, right-click, or keyboard shortcuts.
+- Android: application ID `es.chiguibara.chigui_game`; the app must work fully offline and its release build must not request the INTERNET permission. The web version only needs a connection to load.
+- Pet needs (hunger, affection, fun) decay gently, never to zero, and never block actions or harm Chigüi on their own.
+- Daily routine (mealtimes, potty, bedtime, sickness and a free, cute vet) teaches responsibility, but only outside school hours and never at night. Consequences stay mild and curable, nothing is permanent, and time away counts only up to a cap, pausing after a day without playing. Times and thresholds live in `lib/game/routine.dart` and `lib/game/rules.dart`.
+- Coins come from playing (minigame, walks) and buy accessories and stickers in the shop; no real-money purchases. Seasonal items return every year and are never sold with urgency. Catalog, prices, and season dates live in `lib/game/catalog.dart`.
+- Walks turn real steps (or tapped feet on PCs) into fun and coins, capped per day. Only rewards: no penalties for not walking and no weight or body changes.
+- All game audio is FLAC; players can mute it (see the `sound-effects` skill).
+- Persistence goes through `GameRepository` (domain types only); today it is JSON in `shared_preferences`, and moving to SQLite with drift must only need a new implementation. Saves are local only. An event log keeps the last 90 days.
+- Analytics: only page-level analytics on the website hosting the game (behind its consent banner), to know whether children play. The game itself sends no tracking or personal data. In Spain, consent for under-14s must come from a parent; review the banner with whoever handles legal.
+- Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art or audio without approval.
 
 ## Open questions
-- Rest of the MVP scope beyond what is built (needs, routine, minigame, walks logic, shop).
-- Needs display (provisional, validate in playtests): mainly Chigüi's mood (thought bubble and status line) with small secondary meters. Tuning values live in `lib/game/rules.dart`.
-- When the Windows build is needed, and how it reaches the children (zip, installer).
-- Who produces the art and with which tool (defines asset formats).
+- Rest of the MVP scope beyond what is built.
+- Needs display (provisional, validate in playtests): mainly Chigüi's mood with small secondary meters.
+- When the Windows build is needed, and how it reaches the children.
+- Who produces the final art and with which tool.
 - Target player age (affects store policies for children before the Android release).
 
 ## Working principles
 - Inspect the repository and its configuration before proposing changes.
 - Keep scope small and prioritize a playable prototype.
-- Analytics: only page-level analytics on the website hosting the game (Google Analytics behind the site's consent banner), to know whether children play. The game itself sends no tracking or personal data. Note: in Spain, consent for under-14s must come from a parent; review the banner with whoever handles legal.
 - Do not add a backend, accounts, invasive analytics, payments, or commerce integrations without a demonstrated need.
-- Avoid premature abstractions and unnecessary dependencies.
+- Avoid premature abstractions and unnecessary dependencies; use the newest versions that resolve with the pinned Flutter SDK.
 - Respect Chigüibara's visual identity: handmade-feeling kawaii, geeky, and playful; not generic or excessively childish.
-- Consequences for neglect stay mild, curable, and capped for time away (see Daily routine); no guilt-tripping copy. Never pressure players to spend.
+- Consequences for neglect stay mild, curable, and capped; no guilt-tripping copy. Never pressure players to spend.
 - Distinguish confirmed decisions, hypotheses, and open questions.
-- Write code and technical documentation in English unless the existing repository has a clear convention otherwise. The game must be designed for localization from the start, with English as the initial language and Spanish as a supported translation. Do not hard-code player-facing strings; use Flutter's `gen-l10n` with ARB files.
+- Code and technical documentation in English. Player-facing text is always localized (English first, Spanish supported); see the `localization-copy` skill.
 
 ## Workflow
 1. Inspect the project first.
@@ -51,7 +42,5 @@ This file is the project's source of truth for working principles and confirmed 
 5. Use only the agents and skills relevant to the task.
 
 ## Agents and skills
-- Game design: `.claude/agents/game-designer.md`
-- Technical architecture: `.claude/agents/game-architect.md`
-- Review: `.claude/agents/reviewer.md`
-- Skills: `.claude/skills/` (for audio work, use `sound-effects`)
+- Agents: game design `.claude/agents/game-designer.md`, technical architecture `.claude/agents/game-architect.md`, review `.claude/agents/reviewer.md`.
+- Skills in `.claude/skills/`: `game-design`, `progression-monetization`, `mobile-architecture` (including adding Android), `2d-art-pipeline` (code-drawn art), `sound-effects`, `localization-copy`, and `mvp-qa` (including visual checks).
