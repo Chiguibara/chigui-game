@@ -178,7 +178,8 @@ class _ShopScreenState extends State<ShopScreen> {
             onReactionEnd: () => setState(() => _reaction = null),
           ),
           Container(
-            height: 2 * 1.3 * 16 * MediaQuery.textScalerOf(context).scale(1),
+            // Three lines: the seasonal jokes are long.
+            height: 3 * 1.3 * 16 * MediaQuery.textScalerOf(context).scale(1),
             alignment: Alignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Semantics(
@@ -186,7 +187,7 @@ class _ShopScreenState extends State<ShopScreen> {
               child: Text(
                 _message ?? l10n.shopHint,
                 textAlign: TextAlign.center,
-                maxLines: 2,
+                maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: textTheme.bodyLarge?.copyWith(
                   color: Palette.ink,
