@@ -6,7 +6,7 @@ RUN := docker compose run --rm flutter
 FLUTTER := $(RUN) flutter
 
 .DEFAULT_GOAL := help
-.PHONY: help image shell deps l10n web build-web test analyze format clean
+.PHONY: help image shell deps l10n web build-web build-site test analyze format clean
 
 help: ## Show available targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -29,6 +29,11 @@ web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r 
 
 build-web: ## Build the release web version into build/web
 	$(FLUTTER) build web --release
+
+build-site: ## Build for chiguibara.es/juego/app/ (no Google CDN) into build/site
+	$(FLUTTER) build web --release --base-href /juego/app/ --no-web-resources-cdn
+	rm -rf build/site && mkdir -p build/site/juego && cp -r build/web build/site/juego/app
+	find build/site -name '*.symbols' -delete
 
 test: l10n ## Run all tests
 	$(FLUTTER) test

@@ -1,12 +1,12 @@
 {
-    "name": "chigui_game",
-    "short_name": "chigui_game",
+    "name": "Chigüi",
+    "short_name": "Chigüi",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
+    "background_color": "#B1F1D7",
+    "theme_color": "#B1F1D7",
     "description": "A cozy virtual-pet game starring Chigüi.",
-    "orientation": "portrait-primary",
+    "orientation": "any",
     "prefer_related_applications": false,
     "icons": [
         {
