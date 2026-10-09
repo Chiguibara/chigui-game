@@ -90,6 +90,7 @@
   "walkButton": "Pasear",
   "walkTitle": "De paseo con Chigüi",
   "walkIntro": "¡Camina con el móvil en la mano o pulsa los pies uno detrás de otro!",
+  "walkIntroTapping": "¡Pulsa los pies uno detrás de otro para pasear con Chigüi!",
   "startWalkButton": "¡Vamos!",
   "sensorWalkHint": "¡Paseo de verdad! Lleva el móvil en la mano.",
   "tapFeetHint": "Izquierdo, derecho, izquierdo, derecho…",

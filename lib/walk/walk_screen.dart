@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../game/pet_controller.dart';
@@ -23,12 +24,22 @@ enum _Foot { left, right }
 /// sensor; without one (PCs), the player taps the feet in turn. Steps feed
 /// the same daily walks as the Android pedometer will.
 class WalkScreen extends StatefulWidget {
-  const WalkScreen({super.key, required this.controller, this.motion});
+  const WalkScreen({
+    super.key,
+    required this.controller,
+    this.motion,
+    this.onPhone,
+  });
 
   final PetController controller;
 
   /// For tests; defaults to the platform's sensor, if any.
   final MotionSource? motion;
+
+  /// Whether this is a phone or tablet, which may have a motion sensor.
+  /// Defaults to the operating system (also detected in browsers): PCs go
+  /// straight to tapping the feet.
+  final bool? onPhone;
 
   /// How long to wait for motion samples before assuming there is no sensor.
   static const sensorTimeout = Duration(milliseconds: 1500);
@@ -39,6 +50,10 @@ class WalkScreen extends StatefulWidget {
 
 class _WalkScreenState extends State<WalkScreen> {
   late final MotionSource? _motion = widget.motion ?? createMotionSource();
+  late final bool _onPhone =
+      widget.onPhone ??
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
   final _detector = StepDetector();
   Timer? _sensorCheck;
   _Mode _mode = _Mode.intro;
@@ -64,7 +79,7 @@ class _WalkScreenState extends State<WalkScreen> {
 
   Future<void> _start() async {
     final motion = _motion;
-    if (motion == null || !await motion.start(_onSample)) {
+    if (!_onPhone || motion == null || !await motion.start(_onSample)) {
       _useTapping();
       return;
     }
@@ -279,7 +294,7 @@ class _WalkScreenState extends State<WalkScreen> {
 
   Widget _controls(AppLocalizations l10n, TextTheme textTheme) {
     final hint = switch (_mode) {
-      _Mode.intro => l10n.walkIntro,
+      _Mode.intro => _onPhone ? l10n.walkIntro : l10n.walkIntroTapping,
       _Mode.sensor => _message ?? l10n.sensorWalkHint,
       _Mode.tapping => _message ?? l10n.tapFeetHint,
     };

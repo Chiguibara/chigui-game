@@ -332,6 +332,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Walk with your phone in your hand, or tap the feet one after the other!';
 
   @override
+  String get walkIntroTapping =>
+      'Tap the feet one after the other to walk with Chigüi!';
+
+  @override
   String get startWalkButton => 'Let\'s go!';
 
   @override

@@ -398,6 +398,10 @@
   "@walkIntro": {
     "description": "Explains the walk scene before starting."
   },
+  "walkIntroTapping": "Tap the feet one after the other to walk with Chigüi!",
+  "@walkIntroTapping": {
+    "description": "Explains the walk scene on PCs, where there is no motion sensor."
+  },
   "startWalkButton": "Let's go!",
   "@startWalkButton": {
     "description": "Starts the walk."

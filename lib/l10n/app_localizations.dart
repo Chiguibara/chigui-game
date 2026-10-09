@@ -638,6 +638,12 @@ abstract class AppLocalizations {
   /// **'Walk with your phone in your hand, or tap the feet one after the other!'**
   String get walkIntro;
 
+  /// Explains the walk scene on PCs, where there is no motion sensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the feet one after the other to walk with Chigüi!'**
+  String get walkIntroTapping;
+
   /// Starts the walk.
   ///
   /// In en, this message translates to:

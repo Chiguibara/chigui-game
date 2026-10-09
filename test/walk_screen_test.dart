@@ -78,6 +78,37 @@ void main() {
     await tester.pump(const Duration(seconds: 2));
   });
 
+  testWidgets('on a PC: only feet, no talk of walking with a phone', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final controller = await PetController.load(
+      await JsonGameRepository.open(),
+      clock: () => now,
+    );
+    final motion = FakeMotion();
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: WalkScreen(
+          controller: controller,
+          motion: motion,
+          onPhone: false,
+        ),
+      ),
+    );
+    expect(
+      find.text('Tap the feet one after the other to walk with Chigüi!'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text("Let's go!"));
+    await tester.pump();
+    expect(find.bySemanticsLabel('left foot'), findsOneWidget);
+    expect(motion.listener, isNull, reason: 'the sensor is not even tried');
+  });
+
   testWidgets('with a sensor, real steps are counted', (tester) async {
     final motion = FakeMotion();
     final controller = await open(tester, motion: motion);
