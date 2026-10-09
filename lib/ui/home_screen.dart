@@ -67,13 +67,31 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _pet.removeListener(_soundRoutine);
+    _clearReaction?.cancel();
     _ticker.cancel();
     _lifecycle.dispose();
     super.dispose();
   }
 
+  /// The chomp is quick (it matches the minigame's pace), so its "Yum!"
+  /// stays a moment longer for children to read.
+  static const _chompMessageExtra = Duration(milliseconds: 900);
+  Timer? _clearReaction;
+
+  void _onReactionEnd() {
+    _clearReaction?.cancel();
+    if (_reaction == Reaction.chomp) {
+      _clearReaction = Timer(_chompMessageExtra, () {
+        if (mounted) setState(() => _reaction = null);
+      });
+    } else {
+      setState(() => _reaction = null);
+    }
+  }
+
   void _react(Reaction? reaction) {
     if (reaction == null) return;
+    _clearReaction?.cancel();
     setState(() {
       _reaction = reaction;
       _reactionId++;
@@ -89,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onFeed() {
     final ate = _pet.feed();
     sfx.play(ate ? Sfx.chomp : Sfx.refuse);
-    _react(ate ? Reaction.eat : Reaction.refuse);
+    _react(ate ? Reaction.chomp : Reaction.refuse);
   }
 
   void _onToilet() {
@@ -163,7 +181,6 @@ class _HomeScreenState extends State<HomeScreen> {
         < happyLevel => l10n.pettedMidStatus,
         _ => l10n.lovedStatus,
       },
-      Reaction.eat => l10n.ateStatus,
       Reaction.refuse => l10n.fullStatus,
       Reaction.relief => l10n.reliefStatus,
       Reaction.cured => l10n.curedStatus,
@@ -245,7 +262,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onCleanMess: _onClean,
       reaction: _reaction,
       reactionId: _reactionId,
-      onReactionEnd: () => setState(() => _reaction = null),
+      onReactionEnd: _onReactionEnd,
     );
   }
 

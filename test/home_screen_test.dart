@@ -115,7 +115,14 @@ void main() {
     await tester.pump();
     expect(find.text('Yum! Thank you!'), findsOneWidget);
     expect(controller.state.level(Need.food), closeTo(0.6, 1e-9));
-    await finishReaction(tester);
+    // The same big chomp as in the minigame, with its "Chomp!".
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.text('Chomp!'), findsOneWidget);
+    // The thank-you stays a moment after the quick chomp.
+    await tester.pump(const Duration(milliseconds: 600));
+    expect(find.text('Yum! Thank you!'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+    expect(find.text('Yum! Thank you!'), findsNothing);
   });
 
   testWidgets('a full Chigüi politely refuses a snack', (tester) async {

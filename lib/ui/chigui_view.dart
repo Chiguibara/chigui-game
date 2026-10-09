@@ -11,7 +11,7 @@ import 'palette.dart';
 import 'poop.dart';
 import 'sprites.dart';
 
-enum Reaction { love, eat, refuse, relief, cured, cleaned, chomp, walk }
+enum Reaction { love, refuse, relief, cured, cleaned, chomp, walk }
 
 enum Face { normal, happy, asleep, sick, grumpy }
 
@@ -165,8 +165,6 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                 ),
               if (reaction == Reaction.love)
                 _floating(size, t, Icons.favorite, Palette.blush),
-              if (reaction == Reaction.eat)
-                _floating(size, t, Icons.eco, Palette.leaf),
               if (reaction == Reaction.relief || reaction == Reaction.cleaned)
                 _floating(size, t, Icons.auto_awesome, Palette.sparkle),
               if (reaction == Reaction.cured) ..._vet(size, t),
@@ -192,10 +190,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
   }
 
   Face _face(Reaction? reaction) => switch (reaction) {
-    Reaction.love ||
-    Reaction.eat ||
-    Reaction.relief ||
-    Reaction.cleaned => Face.happy,
+    Reaction.love || Reaction.relief || Reaction.cleaned => Face.happy,
     Reaction.cured => _react.value > 0.5 ? Face.happy : Face.sick,
     // Wide-eyed while opening wide, blissful while chewing.
     Reaction.chomp => _react.value < 0.3 ? Face.normal : Face.happy,
@@ -214,10 +209,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     var scaleX = 1 - (asleep ? 0.015 : 0.01) * breath;
     var scaleY = 1 + (asleep ? 0.03 : 0.02) * breath;
     final bounceFrom = switch (reaction) {
-      Reaction.love ||
-      Reaction.eat ||
-      Reaction.relief ||
-      Reaction.cleaned => 0.0,
+      Reaction.love || Reaction.relief || Reaction.cleaned => 0.0,
       Reaction.cured => 0.5,
       _ => null,
     };
