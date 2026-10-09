@@ -18,8 +18,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tapHint => 'Tap Chigüi to say hi';
 
   @override
-  String get happyStatus => 'Chigüi is happy!';
+  String get petAction => 'pet Chigüi';
 
   @override
-  String get petAction => 'pet Chigüi';
+  String get lovedStatus => 'Chigüi is happy!';
+
+  @override
+  String get ateStatus => 'Yum! Thank you!';
+
+  @override
+  String get fullStatus => 'Chigüi has had enough for now';
+
+  @override
+  String get wantsFood => 'Chigüi could go for a snack';
+
+  @override
+  String get wantsAffection => 'Chigüi would love some cuddles';
+
+  @override
+  String get wantsFun => 'Chigüi feels like playing';
+
+  @override
+  String get feedButton => 'Feed';
+
+  @override
+  String get needFood => 'Food';
+
+  @override
+  String get needAffection => 'Affection';
+
+  @override
+  String get needFun => 'Fun';
+
+  @override
+  String needMeterLabel(String need, int percent) {
+    return '$need: $percent%';
+  }
 }

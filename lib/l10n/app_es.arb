@@ -3,6 +3,16 @@
   "appTitle": "Chigüi",
   "chiguiName": "Chigüi",
   "tapHint": "Toca a Chigüi para saludar",
-  "happyStatus": "¡Chigüi está feliz!",
-  "petAction": "acariciar a Chigüi"
+  "petAction": "acariciar a Chigüi",
+  "lovedStatus": "¡Chigüi está feliz!",
+  "ateStatus": "¡Ñam! ¡Gracias!",
+  "fullStatus": "Chigüi ya ha comido bastante por ahora",
+  "wantsFood": "A Chigüi le apetece picar algo",
+  "wantsAffection": "A Chigüi le apetecen unos mimos",
+  "wantsFun": "Chigüi tiene ganas de jugar",
+  "feedButton": "Dar de comer",
+  "needFood": "Comida",
+  "needAffection": "Cariño",
+  "needFun": "Diversión",
+  "needMeterLabel": "{need}: {percent} %"
 }

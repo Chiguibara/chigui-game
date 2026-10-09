@@ -12,12 +12,60 @@
   "@tapHint": {
     "description": "Idle prompt under the pet inviting the player to tap it."
   },
-  "happyStatus": "Chigüi is happy!",
-  "@happyStatus": {
-    "description": "Shown briefly after the player pets Chigüi."
-  },
   "petAction": "pet Chigüi",
   "@petAction": {
     "description": "Screen reader hint for the tap action on the pet."
+  },
+  "lovedStatus": "Chigüi is happy!",
+  "@lovedStatus": {
+    "description": "Shown briefly after the player pets Chigüi."
+  },
+  "ateStatus": "Yum! Thank you!",
+  "@ateStatus": {
+    "description": "Shown briefly after Chigüi eats."
+  },
+  "fullStatus": "Chigüi has had enough for now",
+  "@fullStatus": {
+    "description": "Shown when the player feeds Chigüi while full. Friendly, never scolding."
+  },
+  "wantsFood": "Chigüi could go for a snack",
+  "@wantsFood": {
+    "description": "Gentle hint when food is low. Must not sound urgent or guilt-inducing."
+  },
+  "wantsAffection": "Chigüi would love some cuddles",
+  "@wantsAffection": {
+    "description": "Gentle hint when affection is low."
+  },
+  "wantsFun": "Chigüi feels like playing",
+  "@wantsFun": {
+    "description": "Gentle hint when fun is low."
+  },
+  "feedButton": "Feed",
+  "@feedButton": {
+    "description": "Button that gives Chigüi a snack."
+  },
+  "needFood": "Food",
+  "@needFood": {
+    "description": "Name of the food need meter."
+  },
+  "needAffection": "Affection",
+  "@needAffection": {
+    "description": "Name of the affection need meter."
+  },
+  "needFun": "Fun",
+  "@needFun": {
+    "description": "Name of the fun need meter."
+  },
+  "needMeterLabel": "{need}: {percent}%",
+  "@needMeterLabel": {
+    "description": "Screen reader label for a need meter.",
+    "placeholders": {
+      "need": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
+    }
   }
 }

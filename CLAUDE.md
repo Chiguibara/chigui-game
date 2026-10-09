@@ -15,7 +15,7 @@ This file is the project's source of truth for working principles and confirmed 
 
 ## Open questions
 - Rest of the MVP scope (working hypothesis: petting, feeding, one minigame with coins, earnable cosmetics, local save).
-- Whether needs are shown as meters or mainly through Chigüi's mood.
+- Needs display (provisional, validate in playtests): mainly Chigüi's mood (thought bubble and status line) with small secondary meters. Tuning values live in `lib/game/rules.dart`.
 - When the Windows build is needed, and how it reaches the children (zip, installer).
 - Who produces the art and with which tool (defines asset formats).
 - Target player age (affects store policies for children before the Android release).

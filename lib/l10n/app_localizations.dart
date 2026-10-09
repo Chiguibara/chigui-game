@@ -116,17 +116,77 @@ abstract class AppLocalizations {
   /// **'Tap Chigüi to say hi'**
   String get tapHint;
 
-  /// Shown briefly after the player pets Chigüi.
-  ///
-  /// In en, this message translates to:
-  /// **'Chigüi is happy!'**
-  String get happyStatus;
-
   /// Screen reader hint for the tap action on the pet.
   ///
   /// In en, this message translates to:
   /// **'pet Chigüi'**
   String get petAction;
+
+  /// Shown briefly after the player pets Chigüi.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi is happy!'**
+  String get lovedStatus;
+
+  /// Shown briefly after Chigüi eats.
+  ///
+  /// In en, this message translates to:
+  /// **'Yum! Thank you!'**
+  String get ateStatus;
+
+  /// Shown when the player feeds Chigüi while full. Friendly, never scolding.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi has had enough for now'**
+  String get fullStatus;
+
+  /// Gentle hint when food is low. Must not sound urgent or guilt-inducing.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi could go for a snack'**
+  String get wantsFood;
+
+  /// Gentle hint when affection is low.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi would love some cuddles'**
+  String get wantsAffection;
+
+  /// Gentle hint when fun is low.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi feels like playing'**
+  String get wantsFun;
+
+  /// Button that gives Chigüi a snack.
+  ///
+  /// In en, this message translates to:
+  /// **'Feed'**
+  String get feedButton;
+
+  /// Name of the food need meter.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get needFood;
+
+  /// Name of the affection need meter.
+  ///
+  /// In en, this message translates to:
+  /// **'Affection'**
+  String get needAffection;
+
+  /// Name of the fun need meter.
+  ///
+  /// In en, this message translates to:
+  /// **'Fun'**
+  String get needFun;
+
+  /// Screen reader label for a need meter.
+  ///
+  /// In en, this message translates to:
+  /// **'{need}: {percent}%'**
+  String needMeterLabel(String need, int percent);
 }
 
 class _AppLocalizationsDelegate

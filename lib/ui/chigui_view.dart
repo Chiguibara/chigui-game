@@ -3,17 +3,32 @@ import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
 
+import '../game/pet_state.dart';
 import '../l10n/app_localizations.dart';
 import 'palette.dart';
 
-/// Placeholder Chigüi, a sitting capybara drawn in code, until the
-/// real artwork exists. It breathes and blinks while idle, and bounces with a
-/// happy face and a heart when tapped.
+enum Reaction { love, eat, refuse }
+
+/// Placeholder Chigüi, a sitting capybara drawn in code, until the real
+/// artwork exists. It breathes and blinks while idle, shows a thought bubble
+/// with its [wish], and plays [reaction] each time [reactionId] changes.
 class ChiguiView extends StatefulWidget {
-  const ChiguiView({super.key, required this.size, this.onHappyChanged});
+  const ChiguiView({
+    super.key,
+    required this.size,
+    this.onTap,
+    this.wish,
+    this.reaction,
+    this.reactionId = 0,
+    this.onReactionEnd,
+  });
 
   final double size;
-  final ValueChanged<bool>? onHappyChanged;
+  final VoidCallback? onTap;
+  final Need? wish;
+  final Reaction? reaction;
+  final int reactionId;
+  final VoidCallback? onReactionEnd;
 
   @override
   State<ChiguiView> createState() => _ChiguiViewState();
@@ -43,21 +58,22 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
   }
 
   @override
+  void didUpdateWidget(ChiguiView old) {
+    super.didUpdateWidget(old);
+    if (widget.reactionId != old.reactionId && widget.reaction != null) {
+      _react.forward(from: 0);
+    }
+  }
+
+  @override
   void dispose() {
     _idle.dispose();
     _react.dispose();
     super.dispose();
   }
 
-  void _pet() {
-    if (!_react.isAnimating) widget.onHappyChanged?.call(true);
-    _react.forward(from: 0);
-  }
-
   void _onReactStatus(AnimationStatus status) {
-    if (status == AnimationStatus.completed) {
-      widget.onHappyChanged?.call(false);
-    }
+    if (status == AnimationStatus.completed) widget.onReactionEnd?.call();
   }
 
   @override
@@ -71,30 +87,41 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       onTapHint: l10n.petAction,
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: _pet,
+        onTap: widget.onTap,
         child: SizedBox.square(
           dimension: size,
           child: AnimatedBuilder(
             animation: Listenable.merge([_idle, _react]),
             builder: (context, _) {
-              final happy = _react.isAnimating;
-              final (scaleX, scaleY) = _scales();
+              final reaction = _react.isAnimating ? widget.reaction : null;
+              final (scaleX, scaleY) = _scales(reaction);
+              final wish = widget.wish;
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Positioned.fill(
                     child: Transform(
                       alignment: Alignment.bottomCenter,
-                      transform: Matrix4.diagonal3Values(scaleX, scaleY, 1),
+                      transform: Matrix4.translationValues(
+                        _shake(reaction),
+                        0,
+                        0,
+                      )..multiply(Matrix4.diagonal3Values(scaleX, scaleY, 1)),
                       child: CustomPaint(
                         painter: _ChiguiPainter(
                           blink: _isBlinking(),
-                          happy: happy,
+                          happy:
+                              reaction == Reaction.love ||
+                              reaction == Reaction.eat,
                         ),
                       ),
                     ),
                   ),
-                  if (happy) _heart(size),
+                  if (reaction == Reaction.love)
+                    _floating(size, Icons.favorite, Palette.blush),
+                  if (reaction == Reaction.eat)
+                    _floating(size, Icons.eco, Palette.leaf),
+                  if (reaction == null && wish != null) _bubble(size, wish),
                 ],
               );
             },
@@ -107,12 +134,12 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
   bool _isBlinking() =>
       !_reduceMotion && _idle.value > 0.9 && _idle.value < 0.93;
 
-  (double, double) _scales() {
+  (double, double) _scales(Reaction? reaction) {
     if (_reduceMotion) return (1, 1);
     final breath = math.sin(_idle.value * 4 * math.pi);
     var scaleX = 1 - 0.01 * breath;
     var scaleY = 1 + 0.02 * breath;
-    if (_react.isAnimating) {
+    if (reaction == Reaction.love || reaction == Reaction.eat) {
       // Squash, stretch, then settle during the first half of the reaction.
       final t = (_react.value / 0.5).clamp(0.0, 1.0);
       if (t < 0.25) {
@@ -132,14 +159,72 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     return (scaleX, scaleY);
   }
 
-  Widget _heart(double size) {
+  /// A gentle "no, thanks" side-to-side wobble.
+  double _shake(Reaction? reaction) {
+    if (_reduceMotion || reaction != Reaction.refuse) return 0;
+    final t = _react.value;
+    return math.sin(t * 6 * math.pi) * widget.size * 0.03 * (1 - t);
+  }
+
+  Widget _floating(double size, IconData icon, Color color) {
     final t = _reduceMotion ? 0.0 : _react.value;
     return Positioned(
       left: size * 0.66,
       top: size * (0.02 - 0.2 * t),
       child: Opacity(
         opacity: 1 - t,
-        child: Icon(Icons.favorite, color: Palette.blush, size: size * 0.16),
+        child: Icon(icon, color: color, size: size * 0.16),
+      ),
+    );
+  }
+
+  Widget _bubble(double size, Need wish) {
+    final icon = switch (wish) {
+      Need.food => Icons.eco,
+      Need.affection => Icons.favorite,
+      Need.fun => Icons.toys,
+    };
+    final color = switch (wish) {
+      Need.food => Palette.leaf,
+      Need.affection => Palette.blush,
+      Need.fun => Palette.furDark,
+    };
+    final dot = BoxDecoration(color: Palette.cloud, shape: BoxShape.circle);
+    return Positioned(
+      left: size * 0.04,
+      top: size * 0.02,
+      child: ExcludeSemantics(
+        child: SizedBox.square(
+          dimension: size * 0.34,
+          child: Stack(
+            children: [
+              Positioned(
+                right: size * 0.02,
+                bottom: 0,
+                child: Container(
+                  width: size * 0.04,
+                  height: size * 0.04,
+                  decoration: dot,
+                ),
+              ),
+              Positioned(
+                right: size * 0.06,
+                bottom: size * 0.05,
+                child: Container(
+                  width: size * 0.06,
+                  height: size * 0.06,
+                  decoration: dot,
+                ),
+              ),
+              Container(
+                width: size * 0.24,
+                height: size * 0.24,
+                decoration: dot,
+                child: Icon(icon, color: color, size: size * 0.13),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -289,12 +374,12 @@ class _ChiguiPainter extends CustomPainter {
       canvas.drawCircle(eye, w * 0.028, Paint()..color = Palette.ink);
     }
 
-    // Small smile under the muzzle.
+    // Small smile on the lower part of the muzzle.
     canvas.drawArc(
       Rect.fromCenter(
-        center: Offset(w * 0.76, h * 0.5),
-        width: w * 0.08,
-        height: h * 0.06,
+        center: Offset(w * 0.8, h * 0.475),
+        width: w * 0.07,
+        height: h * 0.05,
       ),
       0.2,
       math.pi - 0.4,
