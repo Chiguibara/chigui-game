@@ -35,6 +35,38 @@ jobs:
           path: build/web
           include-hidden-files: true
 
+  android:
+    runs-on: ubuntu-latest
+    container: ghcr.io/cirruslabs/flutter:3.44.0
+    steps:
+      - uses: actions/checkout@v5
+      # The NDK, extra SDK parts, and Gradle downloads are cached between runs.
+      - uses: actions/cache@v4
+        with:
+          path: |
+            /opt/android-sdk-linux/ndk
+            /opt/android-sdk-linux/cmake
+            /opt/android-sdk-linux/platforms/android-35
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: android-${{ hashFiles('android/**/*.kts', 'android/gradle/wrapper/*.properties', 'pubspec.lock') }}
+          restore-keys: android-
+      - run: yes | sdkmanager --install "ndk;28.2.13676358" "platforms;android-35" "cmake;3.22.1" > /dev/null
+      - run: flutter pub get
+      - run: flutter build apk --release
+      # Release builds must never ask for the internet (see CLAUDE.md).
+      - run: |
+          if $ANDROID_HOME/build-tools/36.0.0/aapt2 dump permissions build/app/outputs/flutter-apk/app-release.apk | grep -q android.permission.INTERNET; then
+            echo "::error::The release APK requests the INTERNET permission"; exit 1
+          fi
+      # A debug-signed test APK; in this public repo anyone can download it,
+      # so it is kept only for a week.
+      - uses: actions/upload-artifact@v5
+        with:
+          name: chigui-test-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 7
+
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main'
