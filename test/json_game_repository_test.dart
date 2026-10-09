@@ -36,6 +36,7 @@ void main() {
       sick: true,
       asleepUntil: now.add(const Duration(hours: 8)),
       grumpy: true,
+      coins: 12,
     );
     await repo.saveState(saved);
 

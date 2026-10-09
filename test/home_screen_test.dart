@@ -73,6 +73,29 @@ void main() {
     expect(find.text('Tap Chigüi to say hi'), findsOneWidget);
   });
 
+  testWidgets('petting with low affection invites more cuddles', (
+    tester,
+  ) async {
+    await start(
+      tester,
+      (s) => s.copyWith(needs: {...s.needs, Need.affection: 0.2}),
+    );
+    await tester.tap(chigui());
+    await tester.pump();
+    expect(
+      find.text('Chigüi liked that! More cuddles, please?'),
+      findsOneWidget,
+    );
+    await finishReaction(tester);
+
+    for (var i = 0; i < 3; i++) {
+      await tester.tap(chigui());
+      await tester.pump();
+    }
+    expect(find.text('That feels nice! A little more?'), findsOneWidget);
+    await finishReaction(tester);
+  });
+
   testWidgets('a hungry Chigüi says so, and feeding helps', (tester) async {
     final controller = await start(
       tester,
@@ -167,6 +190,44 @@ void main() {
     await tester.pump();
     expect(controller.state.grumpy, isFalse);
     await finishReaction(tester);
+  });
+
+  testWidgets('a minigame round raises fun and goes back home', (tester) async {
+    final controller = await start(
+      tester,
+      (s) => s.copyWith(needs: {...s.needs, Need.fun: 0.4}),
+    );
+
+    await tester.tap(find.text('Play'));
+    await tester.pumpAndSettle();
+    expect(find.text('Fruit catch'), findsOneWidget);
+
+    await tester.tap(find.text('Start'));
+    for (var i = 0; i < 31 * 10; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.text('Great game!'), findsOneWidget);
+    expect(controller.state.level(Need.fun), closeTo(0.7, 1e-9));
+
+    await tester.tap(find.text('Back home'));
+    // Chigüi keeps breathing, so the screen never fully settles.
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Feed'), findsOneWidget);
+    expect(find.bySemanticsLabel(RegExp(r'^\d+ coins?$')), findsOneWidget);
+  });
+
+  testWidgets('a sleeping Chigüi cannot play', (tester) async {
+    await start(
+      tester,
+      (s) => s.copyWith(asleepUntil: DateTime(2026, 10, 12, 13)),
+    );
+    final play = tester.widget<ButtonStyleButton>(
+      find.ancestor(
+        of: find.text('Play'),
+        matching: find.bySubtype<ButtonStyleButton>(),
+      ),
+    );
+    expect(play.onPressed, isNull);
   });
 
   testWidgets('the dev panel skips time', (tester) async {

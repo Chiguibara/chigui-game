@@ -17,6 +17,7 @@ class PetState {
     this.sick = false,
     this.asleepUntil,
     this.grumpy = false,
+    this.coins = 0,
   });
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
@@ -55,6 +56,8 @@ class PetState {
   /// Went to bed alone; a cuddle makes up for it.
   final bool grumpy;
 
+  final int coins;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool asleepAt(DateTime time) =>
@@ -73,6 +76,7 @@ class PetState {
     bool? sick,
     Object? asleepUntil = _keep,
     bool? grumpy,
+    int? coins,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -91,5 +95,6 @@ class PetState {
         ? this.asleepUntil
         : asleepUntil as DateTime?,
     grumpy: grumpy ?? this.grumpy,
+    coins: coins ?? this.coins,
   );
 }

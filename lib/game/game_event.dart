@@ -10,6 +10,7 @@ enum EventType {
   vetVisit,
   sentToBed,
   wentToBedAlone,
+  played,
 }
 
 class GameEvent {

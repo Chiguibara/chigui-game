@@ -61,6 +61,8 @@ class PetController extends ChangeNotifier {
   bool cleanUp() => _apply(rules.cleanUp(_state, now));
   bool visitVet() => _apply(rules.visitVet(_state, now));
   bool sendToBed() => _apply(rules.sendToBed(_state, now));
+  bool finishRound(int caught) =>
+      _apply(rules.finishRound(_state, now, caught: caught));
 
   /// Catches up with the clock: call periodically and when the app resumes.
   void refresh() => _apply(rules.advance(_state, now));

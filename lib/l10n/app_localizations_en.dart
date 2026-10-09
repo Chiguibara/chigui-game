@@ -24,6 +24,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lovedStatus => 'Chigüi is happy!';
 
   @override
+  String get pettedLowStatus => 'Chigüi liked that! More cuddles, please?';
+
+  @override
+  String get pettedMidStatus => 'That feels nice! A little more?';
+
+  @override
   String get ateStatus => 'Yum! Thank you!';
 
   @override
@@ -97,4 +103,65 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cleanedStatus => 'All clean!';
+
+  @override
+  String get playButton => 'Play';
+
+  @override
+  String coinsLabel(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count coins',
+      one: '1 coin',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get minigameTitle => 'Fruit catch';
+
+  @override
+  String get minigameHint => 'Drag to move Chigüi and catch the fruit!';
+
+  @override
+  String get startButton => 'Start';
+
+  @override
+  String secondsLeft(int seconds) {
+    return '$seconds s';
+  }
+
+  @override
+  String fruitsCaught(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count fruits caught',
+      one: '1 fruit caught',
+      zero: 'No fruit this time',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String coinsEarned(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '+$count coins',
+      one: '+1 coin',
+      zero: 'Chigüi had fun anyway!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get roundDone => 'Great game!';
+
+  @override
+  String get playAgainButton => 'Play again';
+
+  @override
+  String get backHomeButton => 'Back home';
 }

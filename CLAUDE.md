@@ -16,12 +16,14 @@ This file is the project's source of truth for working principles and confirmed 
   - Bedtime (21:00, or 21:30 before a non-school day): sending Chigüi to bed raises fun; otherwise Chigüi goes alone, grumpy, without the bonus.
   - 3 accidents in 24 h or 2 missed meals in a row make Chigüi sick. The vet is always free, cute (no blood), and cures instantly. Being sick blocks nothing and is never permanent.
   - Time away counts, but with limits: at most 1 accident and 1 missed meal per absence, and the routine pauses after 24 h without playing.
+- Coins are earned by playing (minigame now, walks later) and spent on stickers and accessories (shop not built yet). No real-money purchases.
+- Walks (Android only, not built yet): the device pedometer turns daily steps into walks that raise fun and earn coins. Only rewards, never penalties for not walking, and no weight or body changes. Before building it, check Play policies for children's activity data and parental consent.
 - Persistence goes through `GameRepository` (domain types only). The current implementation is JSON in `shared_preferences`; switching to SQLite with drift must only require a new implementation. An event log (meals, accidents, vet visits, bedtime…) keeps the last 90 days.
 - Offline and local saves only, using storage that works on web, Windows, and Android.
 - Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art without approval.
 
 ## Open questions
-- Rest of the MVP scope (working hypothesis: petting, feeding, one minigame with coins, earnable cosmetics, local save).
+- Rest of the MVP scope (working hypothesis: a fruit-catching minigame that raises fun and earns coins, and a shop for stickers and accessories).
 - Needs display (provisional, validate in playtests): mainly Chigüi's mood (thought bubble and status line) with small secondary meters. Tuning values live in `lib/game/rules.dart`.
 - When the Windows build is needed, and how it reaches the children (zip, installer).
 - Who produces the art and with which tool (defines asset formats).

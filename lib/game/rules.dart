@@ -15,12 +15,19 @@ const decayPerHour = {Need.food: 0.08, Need.affection: 0.06, Need.fun: 0.07};
 const petGain = 0.1;
 const feedGain = 0.3;
 const bedFunGain = 0.3;
+const playFunGain = 0.3;
+
+/// Coins per fruit caught in the minigame.
+const coinsPerFruit = 1;
 
 /// Snacks at or above this level are politely refused (meals never are).
 const fullLevel = 0.95;
 
 /// Below this level Chigüi shows what they would like.
 const wishLevel = 0.5;
+
+/// At or above this level a cuddle makes Chigüi fully happy.
+const happyLevel = 0.8;
 
 const accidentsToGetSick = 3;
 const accidentMemory = Duration(hours: 24);
@@ -267,6 +274,23 @@ Outcome sendToBed(PetState state, DateTime now) {
       bedFunGain,
     ).copyWith(asleepUntil: scheduleFor(now.toLocal(), s.seed).wakeUp),
     events: [...current.events, GameEvent(EventType.sentToBed, now)],
+    ok: true,
+  );
+}
+
+/// A finished minigame round: more fun, plus coins for each fruit caught.
+/// Chigüi cannot play while asleep.
+Outcome finishRound(PetState state, DateTime now, {required int caught}) {
+  final current = advance(state, now);
+  final s = current.state;
+  if (s.asleepAt(now)) return (state: s, events: current.events, ok: false);
+  return (
+    state: _raise(
+      s,
+      Need.fun,
+      playFunGain,
+    ).copyWith(coins: s.coins + caught * coinsPerFruit),
+    events: [...current.events, GameEvent(EventType.played, now)],
     ok: true,
   );
 }

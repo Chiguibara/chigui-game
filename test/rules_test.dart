@@ -229,6 +229,27 @@ void main() {
     });
   });
 
+  group('minigame', () {
+    test('a round raises fun and earns a coin per fruit', () {
+      final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 7);
+      expect(o.ok, isTrue);
+      expect(o.state.level(Need.fun), closeTo(0.4 + playFunGain, 1e-9));
+      expect(o.state.coins, 7 * coinsPerFruit);
+      expect(types(o), [EventType.played]);
+    });
+
+    test('playing with no fruit caught is still fun', () {
+      final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 0);
+      expect(o.state.level(Need.fun), greaterThan(0.4));
+      expect(o.state.coins, 0);
+    });
+
+    test('a sleeping Chigüi cannot play', () {
+      final asleep = pet0(at(22)).copyWith(asleepUntil: at(8, 0, 13));
+      expect(finishRound(asleep, at(22), caught: 3).ok, isFalse);
+    });
+  });
+
   group('wish', () {
     test('is null when every need is fine', () {
       expect(wish(pet0(at(12), level: 0.6)), isNull);

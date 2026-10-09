@@ -5,6 +5,8 @@
   "tapHint": "Toca a Chigüi para saludar",
   "petAction": "acariciar a Chigüi",
   "lovedStatus": "¡Chigüi está feliz!",
+  "pettedLowStatus": "¡Eso le ha gustado! ¿Unos mimos más?",
+  "pettedMidStatus": "¡Qué gustito! ¿Un poquito más?",
   "ateStatus": "¡Ñam! ¡Gracias!",
   "fullStatus": "Chigüi ya ha comido bastante por ahora",
   "wantsFood": "A Chigüi le apetece picar algo",
@@ -28,5 +30,16 @@
   "messStatus": "Algo huele raro… ¡toca limpiar!",
   "reliefStatus": "¡Uf, qué alivio!",
   "curedStatus": "¡Ya está! ¡Qué valiente!",
-  "cleanedStatus": "¡Todo limpio!"
+  "cleanedStatus": "¡Todo limpio!",
+  "playButton": "Jugar",
+  "coinsLabel": "{count, plural, =1{1 moneda} other{{count} monedas}}",
+  "minigameTitle": "Atrapa la fruta",
+  "minigameHint": "¡Arrastra para mover a Chigüi y atrapar la fruta!",
+  "startButton": "¡A jugar!",
+  "secondsLeft": "{seconds} s",
+  "fruitsCaught": "{count, plural, =0{Esta vez no hubo fruta} =1{1 fruta atrapada} other{{count} frutas atrapadas}}",
+  "coinsEarned": "{count, plural, =0{¡Chigüi se lo ha pasado bien igualmente!} =1{+1 moneda} other{+{count} monedas}}",
+  "roundDone": "¡Buena partida!",
+  "playAgainButton": "Otra vez",
+  "backHomeButton": "Volver"
 }

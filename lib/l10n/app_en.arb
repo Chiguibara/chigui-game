@@ -18,7 +18,15 @@
   },
   "lovedStatus": "Chigüi is happy!",
   "@lovedStatus": {
-    "description": "Shown briefly after the player pets Chigüi."
+    "description": "After petting once affection is high."
+  },
+  "pettedLowStatus": "Chigüi liked that! More cuddles, please?",
+  "@pettedLowStatus": {
+    "description": "After petting while affection is still low: invites more petting, never sad."
+  },
+  "pettedMidStatus": "That feels nice! A little more?",
+  "@pettedMidStatus": {
+    "description": "After petting while affection is medium."
   },
   "ateStatus": "Yum! Thank you!",
   "@ateStatus": {
@@ -123,5 +131,69 @@
   "cleanedStatus": "All clean!",
   "@cleanedStatus": {
     "description": "Shown after cleaning up a mess."
+  },
+  "playButton": "Play",
+  "@playButton": {
+    "description": "Button that opens the fruit-catching minigame."
+  },
+  "coinsLabel": "{count, plural, =1{1 coin} other{{count} coins}}",
+  "@coinsLabel": {
+    "description": "Screen reader label for the player's coin total.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minigameTitle": "Fruit catch",
+  "@minigameTitle": {
+    "description": "Name of the minigame."
+  },
+  "minigameHint": "Drag to move Chigüi and catch the fruit!",
+  "@minigameHint": {
+    "description": "How to play, shown before starting."
+  },
+  "startButton": "Start",
+  "@startButton": {
+    "description": "Starts a minigame round."
+  },
+  "secondsLeft": "{seconds} s",
+  "@secondsLeft": {
+    "description": "Time left in the round.",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "fruitsCaught": "{count, plural, =0{No fruit this time} =1{1 fruit caught} other{{count} fruits caught}}",
+  "@fruitsCaught": {
+    "description": "Round result. Never discouraging.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "coinsEarned": "{count, plural, =0{Chigüi had fun anyway!} =1{+1 coin} other{+{count} coins}}",
+  "@coinsEarned": {
+    "description": "Coins earned in the round.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "roundDone": "Great game!",
+  "@roundDone": {
+    "description": "Title on the results screen."
+  },
+  "playAgainButton": "Play again",
+  "@playAgainButton": {
+    "description": "Starts another round."
+  },
+  "backHomeButton": "Back home",
+  "@backHomeButton": {
+    "description": "Leaves the minigame."
   }
 }

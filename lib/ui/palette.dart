@@ -17,5 +17,8 @@ abstract final class Palette {
   static const sparkle = Color(0xFFF2C14E);
   static const night = Color(0xFF8CC7B2);
   static const sweat = Color(0xFF8FD3F0);
+  static const coinRim = Color(0xFFC9932E);
+  static const melon = Color(0xFFF07A7A);
+  static const orange = Color(0xFFF5A23C);
   static const outside = Color(0xFF2E4A3F);
 }

@@ -122,11 +122,23 @@ abstract class AppLocalizations {
   /// **'pet Chigüi'**
   String get petAction;
 
-  /// Shown briefly after the player pets Chigüi.
+  /// After petting once affection is high.
   ///
   /// In en, this message translates to:
   /// **'Chigüi is happy!'**
   String get lovedStatus;
+
+  /// After petting while affection is still low: invites more petting, never sad.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi liked that! More cuddles, please?'**
+  String get pettedLowStatus;
+
+  /// After petting while affection is medium.
+  ///
+  /// In en, this message translates to:
+  /// **'That feels nice! A little more?'**
+  String get pettedMidStatus;
 
   /// Shown briefly after Chigüi eats.
   ///
@@ -271,6 +283,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All clean!'**
   String get cleanedStatus;
+
+  /// Button that opens the fruit-catching minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Play'**
+  String get playButton;
+
+  /// Screen reader label for the player's coin total.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 coin} other{{count} coins}}'**
+  String coinsLabel(int count);
+
+  /// Name of the minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Fruit catch'**
+  String get minigameTitle;
+
+  /// How to play, shown before starting.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag to move Chigüi and catch the fruit!'**
+  String get minigameHint;
+
+  /// Starts a minigame round.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get startButton;
+
+  /// Time left in the round.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds} s'**
+  String secondsLeft(int seconds);
+
+  /// Round result. Never discouraging.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No fruit this time} =1{1 fruit caught} other{{count} fruits caught}}'**
+  String fruitsCaught(int count);
+
+  /// Coins earned in the round.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Chigüi had fun anyway!} =1{+1 coin} other{+{count} coins}}'**
+  String coinsEarned(int count);
+
+  /// Title on the results screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Great game!'**
+  String get roundDone;
+
+  /// Starts another round.
+  ///
+  /// In en, this message translates to:
+  /// **'Play again'**
+  String get playAgainButton;
+
+  /// Leaves the minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Back home'**
+  String get backHomeButton;
 }
 
 class _AppLocalizationsDelegate

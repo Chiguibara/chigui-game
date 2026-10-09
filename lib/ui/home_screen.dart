@@ -5,12 +5,15 @@ import 'package:flutter/material.dart';
 
 import '../game/pet_controller.dart';
 import '../game/pet_state.dart';
+import '../game/rules.dart' show happyLevel, wishLevel;
 import '../l10n/app_localizations.dart';
+import '../minigame/minigame_screen.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
 import 'need_meter.dart';
 import 'palette.dart';
 import 'phone_frame.dart';
+import 'sprites.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.controller});
@@ -67,6 +70,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onBed() => _pet.sendToBed();
 
+  void _onPlay() => Navigator.of(context).push(
+    MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
+  );
+
   Face get _face {
     final state = _pet.state;
     if (_pet.asleep) return Face.asleep;
@@ -93,7 +100,11 @@ class _HomeScreenState extends State<HomeScreen> {
   String _status(AppLocalizations l10n) {
     final state = _pet.state;
     return switch (_reaction) {
-      Reaction.love => l10n.lovedStatus,
+      Reaction.love => switch (state.level(Need.affection)) {
+        < wishLevel => l10n.pettedLowStatus,
+        < happyLevel => l10n.pettedMidStatus,
+        _ => l10n.lovedStatus,
+      },
       Reaction.eat => l10n.ateStatus,
       Reaction.refuse => l10n.fullStatus,
       Reaction.relief => l10n.reliefStatus,
@@ -135,6 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   children: [
                     if (kDebugMode) DevPanel(controller: _pet),
+                    _coins(l10n, textTheme, state.coins),
                     Expanded(
                       child: LayoutBuilder(
                         builder: (context, constraints) => Column(
@@ -218,7 +230,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Feed is always first; the others appear only when they are needed.
+  Widget _coins(AppLocalizations l10n, TextTheme textTheme, int coins) =>
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Semantics(
+            label: l10n.coinsLabel(coins),
+            excludeSemantics: true,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Coin(size: 26),
+                const SizedBox(width: 6),
+                Text(
+                  '$coins',
+                  style: textTheme.titleMedium?.copyWith(
+                    color: Palette.ink,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+  /// Feed and Play are always first; the others appear only when they are needed.
   Widget _actions(AppLocalizations l10n, {required bool asleep}) {
     final state = _pet.state;
     Widget button(IconData icon, String label, VoidCallback? onPressed) =>
@@ -241,6 +279,11 @@ class _HomeScreenState extends State<HomeScreen> {
         runSpacing: 12,
         children: [
           button(Icons.eco, l10n.feedButton, asleep ? null : _onFeed),
+          button(
+            Icons.sports_esports,
+            l10n.playButton,
+            asleep ? null : _onPlay,
+          ),
           if (state.needsPotty) button(Icons.wc, l10n.toiletButton, _onToilet),
           if (_pet.wantsSleep) button(Icons.bedtime, l10n.bedButton, _onBed),
           if (state.sick) button(Icons.vaccines, l10n.vetButton, _onVet),
