@@ -33,10 +33,9 @@ web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r 
 build-web: ## Build the release web version into build/web
 	$(FLUTTER) build web --release
 
-build-site: ## Build for chiguibara.es/juego/app/ (no Google CDN) into build/site
-	$(FLUTTER) build web --release --base-href /juego/app/ --no-web-resources-cdn
-	rm -rf build/site && mkdir -p build/site/juego && cp -r build/web build/site/juego/app
-	find build/site -name '*.symbols' -delete
+build-site: ## Production build for juego.chiguibara.es (no Google CDN) into build/web
+	$(FLUTTER) build web --release --no-web-resources-cdn
+	find build/web -name '*.symbols' -delete
 
 test: l10n ## Run all tests
 	$(FLUTTER) test

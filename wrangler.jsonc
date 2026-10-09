@@ -1,0 +1,14 @@
+// The game as its own static Worker on juego.chiguibara.es, separate from
+// the website so each deploys on its own. Serves build/web as is (no code).
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "chigui-game",
+  "compatibility_date": "2026-10-01",
+  "routes": [{ "pattern": "juego.chiguibara.es", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./build/web",
+    "not_found_handling": "single-page-application"
+  }
+}

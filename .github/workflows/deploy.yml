@@ -1,0 +1,50 @@
+name: Test and deploy
+
+# Every push to main is checked and, if green, published to
+# https://juego.chiguibara.es. Pull requests are only checked.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # The same Flutter image as the local Docker toolchain.
+    container: ghcr.io/cirruslabs/flutter:3.44.0
+    steps:
+      - uses: actions/checkout@v4
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build web --release --no-web-resources-cdn
+      - run: find build/web -name '*.symbols' -delete
+      - uses: actions/upload-artifact@v4
+        with:
+          name: web
+          path: build/web
+          include-hidden-files: true
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://juego.chiguibara.es
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: web
+          path: build/web
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
