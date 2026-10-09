@@ -483,9 +483,9 @@
   "@buyPackBody": {
     "description": "Explains who pays and approves. No pressure."
   },
-  "buyPackConfirm": "Ask the store",
+  "buyPackConfirm": "Continue to payment",
   "@buyPackConfirm": {
-    "description": "Confirms and opens the store's own purchase screen."
+    "description": "Confirms and opens the platform store's own payment sheet (Google Play / App Store) inside the app; it does not go to any website."
   },
   "buyPackCancel": "Not now",
   "@buyPackCancel": {

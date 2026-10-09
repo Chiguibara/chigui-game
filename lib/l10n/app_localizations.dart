@@ -746,10 +746,10 @@ abstract class AppLocalizations {
   /// **'Ask a grown-up first. The store will ask them to confirm and pay.'**
   String get buyPackBody;
 
-  /// Confirms and opens the store's own purchase screen.
+  /// Confirms and opens the platform store's own payment sheet (Google Play / App Store) inside the app; it does not go to any website.
   ///
   /// In en, this message translates to:
-  /// **'Ask the store'**
+  /// **'Continue to payment'**
   String get buyPackConfirm;
 
   /// Closes the confirmation without buying.

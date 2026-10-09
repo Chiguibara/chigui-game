@@ -438,7 +438,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.text('This costs real money'), findsOneWidget);
-      await tester.tap(find.text('Ask the store'));
+      await tester.tap(find.text('Continue to payment'));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
       expect(store.bought, ['pack_geek']);

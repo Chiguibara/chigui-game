@@ -398,7 +398,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Ask a grown-up first. The store will ask them to confirm and pay.';
 
   @override
-  String get buyPackConfirm => 'Ask the store';
+  String get buyPackConfirm => 'Continue to payment';
 
   @override
   String get buyPackCancel => 'Not now';

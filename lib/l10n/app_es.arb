@@ -108,7 +108,7 @@
   "packWaiting": "Esperando a que un adulto lo apruebe…",
   "buyPackTitle": "Esto cuesta dinero de verdad",
   "buyPackBody": "Pregunta antes a un adulto. La tienda le pedirá que lo confirme y lo pague.",
-  "buyPackConfirm": "Ir a la tienda",
+  "buyPackConfirm": "Continuar al pago",
   "buyPackCancel": "Ahora no",
   "packBoughtStatus": "¡Pack desbloqueado! Míralo en Accesorios.",
   "packErrorStatus": "La compra no se ha completado. Prueba más tarde.",

@@ -400,7 +400,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Pregunta antes a un adulto. La tienda le pedirá que lo confirme y lo pague.';
 
   @override
-  String get buyPackConfirm => 'Ir a la tienda';
+  String get buyPackConfirm => 'Continuar al pago';
 
   @override
   String get buyPackCancel => 'Ahora no';
