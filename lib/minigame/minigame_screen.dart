@@ -171,8 +171,11 @@ class _MinigameScreenState extends State<MinigameScreen>
           onPanUpdate: (d) => aim(d.localPosition),
           child: Stack(
             children: [
+              // Keys keep Chigüi's state (and its chomp animation) when
+              // caught fruit leaves the list.
               for (final fruit in _game.fruits)
                 Positioned(
+                  key: ObjectKey(fruit),
                   left: fruit.x * w - fruitSize / 2,
                   top: fruit.y * h - fruitSize / 2,
                   child: ExcludeSemantics(
@@ -180,6 +183,7 @@ class _MinigameScreenState extends State<MinigameScreen>
                   ),
                 ),
               Positioned(
+                key: const ValueKey('chigui'),
                 left: _game.chiguiX * w - chiguiSize / 2,
                 top: catchLine * h - chiguiSize * 0.35,
                 child: IgnorePointer(
