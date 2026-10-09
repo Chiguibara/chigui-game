@@ -86,5 +86,17 @@
   "itemStickerRocket": "Pegatina de cohete",
   "itemStickerGamepad": "Pegatina de mando",
   "itemStickerMusic": "Pegatina de música",
-  "itemStickerIceCream": "Pegatina de helado"
+  "itemStickerIceCream": "Pegatina de helado",
+  "walkButton": "Pasear",
+  "walkTitle": "De paseo con Chigüi",
+  "walkIntro": "¡Camina con el móvil en la mano o pulsa los pies uno detrás de otro!",
+  "startWalkButton": "¡Vamos!",
+  "sensorWalkHint": "¡Paseo de verdad! Lleva el móvil en la mano.",
+  "tapFeetHint": "Izquierdo, derecho, izquierdo, derecho…",
+  "otherFoot": "¡El otro pie!",
+  "leftFoot": "pie izquierdo",
+  "rightFoot": "pie derecho",
+  "nextWalkProgress": "{steps} de {goal} pasos para el próximo paseo",
+  "walksToday": "{count, plural, =1{1 paseo hoy} other{{count} paseos hoy}}",
+  "walksCapped": "¡Cuánto paseo! A Chigüi se le han gastado las pilas. ¡Mañana más!"
 }

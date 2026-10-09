@@ -320,4 +320,52 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemStickerIceCream => 'Ice cream sticker';
+
+  @override
+  String get walkButton => 'Walk';
+
+  @override
+  String get walkTitle => 'Walk with Chigüi';
+
+  @override
+  String get walkIntro =>
+      'Walk with your phone in your hand, or tap the feet one after the other!';
+
+  @override
+  String get startWalkButton => 'Let\'s go!';
+
+  @override
+  String get sensorWalkHint => 'Walking for real! Keep the phone in your hand.';
+
+  @override
+  String get tapFeetHint => 'Left, right, left, right…';
+
+  @override
+  String get otherFoot => 'The other foot!';
+
+  @override
+  String get leftFoot => 'left foot';
+
+  @override
+  String get rightFoot => 'right foot';
+
+  @override
+  String nextWalkProgress(int steps, int goal) {
+    return '$steps of $goal steps to the next walk';
+  }
+
+  @override
+  String walksToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count walks today',
+      one: '1 walk today',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get walksCapped =>
+      'So many walks! Chigüi\'s batteries are flat. More tomorrow!';
 }

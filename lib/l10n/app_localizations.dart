@@ -619,6 +619,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ice cream sticker'**
   String get itemStickerIceCream;
+
+  /// Opens the walk scene.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk'**
+  String get walkButton;
+
+  /// Walk scene title.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk with Chigüi'**
+  String get walkTitle;
+
+  /// Explains the walk scene before starting.
+  ///
+  /// In en, this message translates to:
+  /// **'Walk with your phone in your hand, or tap the feet one after the other!'**
+  String get walkIntro;
+
+  /// Starts the walk.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s go!'**
+  String get startWalkButton;
+
+  /// Shown while real steps are counted from the phone's motion sensor.
+  ///
+  /// In en, this message translates to:
+  /// **'Walking for real! Keep the phone in your hand.'**
+  String get sensorWalkHint;
+
+  /// Shown while the player taps the feet to walk.
+  ///
+  /// In en, this message translates to:
+  /// **'Left, right, left, right…'**
+  String get tapFeetHint;
+
+  /// Shown when the same foot is tapped twice in a row.
+  ///
+  /// In en, this message translates to:
+  /// **'The other foot!'**
+  String get otherFoot;
+
+  /// Screen reader label for the left foot button.
+  ///
+  /// In en, this message translates to:
+  /// **'left foot'**
+  String get leftFoot;
+
+  /// Screen reader label for the right foot button.
+  ///
+  /// In en, this message translates to:
+  /// **'right foot'**
+  String get rightFoot;
+
+  /// Progress towards the next completed walk.
+  ///
+  /// In en, this message translates to:
+  /// **'{steps} of {goal} steps to the next walk'**
+  String nextWalkProgress(int steps, int goal);
+
+  /// Completed walks today.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 walk today} other{{count} walks today}}'**
+  String walksToday(int count);
+
+  /// When the daily walk rewards are used up. Half geeky, half funny; steps still count.
+  ///
+  /// In en, this message translates to:
+  /// **'So many walks! Chigüi\'s batteries are flat. More tomorrow!'**
+  String get walksCapped;
 }
 
 class _AppLocalizationsDelegate

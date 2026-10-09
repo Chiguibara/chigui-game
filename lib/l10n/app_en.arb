@@ -385,5 +385,66 @@
   "itemStickerIceCream": "Ice cream sticker",
   "@itemStickerIceCream": {
     "description": "Shop item."
+  },
+  "walkButton": "Walk",
+  "@walkButton": {
+    "description": "Opens the walk scene."
+  },
+  "walkTitle": "Walk with Chigüi",
+  "@walkTitle": {
+    "description": "Walk scene title."
+  },
+  "walkIntro": "Walk with your phone in your hand, or tap the feet one after the other!",
+  "@walkIntro": {
+    "description": "Explains the walk scene before starting."
+  },
+  "startWalkButton": "Let's go!",
+  "@startWalkButton": {
+    "description": "Starts the walk."
+  },
+  "sensorWalkHint": "Walking for real! Keep the phone in your hand.",
+  "@sensorWalkHint": {
+    "description": "Shown while real steps are counted from the phone's motion sensor."
+  },
+  "tapFeetHint": "Left, right, left, right…",
+  "@tapFeetHint": {
+    "description": "Shown while the player taps the feet to walk."
+  },
+  "otherFoot": "The other foot!",
+  "@otherFoot": {
+    "description": "Shown when the same foot is tapped twice in a row."
+  },
+  "leftFoot": "left foot",
+  "@leftFoot": {
+    "description": "Screen reader label for the left foot button."
+  },
+  "rightFoot": "right foot",
+  "@rightFoot": {
+    "description": "Screen reader label for the right foot button."
+  },
+  "nextWalkProgress": "{steps} of {goal} steps to the next walk",
+  "@nextWalkProgress": {
+    "description": "Progress towards the next completed walk.",
+    "placeholders": {
+      "steps": {
+        "type": "int"
+      },
+      "goal": {
+        "type": "int"
+      }
+    }
+  },
+  "walksToday": "{count, plural, =1{1 walk today} other{{count} walks today}}",
+  "@walksToday": {
+    "description": "Completed walks today.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "walksCapped": "So many walks! Chigüi's batteries are flat. More tomorrow!",
+  "@walksCapped": {
+    "description": "When the daily walk rewards are used up. Half geeky, half funny; steps still count."
   }
 }

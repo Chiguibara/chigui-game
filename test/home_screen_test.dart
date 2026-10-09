@@ -3,6 +3,7 @@ import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
+import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/ui/poop.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,11 @@ void main() {
   }
 
   PetState same(PetState s) => s;
+
+  ActionTile actionTile(WidgetTester tester, String label) =>
+      tester.widget<ActionTile>(
+        find.ancestor(of: find.text(label), matching: find.byType(ActionTile)),
+      );
 
   Finder chigui() => find.descendant(
     of: find.byType(ChiguiView),
@@ -174,13 +180,7 @@ void main() {
     await tester.pump();
     expect(controller.asleep, isTrue);
     expect(find.text('Shh… Chigüi is sleeping'), findsOneWidget);
-    final feed = tester.widget<ButtonStyleButton>(
-      find.ancestor(
-        of: find.text('Feed'),
-        matching: find.bySubtype<ButtonStyleButton>(),
-      ),
-    );
-    expect(feed.onPressed, isNull);
+    expect(actionTile(tester, 'Feed').onPressed, isNull);
   });
 
   testWidgets('a grumpy Chigüi is won over with a cuddle', (tester) async {
@@ -217,18 +217,13 @@ void main() {
     expect(find.bySemanticsLabel(RegExp(r'^\d+ coins?$')), findsOneWidget);
   });
 
-  testWidgets('a sleeping Chigüi cannot play', (tester) async {
+  testWidgets('a sleeping Chigüi cannot play or walk', (tester) async {
     await start(
       tester,
       (s) => s.copyWith(asleepUntil: DateTime(2026, 10, 12, 13)),
     );
-    final play = tester.widget<ButtonStyleButton>(
-      find.ancestor(
-        of: find.text('Play'),
-        matching: find.bySubtype<ButtonStyleButton>(),
-      ),
-    );
-    expect(play.onPressed, isNull);
+    expect(actionTile(tester, 'Play').onPressed, isNull);
+    expect(actionTile(tester, 'Walk').onPressed, isNull);
   });
 
   testWidgets('the dev panel simulates steps, and Chigüi walks', (

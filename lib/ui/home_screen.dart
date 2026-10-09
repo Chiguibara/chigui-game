@@ -10,6 +10,8 @@ import '../game/rules.dart' show happyLevel, wishLevel;
 import '../l10n/app_localizations.dart';
 import '../minigame/minigame_screen.dart';
 import '../shop/shop_screen.dart';
+import '../walk/walk_screen.dart';
+import 'action_tile.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
 import 'need_meter.dart';
@@ -77,6 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _pet.addSteps(steps);
     _react(Reaction.walk);
   }
+
+  void _onWalk() => Navigator.of(
+    context,
+  ).push(MaterialPageRoute<void>(builder: (_) => WalkScreen(controller: _pet)));
 
   void _onShop() => Navigator.of(
     context,
@@ -299,8 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Coins, and today's steps once a step counter exists (for now only in
-  /// debug builds, fed by the dev panel; Android's pedometer comes later).
+  /// Today's steps and the coins.
   Widget _counters(AppLocalizations l10n, TextTheme textTheme, int coins) {
     final style = textTheme.titleMedium?.copyWith(
       color: Palette.ink,
@@ -323,8 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Row(
         children: [
-          if (kDebugMode)
-            counter(l10n.stepsLabel(steps), const Footprints(size: 26), steps),
+          counter(l10n.stepsLabel(steps), const Footprints(size: 26), steps),
           const Spacer(),
           counter(l10n.coinsLabel(coins), const Coin(size: 26), coins),
         ],
@@ -332,38 +336,70 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Feed, Play, and Shop are always first; the others appear only when they are needed.
+  /// Urgent, contextual actions (toilet, bed, vet) in a row of fixed height,
+  /// so nothing below moves when they come and go; then the four everyday
+  /// actions, which always fit in one row on a phone.
   Widget _actions(AppLocalizations l10n, {required bool asleep}) {
     final state = _pet.state;
-    Widget button(IconData icon, String label, VoidCallback? onPressed) =>
+    Widget urgent(IconData icon, String label, VoidCallback onPressed) =>
         FilledButton.icon(
           onPressed: onPressed,
           icon: Icon(icon),
           label: Text(label),
           style: FilledButton.styleFrom(
-            backgroundColor: Palette.ink,
-            foregroundColor: Palette.mint,
-            minimumSize: const Size(120, 52),
+            backgroundColor: Palette.santaRed,
+            foregroundColor: Palette.cloud,
+            minimumSize: const Size(120, 48),
           ),
         );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 12,
-        runSpacing: 12,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          button(Icons.eco, l10n.feedButton, asleep ? null : _onFeed),
-          button(
-            Icons.sports_esports,
-            l10n.playButton,
-            asleep ? null : _onPlay,
+          SizedBox(
+            height: 48,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 8,
+              children: [
+                if (state.needsPotty)
+                  urgent(Icons.wc, l10n.toiletButton, _onToilet),
+                if (_pet.wantsSleep)
+                  urgent(Icons.bedtime, l10n.bedButton, _onBed),
+                if (state.sick) urgent(Icons.vaccines, l10n.vetButton, _onVet),
+              ],
+            ),
           ),
-          button(Icons.storefront, l10n.shopButton, _onShop),
-          if (state.needsPotty) button(Icons.wc, l10n.toiletButton, _onToilet),
-          if (_pet.wantsSleep) button(Icons.bedtime, l10n.bedButton, _onBed),
-          if (state.sick) button(Icons.vaccines, l10n.vetButton, _onVet),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8,
+            children: [
+              for (final (icon, label, onPressed) in [
+                (Icons.eco, l10n.feedButton, asleep ? null : _onFeed),
+                (
+                  Icons.sports_esports,
+                  l10n.playButton,
+                  asleep ? null : _onPlay,
+                ),
+                (
+                  Icons.directions_walk,
+                  l10n.walkButton,
+                  asleep ? null : _onWalk,
+                ),
+                (Icons.storefront, l10n.shopButton, _onShop),
+              ])
+                Flexible(
+                  child: ActionTile(
+                    icon: icon,
+                    label: label,
+                    onPressed: onPressed,
+                  ),
+                ),
+            ],
+          ),
         ],
       ),
     );

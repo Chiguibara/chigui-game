@@ -322,4 +322,52 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get itemStickerIceCream => 'Pegatina de helado';
+
+  @override
+  String get walkButton => 'Pasear';
+
+  @override
+  String get walkTitle => 'De paseo con Chigüi';
+
+  @override
+  String get walkIntro =>
+      '¡Camina con el móvil en la mano o pulsa los pies uno detrás de otro!';
+
+  @override
+  String get startWalkButton => '¡Vamos!';
+
+  @override
+  String get sensorWalkHint => '¡Paseo de verdad! Lleva el móvil en la mano.';
+
+  @override
+  String get tapFeetHint => 'Izquierdo, derecho, izquierdo, derecho…';
+
+  @override
+  String get otherFoot => '¡El otro pie!';
+
+  @override
+  String get leftFoot => 'pie izquierdo';
+
+  @override
+  String get rightFoot => 'pie derecho';
+
+  @override
+  String nextWalkProgress(int steps, int goal) {
+    return '$steps de $goal pasos para el próximo paseo';
+  }
+
+  @override
+  String walksToday(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count paseos hoy',
+      one: '1 paseo hoy',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get walksCapped =>
+      '¡Cuánto paseo! A Chigüi se le han gastado las pilas. ¡Mañana más!';
 }

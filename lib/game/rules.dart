@@ -28,6 +28,10 @@ const maxWalksPerDay = 10;
 const walkFunGain = 0.1;
 const coinsPerWalk = 5;
 
+/// Without a step sensor (PCs), each tap on a foot in the walk scene counts
+/// as this many steps.
+const stepsPerFootTap = 50;
+
 /// Buying a seasonal item is a treat: a one-off boost of fun.
 const seasonalFunGain = 0.3;
 
@@ -352,6 +356,9 @@ PetState toggleWorn(PetState state, Item item) {
     },
   );
 }
+
+/// Walks completed today (capped at [maxWalksPerDay]).
+int walksToday(PetState state, DateTime now) => walksFor(stepsOn(state, now));
 
 int walksFor(int steps) => min(steps ~/ stepsPerWalk, maxWalksPerDay);
 

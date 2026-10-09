@@ -35,5 +35,7 @@ abstract final class Palette {
   static const tree = Color(0xFF3E8E57);
   static const surf = Color(0xFF5CC6D0);
   static const flower = Color(0xFFB58BE0);
+  static const grass = Color(0xFF9FDDB0);
+  static const path = Color(0xFFE8D3A8);
   static const outside = Color(0xFF2E4A3F);
 }
