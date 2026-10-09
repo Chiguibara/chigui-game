@@ -10,7 +10,7 @@ Turn the confirmed decisions and MVP scope in `CLAUDE.md` into a small set of te
 Check at least:
 - launch and resume;
 - petting, feeding, and minigame;
-- meter boundaries and no severe absence penalties;
+- meter boundaries, daily-routine timing, and absence limits (caps and 24 h pause);
 - reward calculations and coin spending;
 - equipping and removing cosmetics;
 - save/load and missing or corrupted data;

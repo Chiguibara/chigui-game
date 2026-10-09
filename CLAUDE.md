@@ -9,7 +9,14 @@ This file is the project's source of truth for working principles and confirmed 
 - Windows builds cannot be produced from Linux Docker; they will come from a Windows CI runner (e.g. GitHub Actions) when Windows is added.
 - Design for the phone even on web and desktop: portrait, phone-shaped layout; touch-sized targets (≥48 dp); nothing may depend on hover, right-click, or keyboard shortcuts.
 - Android application ID: `es.chiguibara.chigui_game` (pass `--org es.chiguibara` when adding the platform).
-- Pet needs: hunger, affection, and fun. They decay gently while away, never to zero, and never block actions or harm Chigüi.
+- Pet needs: hunger, affection, and fun. They decay gently while away, never to zero, and never block actions or harm Chigüi on their own.
+- Daily routine (decided by the product owner to teach responsibility; tuning is provisional and lives in `lib/game/routine.dart` and `lib/game/rules.dart`):
+  - Only outside school hours, in local time: weekdays 17:00–21:00, weekends 10:00–21:00; never at night.
+  - Mealtimes: feeding inside the window counts as on time. Potty urges at random times: taking Chigüi to the toilet in time avoids an accident (a mess that smells until cleaned).
+  - Bedtime (21:00, or 21:30 before a non-school day): sending Chigüi to bed raises fun; otherwise Chigüi goes alone, grumpy, without the bonus.
+  - 3 accidents in 24 h or 2 missed meals in a row make Chigüi sick. The vet is always free, cute (no blood), and cures instantly. Being sick blocks nothing and is never permanent.
+  - Time away counts, but with limits: at most 1 accident and 1 missed meal per absence, and the routine pauses after 24 h without playing.
+- Persistence goes through `GameRepository` (domain types only). The current implementation is JSON in `shared_preferences`; switching to SQLite with drift must only require a new implementation. An event log (meals, accidents, vet visits, bedtime…) keeps the last 90 days.
 - Offline and local saves only, using storage that works on web, Windows, and Android.
 - Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art without approval.
 
@@ -26,7 +33,7 @@ This file is the project's source of truth for working principles and confirmed 
 - Do not add a backend, accounts, invasive analytics, payments, or commerce integrations without a demonstrated need.
 - Avoid premature abstractions and unnecessary dependencies.
 - Respect Chigüibara's visual identity: handmade-feeling kawaii, geeky, and playful; not generic or excessively childish.
-- Never punish players for being away or pressure them to spend.
+- Consequences for neglect stay mild, curable, and capped for time away (see Daily routine); no guilt-tripping copy. Never pressure players to spend.
 - Distinguish confirmed decisions, hypotheses, and open questions.
 - Write code and technical documentation in English unless the existing repository has a clear convention otherwise. The game must be designed for localization from the start, with English as the initial language and Spanish as a supported translation. Do not hard-code player-facing strings; use Flutter's `gen-l10n` with ARB files.
 

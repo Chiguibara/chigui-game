@@ -54,4 +54,47 @@ class AppLocalizationsEs extends AppLocalizations {
   String needMeterLabel(String need, int percent) {
     return '$need: $percent %';
   }
+
+  @override
+  String get toiletButton => 'Al baño';
+
+  @override
+  String get bedButton => 'A dormir';
+
+  @override
+  String get vetButton => 'Al veterinario';
+
+  @override
+  String get cleanAction => 'limpiar';
+
+  @override
+  String get asleepStatus => 'Shhh… Chigüi está durmiendo';
+
+  @override
+  String get sickStatus => 'Chigüi no se encuentra bien. ¡Al veterinario!';
+
+  @override
+  String get pottyStatus => '¡Chigüi necesita ir al baño!';
+
+  @override
+  String get sleepyStatus => 'Chigüi tiene sueño';
+
+  @override
+  String get mealtimeStatus => '¡Es la hora de comer!';
+
+  @override
+  String get grumpyStatus =>
+      'Anoche nadie acostó a Chigüi y está de morros. ¡Unos mimos y se le pasa!';
+
+  @override
+  String get messStatus => 'Algo huele raro… ¡toca limpiar!';
+
+  @override
+  String get reliefStatus => '¡Uf, qué alivio!';
+
+  @override
+  String get curedStatus => '¡Ya está! ¡Qué valiente!';
+
+  @override
+  String get cleanedStatus => '¡Todo limpio!';
 }

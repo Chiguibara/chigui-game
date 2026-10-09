@@ -17,7 +17,7 @@ class NeedMeter extends StatelessWidget {
     final (icon, color, name) = switch (need) {
       Need.food => (Icons.eco, Palette.leaf, l10n.needFood),
       Need.affection => (Icons.favorite, Palette.blush, l10n.needAffection),
-      Need.fun => (Icons.toys, Palette.furDark, l10n.needFun),
+      Need.fun => (Icons.sports_esports, Palette.furDark, l10n.needFun),
     };
 
     return Semantics(

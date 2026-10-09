@@ -11,5 +11,11 @@ abstract final class Palette {
   static const muzzle = Color(0xFF8F5A40);
   static const leaf = Color(0xFF5DA65A);
   static const cloud = Color(0xFFFFFFFF);
+  static const poop = Color(0xFF8A5A3B);
+  static const stink = Color(0xFF8FB04A);
+  static const sickTint = Color(0xFF9DBF7A);
+  static const sparkle = Color(0xFFF2C14E);
+  static const night = Color(0xFF8CC7B2);
+  static const sweat = Color(0xFF8FD3F0);
   static const outside = Color(0xFF2E4A3F);
 }

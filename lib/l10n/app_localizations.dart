@@ -187,6 +187,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{need}: {percent}%'**
   String needMeterLabel(String need, int percent);
+
+  /// Button that takes Chigüi to the toilet when they need to go.
+  ///
+  /// In en, this message translates to:
+  /// **'Toilet'**
+  String get toiletButton;
+
+  /// Button that sends a sleepy Chigüi to bed.
+  ///
+  /// In en, this message translates to:
+  /// **'Bedtime'**
+  String get bedButton;
+
+  /// Button that takes a sick Chigüi to the vet.
+  ///
+  /// In en, this message translates to:
+  /// **'Vet'**
+  String get vetButton;
+
+  /// Screen reader label for tapping a mess to clean it.
+  ///
+  /// In en, this message translates to:
+  /// **'clean up'**
+  String get cleanAction;
+
+  /// Shown while Chigüi sleeps.
+  ///
+  /// In en, this message translates to:
+  /// **'Shh… Chigüi is sleeping'**
+  String get asleepStatus;
+
+  /// Shown while Chigüi is sick. Calm, never scary or guilt-inducing.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi doesn\'t feel well. Time for the vet!'**
+  String get sickStatus;
+
+  /// Shown while Chigüi needs to poop.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi needs the toilet!'**
+  String get pottyStatus;
+
+  /// Shown at bedtime, until Chigüi is sent to bed.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi is sleepy'**
+  String get sleepyStatus;
+
+  /// Shown during a mealtime window before Chigüi has eaten.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s mealtime!'**
+  String get mealtimeStatus;
+
+  /// Shown after Chigüi went to bed alone, until petted. Light-hearted, not scolding.
+  ///
+  /// In en, this message translates to:
+  /// **'Nobody sent Chigüi to bed, so Chigüi is a bit grumpy. A cuddle will help!'**
+  String get grumpyStatus;
+
+  /// Shown while there is an uncleaned accident.
+  ///
+  /// In en, this message translates to:
+  /// **'Something smells… time to clean up!'**
+  String get messStatus;
+
+  /// Shown after taking Chigüi to the toilet.
+  ///
+  /// In en, this message translates to:
+  /// **'Phew, much better!'**
+  String get reliefStatus;
+
+  /// Shown after the vet visit.
+  ///
+  /// In en, this message translates to:
+  /// **'All better! So brave!'**
+  String get curedStatus;
+
+  /// Shown after cleaning up a mess.
+  ///
+  /// In en, this message translates to:
+  /// **'All clean!'**
+  String get cleanedStatus;
 }
 
 class _AppLocalizationsDelegate

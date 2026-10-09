@@ -14,5 +14,19 @@
   "needFood": "Comida",
   "needAffection": "Cariño",
   "needFun": "Diversión",
-  "needMeterLabel": "{need}: {percent} %"
+  "needMeterLabel": "{need}: {percent} %",
+  "toiletButton": "Al baño",
+  "bedButton": "A dormir",
+  "vetButton": "Al veterinario",
+  "cleanAction": "limpiar",
+  "asleepStatus": "Shhh… Chigüi está durmiendo",
+  "sickStatus": "Chigüi no se encuentra bien. ¡Al veterinario!",
+  "pottyStatus": "¡Chigüi necesita ir al baño!",
+  "sleepyStatus": "Chigüi tiene sueño",
+  "mealtimeStatus": "¡Es la hora de comer!",
+  "grumpyStatus": "Anoche nadie acostó a Chigüi y está de morros. ¡Unos mimos y se le pasa!",
+  "messStatus": "Algo huele raro… ¡toca limpiar!",
+  "reliefStatus": "¡Uf, qué alivio!",
+  "curedStatus": "¡Ya está! ¡Qué valiente!",
+  "cleanedStatus": "¡Todo limpio!"
 }

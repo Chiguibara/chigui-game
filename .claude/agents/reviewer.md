@@ -10,7 +10,7 @@ Read `CLAUDE.md` before reviewing.
 Check:
 - Confirmed decisions and scope are respected.
 - Complexity is justified by an actual need.
-- The game has no absence penalties or aggressive monetization.
+- Absence consequences stay within the daily-routine limits in `CLAUDE.md`, and there is no aggressive monetization.
 - Local saves and offline behavior account for foreseeable errors.
 - Mobile accessibility, performance, and testing are considered.
 - Technical claims are supported by the repository or clearly marked as hypotheses.

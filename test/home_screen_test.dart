@@ -1,32 +1,60 @@
-import 'dart:convert';
-
 import 'package:chigui_game/app.dart';
+import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
-import 'package:chigui_game/save/save_store.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
+import 'package:chigui_game/ui/poop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  final now = DateTime.utc(2026, 10, 9, 12);
+  // Monday noon: no routine moment is active.
+  final noon = DateTime(2026, 10, 12, 12);
 
-  Future<PetController> controllerWith(Map<Need, double> needs) async {
-    SharedPreferences.setMockInitialValues({
-      SaveStore.key: jsonEncode(
-        SaveStore.encode(PetState(needs: needs, updatedAt: now)),
+  Future<PetController> controllerWith(
+    PetState Function(PetState fresh) setUp, {
+    DateTime? now,
+  }) async {
+    final time = now ?? noon;
+    SharedPreferences.setMockInitialValues({});
+    final repo = await JsonGameRepository.open();
+    await repo.saveState(
+      setUp(
+        PetState(
+          needs: {for (final n in Need.values) n: 0.8},
+          updatedAt: time,
+          seed: 42,
+        ),
       ),
-    });
-    return PetController(await SaveStore.open(), clock: () => now);
+    );
+    return PetController.load(repo, clock: () => time);
   }
 
-  const fine = {Need.food: 0.8, Need.affection: 0.8, Need.fun: 0.8};
+  Future<PetController> start(
+    WidgetTester tester,
+    PetState Function(PetState) setUp, {
+    DateTime? now,
+  }) async {
+    tester.view.physicalSize = const Size(1080, 2340);
+    addTearDown(tester.view.reset);
+    final controller = await controllerWith(setUp, now: now);
+    await tester.pumpWidget(ChiguiApp(controller: controller));
+    return controller;
+  }
+
+  PetState same(PetState s) => s;
+
+  Finder chigui() => find.descendant(
+    of: find.byType(ChiguiView),
+    matching: find.bySemanticsLabel('Chigüi'),
+  );
+
+  Future<void> finishReaction(WidgetTester tester) =>
+      tester.pump(const Duration(milliseconds: 1300));
 
   testWidgets('shows Chigüi with the English prompt', (tester) async {
-    final controller = await controllerWith(fine);
-    await tester.pumpWidget(ChiguiApp(controller: controller));
-
+    await start(tester, same);
     expect(find.byType(ChiguiView), findsOneWidget);
     expect(find.text('Tap Chigüi to say hi'), findsOneWidget);
   });
@@ -34,52 +62,120 @@ void main() {
   testWidgets('petting makes Chigüi happy and raises affection', (
     tester,
   ) async {
-    final controller = await controllerWith(fine);
-    await tester.pumpWidget(ChiguiApp(controller: controller));
+    final controller = await start(tester, same);
 
-    await tester.tap(find.byType(ChiguiView));
+    await tester.tap(chigui());
     await tester.pump();
     expect(find.text('Chigüi is happy!'), findsOneWidget);
     expect(controller.state.level(Need.affection), closeTo(0.9, 1e-9));
 
-    await tester.pump(const Duration(milliseconds: 1300));
+    await finishReaction(tester);
     expect(find.text('Tap Chigüi to say hi'), findsOneWidget);
   });
 
   testWidgets('a hungry Chigüi says so, and feeding helps', (tester) async {
-    final controller = await controllerWith({...fine, Need.food: 0.3});
-    await tester.pumpWidget(ChiguiApp(controller: controller));
+    final controller = await start(
+      tester,
+      (s) => s.copyWith(needs: {...s.needs, Need.food: 0.3}),
+    );
     expect(find.text('Chigüi could go for a snack'), findsOneWidget);
 
     await tester.tap(find.text('Feed'));
     await tester.pump();
     expect(find.text('Yum! Thank you!'), findsOneWidget);
     expect(controller.state.level(Need.food), closeTo(0.6, 1e-9));
-
-    await tester.pump(const Duration(milliseconds: 1300));
-    expect(find.text('Tap Chigüi to say hi'), findsOneWidget);
+    await finishReaction(tester);
   });
 
-  testWidgets('a full Chigüi politely refuses food', (tester) async {
-    final controller = await controllerWith({...fine, Need.food: 1});
-    await tester.pumpWidget(ChiguiApp(controller: controller));
+  testWidgets('a full Chigüi politely refuses a snack', (tester) async {
+    await start(tester, (s) => s.copyWith(needs: {...s.needs, Need.food: 1}));
 
     await tester.tap(find.text('Feed'));
     await tester.pump();
     expect(find.text('Chigüi has had enough for now'), findsOneWidget);
-    expect(controller.state.level(Need.food), 1);
-    await tester.pump(const Duration(milliseconds: 1300));
+    await finishReaction(tester);
   });
 
-  testWidgets('actions are saved right away', (tester) async {
-    final controller = await controllerWith({...fine, Need.food: 0.3});
-    await tester.pumpWidget(ChiguiApp(controller: controller));
+  testWidgets('the toilet button appears only when needed', (tester) async {
+    final controller = await start(
+      tester,
+      (s) => s.copyWith(pottyUrgeSince: noon),
+    );
+    expect(find.text('Chigüi needs the toilet!'), findsOneWidget);
 
-    await tester.tap(find.text('Feed'));
-    await tester.pump(const Duration(milliseconds: 1300));
+    await tester.tap(find.text('Toilet'));
+    await tester.pump();
+    expect(find.text('Phew, much better!'), findsOneWidget);
+    expect(controller.state.needsPotty, isFalse);
+    expect(find.text('Toilet'), findsNothing);
+    await finishReaction(tester);
+  });
 
-    final reloaded = (await SaveStore.open()).load(now);
-    expect(reloaded.level(Need.food), closeTo(0.6, 1e-9));
+  testWidgets('tapping a mess cleans it up', (tester) async {
+    final controller = await start(tester, (s) => s.copyWith(messes: 1));
+    expect(find.text('Something smells… time to clean up!'), findsOneWidget);
+
+    await tester.tap(find.bySemanticsLabel('clean up'));
+    await tester.pump();
+    expect(controller.state.messes, 0);
+    expect(find.text('All clean!'), findsOneWidget);
+    await finishReaction(tester);
+    expect(find.byType(Poop), findsNothing);
+  });
+
+  testWidgets('a sick Chigüi gets better at the vet', (tester) async {
+    final controller = await start(tester, (s) => s.copyWith(sick: true));
+    expect(
+      find.text("Chigüi doesn't feel well. Time for the vet!"),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Vet'));
+    await tester.pump();
+    expect(find.text('All better! So brave!'), findsOneWidget);
+    expect(controller.state.sick, isFalse);
+    await finishReaction(tester);
+    expect(find.text('Vet'), findsNothing);
+  });
+
+  testWidgets('at bedtime Chigüi can be sent to bed', (tester) async {
+    final controller = await start(
+      tester,
+      same,
+      now: DateTime(2026, 10, 12, 21, 5),
+    );
+    expect(find.text('Chigüi is sleepy'), findsOneWidget);
+
+    await tester.tap(find.text('Bedtime'));
+    await tester.pump();
+    expect(controller.asleep, isTrue);
+    expect(find.text('Shh… Chigüi is sleeping'), findsOneWidget);
+    final feed = tester.widget<ButtonStyleButton>(
+      find.ancestor(
+        of: find.text('Feed'),
+        matching: find.bySubtype<ButtonStyleButton>(),
+      ),
+    );
+    expect(feed.onPressed, isNull);
+  });
+
+  testWidgets('a grumpy Chigüi is won over with a cuddle', (tester) async {
+    final controller = await start(tester, (s) => s.copyWith(grumpy: true));
+    expect(find.textContaining('grumpy'), findsOneWidget);
+
+    await tester.tap(chigui());
+    await tester.pump();
+    expect(controller.state.grumpy, isFalse);
+    await finishReaction(tester);
+  });
+
+  testWidgets('the dev panel skips time', (tester) async {
+    final controller = await start(tester, same);
+    final before = controller.now;
+
+    await tester.tap(find.text('+1h'));
+    await tester.pump();
+    expect(controller.now.difference(before), const Duration(hours: 1));
   });
 
   testWidgets('uses Spanish when the device language is Spanish', (
@@ -87,9 +183,7 @@ void main() {
   ) async {
     tester.platformDispatcher.localesTestValue = const [Locale('es')];
     addTearDown(tester.platformDispatcher.clearLocalesTestValue);
-    final controller = await controllerWith(fine);
-
-    await tester.pumpWidget(ChiguiApp(controller: controller));
+    await start(tester, same);
 
     expect(find.text('Toca a Chigüi para saludar'), findsOneWidget);
     expect(find.text('Dar de comer'), findsOneWidget);
@@ -99,13 +193,11 @@ void main() {
     tester.platformDispatcher.accessibilityFeaturesTestValue =
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
-    final controller = await controllerWith(fine);
+    await start(tester, same);
 
-    await tester.pumpWidget(ChiguiApp(controller: controller));
-
-    await tester.tap(find.byType(ChiguiView));
+    await tester.tap(chigui());
     await tester.pump();
     expect(find.text('Chigüi is happy!'), findsOneWidget);
-    await tester.pump(const Duration(milliseconds: 1300));
+    await finishReaction(tester);
   });
 }

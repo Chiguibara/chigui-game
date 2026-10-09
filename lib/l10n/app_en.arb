@@ -67,5 +67,61 @@
         "type": "int"
       }
     }
+  },
+  "toiletButton": "Toilet",
+  "@toiletButton": {
+    "description": "Button that takes Chigüi to the toilet when they need to go."
+  },
+  "bedButton": "Bedtime",
+  "@bedButton": {
+    "description": "Button that sends a sleepy Chigüi to bed."
+  },
+  "vetButton": "Vet",
+  "@vetButton": {
+    "description": "Button that takes a sick Chigüi to the vet."
+  },
+  "cleanAction": "clean up",
+  "@cleanAction": {
+    "description": "Screen reader label for tapping a mess to clean it."
+  },
+  "asleepStatus": "Shh… Chigüi is sleeping",
+  "@asleepStatus": {
+    "description": "Shown while Chigüi sleeps."
+  },
+  "sickStatus": "Chigüi doesn't feel well. Time for the vet!",
+  "@sickStatus": {
+    "description": "Shown while Chigüi is sick. Calm, never scary or guilt-inducing."
+  },
+  "pottyStatus": "Chigüi needs the toilet!",
+  "@pottyStatus": {
+    "description": "Shown while Chigüi needs to poop."
+  },
+  "sleepyStatus": "Chigüi is sleepy",
+  "@sleepyStatus": {
+    "description": "Shown at bedtime, until Chigüi is sent to bed."
+  },
+  "mealtimeStatus": "It's mealtime!",
+  "@mealtimeStatus": {
+    "description": "Shown during a mealtime window before Chigüi has eaten."
+  },
+  "grumpyStatus": "Nobody sent Chigüi to bed, so Chigüi is a bit grumpy. A cuddle will help!",
+  "@grumpyStatus": {
+    "description": "Shown after Chigüi went to bed alone, until petted. Light-hearted, not scolding."
+  },
+  "messStatus": "Something smells… time to clean up!",
+  "@messStatus": {
+    "description": "Shown while there is an uncleaned accident."
+  },
+  "reliefStatus": "Phew, much better!",
+  "@reliefStatus": {
+    "description": "Shown after taking Chigüi to the toilet."
+  },
+  "curedStatus": "All better! So brave!",
+  "@curedStatus": {
+    "description": "Shown after the vet visit."
+  },
+  "cleanedStatus": "All clean!",
+  "@cleanedStatus": {
+    "description": "Shown after cleaning up a mess."
   }
 }
