@@ -6,7 +6,7 @@ RUN := docker compose run --rm flutter
 FLUTTER := $(RUN) flutter
 
 .DEFAULT_GOAL := help
-.PHONY: help image shell deps l10n sounds web build-web build-site test analyze format clean
+.PHONY: help image shell deps l10n sounds web build-web build-site apk test analyze format clean
 
 help: ## Show available targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -36,6 +36,9 @@ build-web: ## Build the release web version into build/web
 build-site: ## Production build for juego.chiguibara.es (no Google CDN) into build/web
 	$(FLUTTER) build web --release --no-web-resources-cdn
 	find build/web -name '*.symbols' -delete
+
+apk: ## Android test APK (all CPUs, debug-signed) into build/app/outputs/flutter-apk
+	$(FLUTTER) build apk --release
 
 test: l10n ## Run all tests
 	$(FLUTTER) test

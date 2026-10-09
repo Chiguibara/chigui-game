@@ -8,6 +8,11 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Least privilege: the workflow only reads the code. Pull requests from
+# forks never receive secrets, and only main deploys.
+permissions:
+  contents: read
+
 concurrency:
   group: deploy-${{ github.ref }}
   cancel-in-progress: true
