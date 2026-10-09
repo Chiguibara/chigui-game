@@ -85,28 +85,22 @@ def _hz(name):
     return 440 * 2 ** (semis / 12)
 
 
-def _bite():
-    """A bright, snappy crack over a low thump, then two crunchy ticks."""
-    return seq(
-        mix(noise(0.035, 0.9, smooth=0.0, attack=0.0005, release=0.03, seed=11),
-            tone(150, 0.06, "sine", 0.7, attack=0.0005, release=0.04,
-                 freq_end=55)),
-        silence(0.012),
-        noise(0.018, 0.55, smooth=0.1, attack=0.0005, release=0.012, seed=12),
-        silence(0.014),
-        noise(0.016, 0.45, smooth=0.15, attack=0.0005, release=0.01, seed=13),
+def _bubble(low, high, dur):
+    """One liquid bubble: pitch rises quickly (a "bloop") with a wobble."""
+    return mix(
+        tone(low, dur, "sine", 0.6, attack=0.003, release=dur * 0.5,
+             freq_end=high, vibrato=0.04),
+        tone(low * 2, dur, "sine", 0.12, attack=0.003, release=dur * 0.5,
+             freq_end=high * 2),
     )
 
 
-def _gulp(start, low, seed):
-    """A bubbly swallow: pitch drops, then a little "bloop" back up."""
+def _gulu(pitch):
+    """ "Gu" (lower bubble) then "lu" (higher bubble)."""
     return seq(
-        mix(tone(start, 0.075, "sine", 0.6, attack=0.004, release=0.015,
-                 freq_end=low),
-            tone(start * 2, 0.075, "triangle", 0.08, release=0.02,
-                 freq_end=low * 2)),
-        tone(low, 0.045, "sine", 0.5, attack=0.002, release=0.03,
-             freq_end=low * 1.9),
+        _bubble(180 * pitch, 380 * pitch, 0.07),
+        silence(0.02),
+        _bubble(260 * pitch, 560 * pitch, 0.08),
     )
 
 
@@ -118,13 +112,11 @@ SOUNDS = {
         tone(600, 0.05, "sine", 0.4, release=0.02, freq_end=900),
         tone(900, 0.12, "sine", 0.45, freq_end=1300, vibrato=0.02),
     ),
-    # Big cute chomp: a sharp bite with a crunch, then "gulu gulu".
+    # Eating: a bubbly "gulu gulu" (two "gu-lu" pairs of rising bubbles).
     "chomp": seq(
-        _bite(),
+        _gulu(1.0),
         silence(0.06),
-        _gulp(440, 190, seed=1),
-        silence(0.03),
-        _gulp(380, 160, seed=2),
+        _gulu(0.85),
     ),
     # "Nuh-uh": two soft falling blips.
     "refuse": seq(
