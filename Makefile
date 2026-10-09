@@ -20,7 +20,7 @@ shell: ## Open a shell in the Flutter container
 deps: ## Fetch Dart/Flutter packages
 	$(FLUTTER) pub get
 
-web: ## Run the game with hot reload at http://localhost:$(WEB_PORT) (r = reload, q = quit)
+web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r = reload, q = quit)
 	docker compose run --rm --service-ports flutter \
 		flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080
 
