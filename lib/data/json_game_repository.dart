@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../game/catalog.dart';
 import '../game/game_event.dart';
 import '../game/pet_state.dart';
 import 'game_repository.dart';
@@ -103,6 +104,8 @@ class JsonGameRepository implements GameRepository {
     'coins': s.coins,
     'stepsToday': s.stepsToday,
     'stepsDay': _encodeTime(s.stepsDay),
+    'owned': s.owned.toList(),
+    'equipped': {for (final e in s.equipped.entries) e.key.name: e.value},
   };
 
   /// Reads any schema version so far; version 1 only had needs and
@@ -110,6 +113,15 @@ class JsonGameRepository implements GameRepository {
   @visibleForTesting
   PetState decodeState(Map<String, dynamic> json) {
     final needs = json['needs'] is Map ? json['needs'] as Map : const {};
+    // Items no longer in the catalog are dropped.
+    final owned = {
+      if (json['owned'] case final List list)
+        for (final id in list)
+          if (id is String && itemsById.containsKey(id)) id,
+    };
+    final equipped = json['equipped'] is Map
+        ? json['equipped'] as Map
+        : const {};
     final accidents = json['recentAccidents'] is List
         ? json['recentAccidents'] as List
         : const [];
@@ -131,6 +143,12 @@ class JsonGameRepository implements GameRepository {
       coins: _count(json['coins']),
       stepsToday: _count(json['stepsToday']),
       stepsDay: _decodeTime(json['stepsDay']),
+      owned: owned,
+      equipped: {
+        for (final MapEntry(:key, :value) in equipped.entries)
+          if (Slot.values.asNameMap()[key] case final slot?)
+            if (value is String && owned.contains(value)) slot: value,
+      },
     );
   }
 

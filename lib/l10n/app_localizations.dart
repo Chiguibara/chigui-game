@@ -367,6 +367,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count, plural, =1{1 step today} other{{count} steps today}}'**
   String stepsLabel(int count);
+
+  /// Button that opens the shop.
+  ///
+  /// In en, this message translates to:
+  /// **'Shop'**
+  String get shopButton;
+
+  /// Shop screen title.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi\'s shop'**
+  String get shopTitle;
+
+  /// Default line in the shop.
+  ///
+  /// In en, this message translates to:
+  /// **'What shall we get today?'**
+  String get shopHint;
+
+  /// Shop section for items sold only in their season.
+  ///
+  /// In en, this message translates to:
+  /// **'Seasonal'**
+  String get seasonalSection;
+
+  /// Shop section for wearable items.
+  ///
+  /// In en, this message translates to:
+  /// **'Accessories'**
+  String get accessoriesSection;
+
+  /// Shop section for collectible stickers.
+  ///
+  /// In en, this message translates to:
+  /// **'Stickers'**
+  String get stickersSection;
+
+  /// Puts an owned accessory on Chigüi.
+  ///
+  /// In en, this message translates to:
+  /// **'Wear'**
+  String get wearButton;
+
+  /// Removes a worn accessory.
+  ///
+  /// In en, this message translates to:
+  /// **'Take off'**
+  String get takeOffButton;
+
+  /// Shown on stickers already owned.
+  ///
+  /// In en, this message translates to:
+  /// **'In your album'**
+  String get inAlbum;
+
+  /// After buying an accessory.
+  ///
+  /// In en, this message translates to:
+  /// **'New look unlocked!'**
+  String get boughtStatus;
+
+  /// After buying a sticker.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticker added to your album!'**
+  String get stickerBoughtStatus;
+
+  /// Shown when trying to buy without enough coins. Half geeky (HTTP 402 Payment Required), half funny; never pushy.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{Error 402: 1 coin missing. One round of Fruit catch will fix it!} other{Error 402: {count} coins missing. A few rounds of Fruit catch will fix it!}}'**
+  String notEnoughCoins(int count);
+
+  /// Season name badge (October).
+  ///
+  /// In en, this message translates to:
+  /// **'Spooktober'**
+  String get seasonSpooktober;
+
+  /// Season name badge (1 Dec – 6 Jan).
+  ///
+  /// In en, this message translates to:
+  /// **'Christmas'**
+  String get seasonChristmas;
+
+  /// Season name badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Spring'**
+  String get seasonSpring;
+
+  /// Season name badge.
+  ///
+  /// In en, this message translates to:
+  /// **'Summer'**
+  String get seasonSummer;
+
+  /// On a seasonal item outside its season. Reassuring, no urgency.
+  ///
+  /// In en, this message translates to:
+  /// **'Back every October'**
+  String get backSpooktober;
+
+  /// On a seasonal item outside its season.
+  ///
+  /// In en, this message translates to:
+  /// **'Back every Christmas'**
+  String get backChristmas;
+
+  /// On a seasonal item outside its season.
+  ///
+  /// In en, this message translates to:
+  /// **'Back every spring'**
+  String get backSpring;
+
+  /// On a seasonal item outside its season.
+  ///
+  /// In en, this message translates to:
+  /// **'Back every summer'**
+  String get backSummer;
+
+  /// Tapping a Spooktober item out of season. Half geeky, half funny.
+  ///
+  /// In en, this message translates to:
+  /// **'The ghosts are still snoring in their crypt. Come back in October!'**
+  String get tooEarlySpooktober;
+
+  /// Tapping a Christmas item out of season. Half geeky, half funny.
+  ///
+  /// In en, this message translates to:
+  /// **'Santa\'s elves are still compiling the presents. Come back in December!'**
+  String get tooEarlyChristmas;
+
+  /// Tapping a spring item out of season. Half geeky, half funny.
+  ///
+  /// In en, this message translates to:
+  /// **'The flowers are still in beta. Come back in spring!'**
+  String get tooEarlySpring;
+
+  /// Tapping a summer item out of season. Half geeky, half funny.
+  ///
+  /// In en, this message translates to:
+  /// **'The beach is still loading… 42%. Come back in summer!'**
+  String get tooEarlySummer;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Geek glasses'**
+  String get itemGeekGlasses;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Woolly hat'**
+  String get itemBeanie;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Scarf'**
+  String get itemScarf;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Headphones'**
+  String get itemHeadphones;
+
+  /// Shop item (Spooktober).
+  ///
+  /// In en, this message translates to:
+  /// **'Ghost costume'**
+  String get itemGhost;
+
+  /// Shop item (Spooktober).
+  ///
+  /// In en, this message translates to:
+  /// **'Pumpkin'**
+  String get itemPumpkin;
+
+  /// Shop item (Christmas).
+  ///
+  /// In en, this message translates to:
+  /// **'Santa hat'**
+  String get itemSantaHat;
+
+  /// Shop item (Christmas).
+  ///
+  /// In en, this message translates to:
+  /// **'Christmas tree'**
+  String get itemXmasTree;
+
+  /// Shop item (spring).
+  ///
+  /// In en, this message translates to:
+  /// **'Flower crown'**
+  String get itemFlowerCrown;
+
+  /// Shop item (spring).
+  ///
+  /// In en, this message translates to:
+  /// **'Butterfly friend'**
+  String get itemButterfly;
+
+  /// Shop item (summer).
+  ///
+  /// In en, this message translates to:
+  /// **'Surfboard'**
+  String get itemSurfboard;
+
+  /// Shop item (summer).
+  ///
+  /// In en, this message translates to:
+  /// **'Diving mask and snorkel'**
+  String get itemSnorkel;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Star sticker'**
+  String get itemStickerStar;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Heart sticker'**
+  String get itemStickerHeart;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Rocket sticker'**
+  String get itemStickerRocket;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Gamepad sticker'**
+  String get itemStickerGamepad;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Music sticker'**
+  String get itemStickerMusic;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Ice cream sticker'**
+  String get itemStickerIceCream;
 }
 
 class _AppLocalizationsDelegate

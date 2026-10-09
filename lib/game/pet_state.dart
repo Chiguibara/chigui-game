@@ -1,3 +1,5 @@
+import 'catalog.dart';
+
 /// The three needs. Each level goes from 0 to 1, where 1 means fully
 /// satisfied.
 enum Need { food, affection, fun }
@@ -20,6 +22,8 @@ class PetState {
     this.coins = 0,
     this.stepsToday = 0,
     this.stepsDay,
+    this.owned = const {},
+    this.equipped = const {},
   });
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
@@ -64,6 +68,12 @@ class PetState {
   final int stepsToday;
   final DateTime? stepsDay;
 
+  /// Ids of bought items (see `catalog`).
+  final Set<String> owned;
+
+  /// The item worn in each slot.
+  final Map<Slot, String> equipped;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool asleepAt(DateTime time) =>
@@ -85,6 +95,8 @@ class PetState {
     int? coins,
     int? stepsToday,
     DateTime? stepsDay,
+    Set<String>? owned,
+    Map<Slot, String>? equipped,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -106,5 +118,7 @@ class PetState {
     coins: coins ?? this.coins,
     stepsToday: stepsToday ?? this.stepsToday,
     stepsDay: stepsDay ?? this.stepsDay,
+    owned: owned ?? this.owned,
+    equipped: equipped ?? this.equipped,
   );
 }

@@ -1,5 +1,6 @@
 import 'package:chigui_game/app.dart';
 import 'package:chigui_game/data/json_game_repository.dart';
+import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
@@ -242,6 +243,45 @@ void main() {
     expect(controller.state.coins, 5);
     expect(find.bySemanticsLabel('1000 steps today'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('the shop sells, dresses up, and jokes about seasons', (
+    tester,
+  ) async {
+    final controller = await start(tester, (s) => s.copyWith(coins: 30));
+    // A tall screen so every shop item is laid out.
+    tester.view.physicalSize = const Size(1080, 4000);
+    await tester.pump();
+
+    await tester.tap(find.text('Shop'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text("Chigüi's shop"), findsOneWidget);
+
+    // 12 October: Spooktober items are on sale, Christmas ones are not.
+    expect(find.text('Spooktober'), findsWidgets);
+    await tester.tap(find.text('Santa hat'));
+    await tester.pump();
+    expect(find.textContaining('compiling the presents'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+
+    await tester.tap(find.text('Headphones'));
+    await tester.pump();
+    expect(find.textContaining('Error 402: 5 coins missing'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+
+    await tester.tap(find.text('Geek glasses'));
+    await tester.pump();
+    expect(find.text('New look unlocked!'), findsOneWidget);
+    expect(controller.state.coins, 5);
+    expect(controller.state.equipped, {Slot.face: 'geekGlasses'});
+    expect(find.text('Take off'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 2));
+
+    await tester.tap(find.text('Geek glasses'));
+    await tester.pump(const Duration(seconds: 2));
+    expect(controller.state.equipped, isEmpty);
+    expect(find.text('Wear'), findsOneWidget);
   });
 
   testWidgets('the dev panel skips time', (tester) async {

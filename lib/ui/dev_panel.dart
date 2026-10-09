@@ -47,7 +47,12 @@ class DevPanel extends StatelessWidget {
             label: 'Next event',
             onPressed: controller.debugSkipToNextEvent,
           ),
+          _DevButton(
+            label: 'Next season',
+            onPressed: controller.debugJumpToNextSeason,
+          ),
           _DevButton(label: '+1000 steps', onPressed: () => onSteps(1000)),
+          _DevButton(label: '+100 coins', onPressed: controller.debugAddCoins),
           _DevButton(label: 'Reset', onPressed: controller.debugReset),
         ],
       ),

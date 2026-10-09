@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
@@ -8,6 +9,7 @@ import '../game/pet_state.dart';
 import '../game/rules.dart' show happyLevel, wishLevel;
 import '../l10n/app_localizations.dart';
 import '../minigame/minigame_screen.dart';
+import '../shop/shop_screen.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
 import 'need_meter.dart';
@@ -75,6 +77,10 @@ class _HomeScreenState extends State<HomeScreen> {
     _pet.addSteps(steps);
     _react(Reaction.walk);
   }
+
+  void _onShop() => Navigator.of(
+    context,
+  ).push(MaterialPageRoute<void>(builder: (_) => ShopScreen(controller: _pet)));
 
   void _onPlay() => Navigator.of(context).push(
     MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
@@ -170,8 +176,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             const SizedBox(height: 16),
                             ChiguiView(
-                              size: constraints.maxWidth * 0.7,
+                              // Fit both narrow and short screens, leaving room for the
+                              // controls below.
+                              size: math.min(
+                                constraints.maxWidth * 0.7,
+                                constraints.maxHeight * 0.34,
+                              ),
                               face: _face,
+                              wearing: state.equipped,
                               bubble: _bubble,
                               messes: state.messes,
                               onTap: _onPet,
@@ -272,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Feed and Play are always first; the others appear only when they are needed.
+  /// Feed, Play, and Shop are always first; the others appear only when they are needed.
   Widget _actions(AppLocalizations l10n, {required bool asleep}) {
     final state = _pet.state;
     Widget button(IconData icon, String label, VoidCallback? onPressed) =>
@@ -300,6 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
             l10n.playButton,
             asleep ? null : _onPlay,
           ),
+          button(Icons.storefront, l10n.shopButton, _onShop),
           if (state.needsPotty) button(Icons.wc, l10n.toiletButton, _onToilet),
           if (_pet.wantsSleep) button(Icons.bedtime, l10n.bedButton, _onBed),
           if (state.sick) button(Icons.vaccines, l10n.vetButton, _onVet),

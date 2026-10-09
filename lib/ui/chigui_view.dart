@@ -1,9 +1,12 @@
 import 'dart:math' as math;
 import 'dart:ui' show lerpDouble;
 
+import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/material.dart';
 
+import '../game/catalog.dart';
 import '../l10n/app_localizations.dart';
+import 'accessories.dart';
 import 'palette.dart';
 import 'poop.dart';
 import 'sprites.dart';
@@ -24,6 +27,7 @@ class ChiguiView extends StatefulWidget {
     super.key,
     required this.size,
     this.face = Face.normal,
+    this.wearing = const {},
     this.bubble,
     this.messes = 0,
     this.onTap,
@@ -35,6 +39,7 @@ class ChiguiView extends StatefulWidget {
 
   final double size;
   final Face face;
+  final Map<Slot, String> wearing;
   final Bubble? bubble;
   final int messes;
   final VoidCallback? onTap;
@@ -135,6 +140,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                               ? _chompPuff(t)
                               : 0,
                           legLift: walking ? math.sin(t * 4 * math.pi) : 0,
+                          wearing: widget.wearing,
                         ),
                       ),
                     ),
@@ -500,6 +506,24 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
   }
 }
 
+/// A still Chigüi wearing [wearing], e.g. to preview items in the shop.
+class ChiguiPortrait extends StatelessWidget {
+  const ChiguiPortrait({
+    super.key,
+    required this.size,
+    this.wearing = const {},
+  });
+
+  final double size;
+  final Map<Slot, String> wearing;
+
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+    size: Size.square(size),
+    painter: _ChiguiPainter(face: Face.normal, blink: false, wearing: wearing),
+  );
+}
+
 /// A hand-drawn "z" for sleeping, so no text or font is needed.
 class _ZPainter extends CustomPainter {
   @override
@@ -531,6 +555,7 @@ class _ChiguiPainter extends CustomPainter {
     this.mouthOpen = 0,
     this.cheekPuff = 0,
     this.legLift = 0,
+    this.wearing = const {},
   });
 
   final Face face;
@@ -544,6 +569,15 @@ class _ChiguiPainter extends CustomPainter {
 
   /// -1 … 1: positive lifts the near front leg, negative the far one.
   final double legLift;
+
+  /// Accessories worn, by slot.
+  final Map<Slot, String> wearing;
+
+  void _accessories(Canvas canvas, Size size, Layer layer) {
+    for (final id in wearing.values) {
+      paintAccessory(canvas, size, id, layer);
+    }
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -564,6 +598,8 @@ class _ChiguiPainter extends CustomPainter {
       canvas.drawRRect(r, fill);
       canvas.drawRRect(r, outline);
     }
+
+    _accessories(canvas, size, Layer.behind);
 
     // Ground shadow.
     canvas.drawOval(
@@ -613,6 +649,8 @@ class _ChiguiPainter extends CustomPainter {
       ),
       fur,
     );
+
+    _accessories(canvas, size, Layer.overBody);
 
     // Far ear, peeking behind the head.
     canvas.drawCircle(Offset(w * 0.56, h * 0.19), w * 0.05, furDark);
@@ -780,7 +818,13 @@ class _ChiguiPainter extends CustomPainter {
       }
     }
 
-    // Chigüi's signature bow tie at the neck.
+    _accessories(canvas, size, Layer.overHead);
+
+    // Chigüi's signature bow tie at the neck, unless covered.
+    if (wearing.containsKey(Slot.neck) || wearing.containsKey(Slot.body)) {
+      _accessories(canvas, size, Layer.front);
+      return;
+    }
     final ink = Paint()..color = Palette.ink;
     final knot = Offset(w * 0.52, h * 0.64);
     final bow = Path()
@@ -794,6 +838,7 @@ class _ChiguiPainter extends CustomPainter {
       ..close();
     canvas.drawPath(bow, ink);
     canvas.drawCircle(knot, w * 0.022, ink);
+    _accessories(canvas, size, Layer.front);
   }
 
   @override
@@ -802,5 +847,6 @@ class _ChiguiPainter extends CustomPainter {
       old.blink != blink ||
       old.mouthOpen != mouthOpen ||
       old.cheekPuff != cheekPuff ||
-      old.legLift != legLift;
+      old.legLift != legLift ||
+      !mapEquals(old.wearing, wearing);
 }

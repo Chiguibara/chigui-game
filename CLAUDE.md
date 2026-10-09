@@ -16,14 +16,15 @@ This file is the project's source of truth for working principles and confirmed 
   - Bedtime (21:00, or 21:30 before a non-school day): sending Chigüi to bed raises fun; otherwise Chigüi goes alone, grumpy, without the bonus.
   - 3 accidents in 24 h or 2 missed meals in a row make Chigüi sick. The vet is always free, cute (no blood), and cures instantly. Being sick blocks nothing and is never permanent.
   - Time away counts, but with limits: at most 1 accident and 1 missed meal per absence, and the routine pauses after 24 h without playing.
-- Coins are earned by playing (minigame now, walks later) and spent on stickers and accessories (shop not built yet). No real-money purchases.
+- Coins are earned by playing (minigame, walks) and spent in the shop on accessories (one per slot, worn on Chigüi) and collectible stickers. No real-money purchases. Catalog and prices live in `lib/game/catalog.dart`.
+- Seasonal items can only be bought in their season (Spooktober 1 Oct–1 Nov, Christmas 1 Dec–6 Jan, spring 20 Mar–20 Jun, summer 21 Jun–22 Sep) but can be worn any time, and buying one gives a one-off fun boost. Seasons recur yearly: the shop says when an item comes back, never uses countdowns or "last chance" copy. Out-of-season and not-enough-coins messages are half geeky, half funny.
 - Walks (Android only, not built yet): the device pedometer turns daily steps into walks that raise fun and earn coins. Only rewards, never penalties for not walking, and no weight or body changes. Before building it, check Play policies for children's activity data and parental consent.
 - Persistence goes through `GameRepository` (domain types only). The current implementation is JSON in `shared_preferences`; switching to SQLite with drift must only require a new implementation. An event log (meals, accidents, vet visits, bedtime…) keeps the last 90 days.
 - Offline and local saves only, using storage that works on web, Windows, and Android.
 - Repository is private and all rights reserved (see `LICENSE`). Do not add open-source licenses or third-party art without approval.
 
 ## Open questions
-- Rest of the MVP scope (working hypothesis: a fruit-catching minigame that raises fun and earns coins, and a shop for stickers and accessories).
+- Rest of the MVP scope beyond what is built (needs, routine, minigame, walks logic, shop).
 - Needs display (provisional, validate in playtests): mainly Chigüi's mood (thought bubble and status line) with small secondary meters. Tuning values live in `lib/game/rules.dart`.
 - When the Windows build is needed, and how it reaches the children (zip, installer).
 - Who produces the art and with which tool (defines asset formats).

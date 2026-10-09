@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../data/game_repository.dart';
 import 'game_event.dart';
+import 'catalog.dart';
 import 'pet_state.dart';
 import 'routine.dart';
 import 'rules.dart' as rules;
@@ -65,6 +66,13 @@ class PetController extends ChangeNotifier {
   /// Called by the step counter (Android pedometer, or the dev panel).
   bool addSteps(int steps) => _apply(rules.addSteps(_state, now, steps));
   int get stepsToday => rules.stepsOn(_state, now);
+  rules.BuyResult canBuy(Item item) => rules.canBuy(_state, item, now);
+  bool buy(Item item) => _apply(rules.buy(_state, now, item));
+  void toggleWorn(Item item) => _apply((
+    state: rules.toggleWorn(_state, item),
+    events: const [],
+    ok: true,
+  ));
   bool finishRound(int caught) =>
       _apply(rules.finishRound(_state, now, caught: caught));
 
@@ -96,6 +104,24 @@ class PetController extends ChangeNotifier {
     nextRoutineMoment(now, _state.seed).difference(now) +
         const Duration(seconds: 1),
   );
+
+  /// Jumps straight to the next season (as time away, so absence limits
+  /// apply), to try seasonal items.
+  void debugJumpToNextSeason() {
+    assert(kDebugMode);
+    _debugOffset += nextSeasonStart(now).difference(now);
+    refresh();
+  }
+
+  /// Free coins to try the shop.
+  void debugAddCoins() {
+    assert(kDebugMode);
+    _apply((
+      state: _state.copyWith(coins: _state.coins + 100),
+      events: const [],
+      ok: true,
+    ));
+  }
 
   /// Starts over with a new pet at the real time.
   void debugReset() {

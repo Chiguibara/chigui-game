@@ -1,3 +1,4 @@
+import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/game_event.dart';
 import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/game/routine.dart';
@@ -281,6 +282,60 @@ void main() {
       final o = addSteps(yesterday, today, 200);
       expect(o.ok, isFalse);
       expect(o.state.stepsToday, 200);
+    });
+  });
+
+  group('shop', () {
+    final glasses = itemsById['geekGlasses']!;
+    final beanie = itemsById['beanie']!;
+    final headphones = itemsById['headphones']!;
+    final ghost = itemsById['ghost']!; // Spooktober: in season on 12 Oct.
+    final santaHat = itemsById['santaHat']!;
+    final star = itemsById['stickerStar']!;
+    PetState rich() => pet0(at(12), level: 0.4).copyWith(coins: 100);
+
+    test('buying spends coins and puts the item on', () {
+      final o = buy(rich(), at(12), glasses);
+      expect(o.ok, isTrue);
+      expect(o.state.coins, 100 - glasses.price);
+      expect(o.state.owned, {'geekGlasses'});
+      expect(o.state.equipped, {Slot.face: 'geekGlasses'});
+      expect(types(o), [EventType.bought]);
+    });
+
+    test('cannot buy without enough coins, twice, or out of season', () {
+      final poor = pet0(at(12)).copyWith(coins: 3);
+      expect(canBuy(poor, glasses, at(12)), BuyResult.notEnoughCoins);
+      final owned = buy(rich(), at(12), glasses).state;
+      expect(canBuy(owned, glasses, at(12)), BuyResult.alreadyOwned);
+      expect(canBuy(rich(), santaHat, at(12)), BuyResult.outOfSeason);
+      expect(buy(rich(), at(12), santaHat).ok, isFalse);
+    });
+
+    test('seasonal items are a treat: they raise fun', () {
+      final o = buy(rich(), at(12), ghost);
+      expect(o.state.level(Need.fun), closeTo(0.4 + seasonalFunGain, 1e-9));
+      expect(
+        buy(rich(), at(12), glasses).state.level(Need.fun),
+        closeTo(0.4, 1e-9),
+      );
+    });
+
+    test('stickers are collected, not worn', () {
+      final o = buy(rich(), at(12), star);
+      expect(o.state.owned, {'stickerStar'});
+      expect(o.state.equipped, isEmpty);
+    });
+
+    test('one accessory per slot; owned ones can be swapped and removed', () {
+      var s = buy(rich(), at(12), beanie).state;
+      s = buy(s, at(12), headphones).state;
+      expect(s.equipped, {Slot.head: 'headphones'});
+      s = toggleWorn(s, beanie);
+      expect(s.equipped, {Slot.head: 'beanie'});
+      s = toggleWorn(s, beanie);
+      expect(s.equipped, isEmpty);
+      expect(toggleWorn(s, glasses).equipped, isEmpty, reason: 'not owned');
     });
   });
 

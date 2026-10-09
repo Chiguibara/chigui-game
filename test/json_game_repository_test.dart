@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chigui_game/data/json_game_repository.dart';
+import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/game_event.dart';
 import 'package:chigui_game/game/pet_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -39,6 +40,8 @@ void main() {
       coins: 12,
       stepsToday: 3400,
       stepsDay: now,
+      owned: {'beanie', 'stickerStar'},
+      equipped: {Slot.head: 'beanie'},
     );
     await repo.saveState(saved);
 
@@ -80,6 +83,19 @@ void main() {
     expect(state.messes, 0);
     expect(state.recentAccidents, hasLength(1));
     expect(state.updatedAt, now);
+  });
+
+  test('drops unknown items and items worn but not owned', () async {
+    final repo = await repoWith({
+      JsonGameRepository.stateKey: jsonEncode({
+        'owned': ['beanie', 'jetpack'],
+        'equipped': {'head': 'beanie', 'face': 'geekGlasses', 'tail': 'x'},
+      }),
+    });
+
+    final state = (await repo.loadState())!;
+    expect(state.owned, {'beanie'});
+    expect(state.equipped, {Slot.head: 'beanie'});
   });
 
   test('keeps an unreadable save aside and reports no state', () async {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'catalog.dart';
 import 'game_event.dart';
 import 'pet_state.dart';
 import 'routine.dart';
@@ -26,6 +27,9 @@ const stepsPerWalk = 1000;
 const maxWalksPerDay = 10;
 const walkFunGain = 0.1;
 const coinsPerWalk = 5;
+
+/// Buying a seasonal item is a treat: a one-off boost of fun.
+const seasonalFunGain = 0.3;
 
 /// Snacks at or above this level are politely refused (meals never are).
 const fullLevel = 0.95;
@@ -299,6 +303,53 @@ Outcome finishRound(PetState state, DateTime now, {required int caught}) {
     ).copyWith(coins: s.coins + caught * coinsPerFruit),
     events: [...current.events, GameEvent(EventType.played, now)],
     ok: true,
+  );
+}
+
+enum BuyResult { bought, alreadyOwned, outOfSeason, notEnoughCoins }
+
+BuyResult canBuy(PetState state, Item item, DateTime now) {
+  if (state.owned.contains(item.id)) return BuyResult.alreadyOwned;
+  final season = item.season;
+  if (season != null && !inSeason(season, now)) return BuyResult.outOfSeason;
+  if (state.coins < item.price) return BuyResult.notEnoughCoins;
+  return BuyResult.bought;
+}
+
+/// Buys [item] and puts it on (accessories only).
+Outcome buy(PetState state, DateTime now, Item item) {
+  final current = advance(state, now);
+  final s = current.state;
+  if (canBuy(s, item, now) != BuyResult.bought) {
+    return (state: s, events: current.events, ok: false);
+  }
+  var next = s.copyWith(
+    coins: s.coins - item.price,
+    owned: {...s.owned, item.id},
+    equipped: item.slot == Slot.sticker
+        ? s.equipped
+        : {...s.equipped, item.slot: item.id},
+  );
+  if (item.season != null) next = _raise(next, Need.fun, seasonalFunGain);
+  return (
+    state: next,
+    events: [...current.events, GameEvent(EventType.bought, now)],
+    ok: true,
+  );
+}
+
+/// Puts on an owned accessory, or takes it off if already worn.
+PetState toggleWorn(PetState state, Item item) {
+  if (!state.owned.contains(item.id) || item.slot == Slot.sticker) {
+    return state;
+  }
+  final worn = state.equipped[item.slot] == item.id;
+  return state.copyWith(
+    equipped: {
+      for (final e in state.equipped.entries)
+        if (e.key != item.slot) e.key: e.value,
+      if (!worn) item.slot: item.id,
+    },
   );
 }
 

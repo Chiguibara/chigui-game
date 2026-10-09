@@ -182,4 +182,144 @@ class AppLocalizationsEs extends AppLocalizations {
     );
     return '$_temp0';
   }
+
+  @override
+  String get shopButton => 'Tienda';
+
+  @override
+  String get shopTitle => 'La tienda de Chigüi';
+
+  @override
+  String get shopHint => '¿Qué nos llevamos hoy?';
+
+  @override
+  String get seasonalSection => 'De temporada';
+
+  @override
+  String get accessoriesSection => 'Accesorios';
+
+  @override
+  String get stickersSection => 'Pegatinas';
+
+  @override
+  String get wearButton => 'Ponérselo';
+
+  @override
+  String get takeOffButton => 'Quitárselo';
+
+  @override
+  String get inAlbum => 'En tu álbum';
+
+  @override
+  String get boughtStatus => '¡Nuevo look desbloqueado!';
+
+  @override
+  String get stickerBoughtStatus => '¡Pegatina añadida a tu álbum!';
+
+  @override
+  String notEnoughCoins(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'Error 402: faltan $count monedas. ¡Unas partidas de Atrapa la fruta y arreglado!',
+      one:
+          'Error 402: falta 1 moneda. ¡Una partida de Atrapa la fruta y arreglado!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get seasonSpooktober => 'Halloween';
+
+  @override
+  String get seasonChristmas => 'Navidad';
+
+  @override
+  String get seasonSpring => 'Primavera';
+
+  @override
+  String get seasonSummer => 'Verano';
+
+  @override
+  String get backSpooktober => 'Vuelve cada octubre';
+
+  @override
+  String get backChristmas => 'Vuelve cada Navidad';
+
+  @override
+  String get backSpring => 'Vuelve cada primavera';
+
+  @override
+  String get backSummer => 'Vuelve cada verano';
+
+  @override
+  String get tooEarlySpooktober =>
+      'Los fantasmas siguen roncando en su cripta. ¡Vuelve en octubre!';
+
+  @override
+  String get tooEarlyChristmas =>
+      'Los elfos de Papá Noel aún están compilando los regalos. ¡Vuelve en diciembre!';
+
+  @override
+  String get tooEarlySpring =>
+      'Las flores siguen en fase beta. ¡Vuelve en primavera!';
+
+  @override
+  String get tooEarlySummer =>
+      'La playa sigue cargando… 42 %. ¡Vuelve en verano!';
+
+  @override
+  String get itemGeekGlasses => 'Gafas de friki';
+
+  @override
+  String get itemBeanie => 'Gorrito de lana';
+
+  @override
+  String get itemScarf => 'Bufanda';
+
+  @override
+  String get itemHeadphones => 'Auriculares';
+
+  @override
+  String get itemGhost => 'Disfraz de fantasma';
+
+  @override
+  String get itemPumpkin => 'Calabaza';
+
+  @override
+  String get itemSantaHat => 'Gorro de Papá Noel';
+
+  @override
+  String get itemXmasTree => 'Árbol de Navidad';
+
+  @override
+  String get itemFlowerCrown => 'Corona de flores';
+
+  @override
+  String get itemButterfly => 'Mariposa amiga';
+
+  @override
+  String get itemSurfboard => 'Tabla de surf';
+
+  @override
+  String get itemSnorkel => 'Gafas de buceo con tubo';
+
+  @override
+  String get itemStickerStar => 'Pegatina de estrella';
+
+  @override
+  String get itemStickerHeart => 'Pegatina de corazón';
+
+  @override
+  String get itemStickerRocket => 'Pegatina de cohete';
+
+  @override
+  String get itemStickerGamepad => 'Pegatina de mando';
+
+  @override
+  String get itemStickerMusic => 'Pegatina de música';
+
+  @override
+  String get itemStickerIceCream => 'Pegatina de helado';
 }

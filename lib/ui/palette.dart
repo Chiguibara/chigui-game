@@ -21,5 +21,18 @@ abstract final class Palette {
   static const melon = Color(0xFFF07A7A);
   static const orange = Color(0xFFF5A23C);
   static const mouth = Color(0xFF5A2E2A);
+  static const beanie = Color(0xFF4FA3A5);
+  static const beanieBand = Color(0xFF3B8183);
+  static const headphones = Color(0xFFE86A92);
+  static const santaRed = Color(0xFFD94848);
+  static const lens = Color(0x5593D4F0);
+  static const diving = Color(0xFF2F7FC1);
+  static const snorkel = Color(0xFFF2C14E);
+  static const scarf = Color(0xFFD95D5D);
+  static const ghost = Color(0xF2FFFFFF);
+  static const ghostOutline = Color(0xFFB9C4C2);
+  static const tree = Color(0xFF3E8E57);
+  static const surf = Color(0xFF5CC6D0);
+  static const flower = Color(0xFFB58BE0);
   static const outside = Color(0xFF2E4A3F);
 }

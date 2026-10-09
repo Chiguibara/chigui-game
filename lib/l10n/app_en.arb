@@ -212,5 +212,178 @@
         "type": "int"
       }
     }
+  },
+  "shopButton": "Shop",
+  "@shopButton": {
+    "description": "Button that opens the shop."
+  },
+  "shopTitle": "Chigüi's shop",
+  "@shopTitle": {
+    "description": "Shop screen title."
+  },
+  "shopHint": "What shall we get today?",
+  "@shopHint": {
+    "description": "Default line in the shop."
+  },
+  "seasonalSection": "Seasonal",
+  "@seasonalSection": {
+    "description": "Shop section for items sold only in their season."
+  },
+  "accessoriesSection": "Accessories",
+  "@accessoriesSection": {
+    "description": "Shop section for wearable items."
+  },
+  "stickersSection": "Stickers",
+  "@stickersSection": {
+    "description": "Shop section for collectible stickers."
+  },
+  "wearButton": "Wear",
+  "@wearButton": {
+    "description": "Puts an owned accessory on Chigüi."
+  },
+  "takeOffButton": "Take off",
+  "@takeOffButton": {
+    "description": "Removes a worn accessory."
+  },
+  "inAlbum": "In your album",
+  "@inAlbum": {
+    "description": "Shown on stickers already owned."
+  },
+  "boughtStatus": "New look unlocked!",
+  "@boughtStatus": {
+    "description": "After buying an accessory."
+  },
+  "stickerBoughtStatus": "Sticker added to your album!",
+  "@stickerBoughtStatus": {
+    "description": "After buying a sticker."
+  },
+  "notEnoughCoins": "{count, plural, =1{Error 402: 1 coin missing. One round of Fruit catch will fix it!} other{Error 402: {count} coins missing. A few rounds of Fruit catch will fix it!}}",
+  "@notEnoughCoins": {
+    "description": "Shown when trying to buy without enough coins. Half geeky (HTTP 402 Payment Required), half funny; never pushy.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "seasonSpooktober": "Spooktober",
+  "@seasonSpooktober": {
+    "description": "Season name badge (October)."
+  },
+  "seasonChristmas": "Christmas",
+  "@seasonChristmas": {
+    "description": "Season name badge (1 Dec – 6 Jan)."
+  },
+  "seasonSpring": "Spring",
+  "@seasonSpring": {
+    "description": "Season name badge."
+  },
+  "seasonSummer": "Summer",
+  "@seasonSummer": {
+    "description": "Season name badge."
+  },
+  "backSpooktober": "Back every October",
+  "@backSpooktober": {
+    "description": "On a seasonal item outside its season. Reassuring, no urgency."
+  },
+  "backChristmas": "Back every Christmas",
+  "@backChristmas": {
+    "description": "On a seasonal item outside its season."
+  },
+  "backSpring": "Back every spring",
+  "@backSpring": {
+    "description": "On a seasonal item outside its season."
+  },
+  "backSummer": "Back every summer",
+  "@backSummer": {
+    "description": "On a seasonal item outside its season."
+  },
+  "tooEarlySpooktober": "The ghosts are still snoring in their crypt. Come back in October!",
+  "@tooEarlySpooktober": {
+    "description": "Tapping a Spooktober item out of season. Half geeky, half funny."
+  },
+  "tooEarlyChristmas": "Santa's elves are still compiling the presents. Come back in December!",
+  "@tooEarlyChristmas": {
+    "description": "Tapping a Christmas item out of season. Half geeky, half funny."
+  },
+  "tooEarlySpring": "The flowers are still in beta. Come back in spring!",
+  "@tooEarlySpring": {
+    "description": "Tapping a spring item out of season. Half geeky, half funny."
+  },
+  "tooEarlySummer": "The beach is still loading… 42%. Come back in summer!",
+  "@tooEarlySummer": {
+    "description": "Tapping a summer item out of season. Half geeky, half funny."
+  },
+  "itemGeekGlasses": "Geek glasses",
+  "@itemGeekGlasses": {
+    "description": "Shop item."
+  },
+  "itemBeanie": "Woolly hat",
+  "@itemBeanie": {
+    "description": "Shop item."
+  },
+  "itemScarf": "Scarf",
+  "@itemScarf": {
+    "description": "Shop item."
+  },
+  "itemHeadphones": "Headphones",
+  "@itemHeadphones": {
+    "description": "Shop item."
+  },
+  "itemGhost": "Ghost costume",
+  "@itemGhost": {
+    "description": "Shop item (Spooktober)."
+  },
+  "itemPumpkin": "Pumpkin",
+  "@itemPumpkin": {
+    "description": "Shop item (Spooktober)."
+  },
+  "itemSantaHat": "Santa hat",
+  "@itemSantaHat": {
+    "description": "Shop item (Christmas)."
+  },
+  "itemXmasTree": "Christmas tree",
+  "@itemXmasTree": {
+    "description": "Shop item (Christmas)."
+  },
+  "itemFlowerCrown": "Flower crown",
+  "@itemFlowerCrown": {
+    "description": "Shop item (spring)."
+  },
+  "itemButterfly": "Butterfly friend",
+  "@itemButterfly": {
+    "description": "Shop item (spring)."
+  },
+  "itemSurfboard": "Surfboard",
+  "@itemSurfboard": {
+    "description": "Shop item (summer)."
+  },
+  "itemSnorkel": "Diving mask and snorkel",
+  "@itemSnorkel": {
+    "description": "Shop item (summer)."
+  },
+  "itemStickerStar": "Star sticker",
+  "@itemStickerStar": {
+    "description": "Shop item."
+  },
+  "itemStickerHeart": "Heart sticker",
+  "@itemStickerHeart": {
+    "description": "Shop item."
+  },
+  "itemStickerRocket": "Rocket sticker",
+  "@itemStickerRocket": {
+    "description": "Shop item."
+  },
+  "itemStickerGamepad": "Gamepad sticker",
+  "@itemStickerGamepad": {
+    "description": "Shop item."
+  },
+  "itemStickerMusic": "Music sticker",
+  "@itemStickerMusic": {
+    "description": "Shop item."
+  },
+  "itemStickerIceCream": "Ice cream sticker",
+  "@itemStickerIceCream": {
+    "description": "Shop item."
   }
 }

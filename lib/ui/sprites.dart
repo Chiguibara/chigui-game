@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 import '../minigame/catch_game.dart';
 import 'palette.dart';
@@ -135,4 +135,37 @@ class _FootprintsPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_FootprintsPainter old) => false;
+}
+
+/// A round sticker with a white border. Unowned stickers show as a pale
+/// silhouette.
+class StickerBadge extends StatelessWidget {
+  const StickerBadge({
+    super.key,
+    required this.icon,
+    required this.color,
+    this.size = 56,
+    this.owned = true,
+  });
+
+  final IconData icon;
+  final Color color;
+  final double size;
+  final bool owned;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: Palette.cloud,
+      shape: BoxShape.circle,
+      border: Border.all(color: Palette.ink.withValues(alpha: 0.15), width: 2),
+    ),
+    child: Icon(
+      icon,
+      size: size * 0.6,
+      color: owned ? color : Palette.ink.withValues(alpha: 0.2),
+    ),
+  );
 }
