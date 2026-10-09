@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
@@ -6,7 +8,7 @@ import '../game/rules.dart' show coinsPerFruit;
 import '../l10n/app_localizations.dart';
 import '../ui/chigui_view.dart';
 import '../ui/palette.dart';
-import '../ui/phone_frame.dart';
+import '../ui/game_frame.dart';
 import '../ui/sprites.dart';
 import 'catch_game.dart';
 
@@ -72,7 +74,7 @@ class _MinigameScreenState extends State<MinigameScreen>
 
     return Scaffold(
       backgroundColor: Palette.outside,
-      body: PhoneFrame(
+      body: GameFrame(
         child: ColoredBox(
           color: Palette.mint,
           child: SafeArea(
@@ -161,8 +163,12 @@ class _MinigameScreenState extends State<MinigameScreen>
       builder: (context, constraints) {
         final w = constraints.maxWidth;
         final h = constraints.maxHeight;
-        final fruitSize = w * 0.12;
-        final chiguiSize = w * 0.32;
+        // Sized by the shorter side so wide screens don't get giant fruit.
+        final side = math.min(w, h);
+        final fruitSize = side * 0.12;
+        // Chigüi must also fit below the catch line (its head sits on it).
+        final chiguiSize = math.min(side * 0.32, h * (1 - catchLine) / 0.68);
+        _game.reach = chiguiSize * 0.4 / w;
         void aim(Offset p) => _game.aimAt(p.dx / w);
 
         return GestureDetector(

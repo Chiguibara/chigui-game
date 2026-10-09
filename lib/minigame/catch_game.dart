@@ -33,6 +33,10 @@ class CatchGame {
   final Random _random;
   final fruits = <Fruit>[];
 
+  /// How close (in play-area widths) a fruit must land to be caught. The
+  /// screen adjusts it to Chigüi's drawn size, so wide screens stay fair.
+  double reach = catchReach;
+
   double chiguiX = 0.5;
   double targetX = 0.5;
   int caught = 0;
@@ -84,7 +88,7 @@ class CatchGame {
       fruit.y += speed * dt;
       if (before < catchLine &&
           fruit.y >= catchLine &&
-          (fruit.x - chiguiX).abs() <= catchReach) {
+          (fruit.x - chiguiX).abs() <= reach) {
         caughtNow++;
         return true;
       }

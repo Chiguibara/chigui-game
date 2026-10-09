@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import '../game/catalog.dart';
@@ -6,7 +8,7 @@ import '../game/rules.dart' show BuyResult;
 import '../l10n/app_localizations.dart';
 import '../ui/chigui_view.dart';
 import '../ui/palette.dart';
-import '../ui/phone_frame.dart';
+import '../ui/game_frame.dart';
 import '../ui/sprites.dart';
 import 'item_display.dart';
 
@@ -78,7 +80,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
     return Scaffold(
       backgroundColor: Palette.outside,
-      body: PhoneFrame(
+      body: GameFrame(
         child: ColoredBox(
           color: Palette.mint,
           child: SafeArea(
@@ -88,7 +90,7 @@ class _ShopScreenState extends State<ShopScreen> {
                 builder: (context, constraints) => CustomScrollView(
                   slivers: [
                     SliverToBoxAdapter(
-                      child: _header(l10n, textTheme, constraints.maxWidth),
+                      child: _header(l10n, textTheme, constraints),
                     ),
                     ..._section(
                       l10n.seasonalSection,
@@ -126,8 +128,38 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  Widget _header(AppLocalizations l10n, TextTheme textTheme, double width) {
+  Widget _header(
+    AppLocalizations l10n,
+    TextTheme textTheme,
+    BoxConstraints constraints,
+  ) {
     final state = _pet.state;
+    final wide = isWide(constraints);
+    final fittingRoom = ChiguiView(
+      size: wide
+          ? math.min(constraints.maxWidth * 0.22, 260)
+          : constraints.maxWidth * 0.42,
+      wearing: state.equipped,
+      reaction: _reaction,
+      reactionId: _reactionId,
+      onReactionEnd: () => setState(() => _reaction = null),
+    );
+    final message = Container(
+      // Three lines: the seasonal jokes are long.
+      height: 3 * 1.3 * 16 * MediaQuery.textScalerOf(context).scale(1),
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Semantics(
+        liveRegion: true,
+        child: Text(
+          _message ?? l10n.shopHint,
+          textAlign: TextAlign.center,
+          maxLines: 3,
+          overflow: TextOverflow.ellipsis,
+          style: textTheme.bodyLarge?.copyWith(color: Palette.ink, height: 1.3),
+        ),
+      ),
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 4, 16, 0),
       child: Column(
@@ -169,33 +201,21 @@ class _ShopScreenState extends State<ShopScreen> {
               ),
             ],
           ),
-          // The fitting room: Chigüi wearing the current outfit.
-          ChiguiView(
-            size: width * 0.42,
-            wearing: state.equipped,
-            reaction: _reaction,
-            reactionId: _reactionId,
-            onReactionEnd: () => setState(() => _reaction = null),
-          ),
-          Container(
-            // Three lines: the seasonal jokes are long.
-            height: 3 * 1.3 * 16 * MediaQuery.textScalerOf(context).scale(1),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Semantics(
-              liveRegion: true,
-              child: Text(
-                _message ?? l10n.shopHint,
-                textAlign: TextAlign.center,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: textTheme.bodyLarge?.copyWith(
-                  color: Palette.ink,
-                  height: 1.3,
-                ),
-              ),
-            ),
-          ),
+          // The fitting room: Chigüi wearing the current outfit, with the
+          // shop's message beside it on wide screens.
+          if (wide)
+            Row(
+              children: [
+                const SizedBox(width: 24),
+                fittingRoom,
+                const SizedBox(width: 24),
+                Expanded(child: message),
+              ],
+            )
+          else ...[
+            fittingRoom,
+            message,
+          ],
         ],
       ),
     );

@@ -284,6 +284,48 @@ void main() {
     expect(find.text('Wear'), findsOneWidget);
   });
 
+  group('wide screens (PC)', () {
+    Future<PetController> startWide(WidgetTester tester) async {
+      final controller = await start(
+        tester,
+        (s) => s.copyWith(coins: 50, pottyUrgeSince: noon, messes: 2),
+      );
+      tester.view.physicalSize = const Size(1280 * 3, 720 * 3);
+      tester.view.devicePixelRatio = 3;
+      await tester.pump();
+      return controller;
+    }
+
+    testWidgets('home puts Chigüi beside the controls', (tester) async {
+      await startWide(tester);
+      final chiguiBox = tester.getRect(find.byType(ChiguiView));
+      final feed = tester.getRect(find.text('Feed'));
+      expect(feed.left, greaterThan(chiguiBox.right));
+      await tester.tap(find.text('Toilet'));
+      await tester.pump(const Duration(seconds: 2));
+    });
+
+    testWidgets('the shop and the minigame fit', (tester) async {
+      await startWide(tester);
+      await tester.tap(find.text('Shop'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      expect(find.text("Chigüi's shop"), findsOneWidget);
+      await tester.tap(find.byTooltip('Back home'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.text('Play'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.text('Start'));
+      for (var i = 0; i < 31 * 10; i++) {
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+      expect(find.text('Great game!'), findsOneWidget);
+    });
+  });
+
   testWidgets('the dev panel skips time', (tester) async {
     final controller = await start(tester, same);
     final before = controller.now;

@@ -14,7 +14,7 @@ import 'chigui_view.dart';
 import 'dev_panel.dart';
 import 'need_meter.dart';
 import 'palette.dart';
-import 'phone_frame.dart';
+import 'game_frame.dart';
 import 'sprites.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -147,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Palette.outside,
-      body: PhoneFrame(
+      body: GameFrame(
         child: ListenableBuilder(
           listenable: _pet,
           builder: (context, _) {
@@ -164,53 +164,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     _counters(l10n, textTheme, state.coins),
                     Expanded(
                       child: LayoutBuilder(
-                        builder: (context, constraints) => Column(
-                          children: [
-                            const Spacer(),
-                            Text(
-                              l10n.chiguiName,
-                              style: textTheme.headlineMedium?.copyWith(
-                                color: Palette.ink,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            ChiguiView(
-                              // Fit both narrow and short screens, leaving room for the
-                              // controls below.
-                              size: math.min(
-                                constraints.maxWidth * 0.7,
-                                constraints.maxHeight * 0.34,
-                              ),
-                              face: _face,
-                              wearing: state.equipped,
-                              bubble: _bubble,
-                              messes: state.messes,
-                              onTap: _onPet,
-                              onCleanMess: _onClean,
-                              reaction: _reaction,
-                              reactionId: _reactionId,
-                              onReactionEnd: () =>
-                                  setState(() => _reaction = null),
-                            ),
-                            const SizedBox(height: 16),
-                            _statusLine(l10n, textTheme),
-                            const SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                for (final need in Need.values)
-                                  NeedMeter(
-                                    need: need,
-                                    level: state.level(need),
-                                  ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            _actions(l10n, asleep: asleep),
-                            const Spacer(flex: 2),
-                          ],
-                        ),
+                        builder: (context, constraints) => isWide(constraints)
+                            ? _wideLayout(l10n, textTheme, constraints)
+                            : _phoneLayout(l10n, textTheme, constraints),
                       ),
                     ),
                   ],
@@ -222,6 +178,98 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Widget _title(AppLocalizations l10n, TextTheme textTheme) => Text(
+    l10n.chiguiName,
+    style: textTheme.headlineMedium?.copyWith(
+      color: Palette.ink,
+      fontWeight: FontWeight.w700,
+    ),
+  );
+
+  Widget _chigui(double size) {
+    final state = _pet.state;
+    return ChiguiView(
+      size: size,
+      face: _face,
+      wearing: state.equipped,
+      bubble: _bubble,
+      messes: state.messes,
+      onTap: _onPet,
+      onCleanMess: _onClean,
+      reaction: _reaction,
+      reactionId: _reactionId,
+      onReactionEnd: () => setState(() => _reaction = null),
+    );
+  }
+
+  Widget _meters() => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      for (final need in Need.values)
+        NeedMeter(need: need, level: _pet.state.level(need)),
+    ],
+  );
+
+  /// One column, as on a phone.
+  Widget _phoneLayout(
+    AppLocalizations l10n,
+    TextTheme textTheme,
+    BoxConstraints constraints,
+  ) => Column(
+    children: [
+      const Spacer(),
+      _title(l10n, textTheme),
+      const SizedBox(height: 16),
+      // Fit both narrow and short screens, leaving room for the controls.
+      _chigui(
+        math.min(constraints.maxWidth * 0.7, constraints.maxHeight * 0.34),
+      ),
+      const SizedBox(height: 16),
+      _statusLine(l10n, textTheme),
+      const SizedBox(height: 16),
+      _meters(),
+      const SizedBox(height: 20),
+      _actions(l10n, asleep: _pet.asleep),
+      const Spacer(flex: 2),
+    ],
+  );
+
+  /// Chigüi large on the left, everything else on the right.
+  Widget _wideLayout(
+    AppLocalizations l10n,
+    TextTheme textTheme,
+    BoxConstraints constraints,
+  ) => Row(
+    children: [
+      Expanded(
+        flex: 5,
+        child: Center(
+          child: _chigui(
+            math.min(constraints.maxWidth * 0.5, constraints.maxHeight * 0.8),
+          ),
+        ),
+      ),
+      Expanded(
+        flex: 4,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _title(l10n, textTheme),
+              const SizedBox(height: 16),
+              _statusLine(l10n, textTheme),
+              const SizedBox(height: 24),
+              _meters(),
+              const SizedBox(height: 32),
+              _actions(l10n, asleep: _pet.asleep),
+            ],
+          ),
+        ),
+      ),
+    ],
+  );
 
   Widget _statusLine(AppLocalizations l10n, TextTheme textTheme) {
     final style = textTheme.titleMedium?.copyWith(
