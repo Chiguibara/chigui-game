@@ -18,7 +18,7 @@ This file holds the project's working principles and confirmed decisions; anythi
 - Notifications: none on the web (closed-page notifications would need Web Push and a server). In the Android app (later), local notifications scheduled from the known routine (meals, potty, bedtime), off by default and switched on by a grown-up, few per day, only in the routine's hours, gentle copy.
 - Persistence goes through `GameRepository` (domain types only); today it is JSON in `shared_preferences`, and moving to SQLite with drift must only need a new implementation. Saves are local only. An event log keeps the last 90 days. JSON stays for production; switch to SQLite only for a concrete need (e.g. a history screen with queries).
 - Analytics: only page-level analytics on the website hosting the game (behind its consent banner), to know whether children play. The game itself sends no tracking or personal data. In Spain, consent for under-14s must come from a parent; review the banner with whoever handles legal.
-- The repository is public but not open source: all rights reserved (see `LICENSE`). Never commit secrets (signing keys, tokens, `key.properties`); they live in GitHub secrets. Do not add open-source licenses or third-party art or audio without approval.
+- The repository is public but not open source: all rights reserved (see `LICENSE`). The code is Daniel Ripoll's; the Chigüibara brand (name, logo, Chigüi character) is Karina Antequera's. Never commit secrets (signing keys, tokens, `key.properties`); they live in GitHub secrets. Do not add open-source licenses or third-party art or audio without approval.
 
 ## Open questions
 - Rest of the MVP scope beyond what is built.

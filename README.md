@@ -47,5 +47,5 @@ Use `?lang=en` on the English page. `allow` lets the walk use the phone's motion
 
 ## License
 
-This repository is public so anyone can see how the game works (for example, that it collects no data), but it is **not open source**. Copyright © 2026 Daniel Ripoll. All rights reserved: the code, the Chigüi character and artwork (drawn in code), sounds, and the Chigüibara brand may not be copied, modified, or redistributed without written permission. See `LICENSE`.
+This repository is public so anyone can see how the game works (for example, that it collects no data), but it is **not open source**. Copyright © 2026 Daniel Ripoll. All rights reserved. The Chigüibara brand (name, logo, and the Chigüi character) is the property of Karina Antequera. The code, artwork (drawn in code), sounds, and brand may not be copied, modified, or redistributed without written permission. See `LICENSE`.
 
