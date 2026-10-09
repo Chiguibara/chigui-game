@@ -85,6 +85,31 @@ def _hz(name):
     return 440 * 2 ** (semis / 12)
 
 
+def _bite():
+    """A bright, snappy crack over a low thump, then two crunchy ticks."""
+    return seq(
+        mix(noise(0.035, 0.9, smooth=0.0, attack=0.0005, release=0.03, seed=11),
+            tone(150, 0.06, "sine", 0.7, attack=0.0005, release=0.04,
+                 freq_end=55)),
+        silence(0.012),
+        noise(0.018, 0.55, smooth=0.1, attack=0.0005, release=0.012, seed=12),
+        silence(0.014),
+        noise(0.016, 0.45, smooth=0.15, attack=0.0005, release=0.01, seed=13),
+    )
+
+
+def _gulp(start, low, seed):
+    """A bubbly swallow: pitch drops, then a little "bloop" back up."""
+    return seq(
+        mix(tone(start, 0.075, "sine", 0.6, attack=0.004, release=0.015,
+                 freq_end=low),
+            tone(start * 2, 0.075, "triangle", 0.08, release=0.02,
+                 freq_end=low * 2)),
+        tone(low, 0.045, "sine", 0.5, attack=0.002, release=0.03,
+             freq_end=low * 1.9),
+    )
+
+
 # --- The sounds. ---
 
 SOUNDS = {
@@ -93,16 +118,13 @@ SOUNDS = {
         tone(600, 0.05, "sine", 0.4, release=0.02, freq_end=900),
         tone(900, 0.12, "sine", 0.45, freq_end=1300, vibrato=0.02),
     ),
-    # Big cute chomp: a crunchy bite, then two little munches.
+    # Big cute chomp: a sharp bite with a crunch, then "gulu gulu".
     "chomp": seq(
-        mix(noise(0.07, 0.6, smooth=0.3, seed=2),
-            tone(180, 0.07, "square", 0.25, freq_end=90)),
-        silence(0.05),
-        mix(noise(0.05, 0.35, smooth=0.5, seed=3),
-            tone(220, 0.05, "square", 0.15, freq_end=150)),
-        silence(0.04),
-        mix(noise(0.05, 0.3, smooth=0.5, seed=4),
-            tone(240, 0.05, "square", 0.12, freq_end=160)),
+        _bite(),
+        silence(0.06),
+        _gulp(440, 190, seed=1),
+        silence(0.03),
+        _gulp(380, 160, seed=2),
     ),
     # "Nuh-uh": two soft falling blips.
     "refuse": seq(
