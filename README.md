@@ -17,4 +17,6 @@ make shell      # shell inside the container
 
 Use `WEB_PORT=9000 make web` if port 8080 is taken.
 
+After adding, renaming, or deleting files in `assets/` (sounds, fonts) or changing `pubspec.yaml`, reloading the page is not enough: quit `make web` with `q` and start it again.
+
 Only the web platform exists for now. Windows (for players) and Android will be added later; see `CLAUDE.md`.
