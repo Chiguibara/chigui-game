@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:chigui_game/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';

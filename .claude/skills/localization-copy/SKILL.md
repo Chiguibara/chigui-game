@@ -1,6 +1,6 @@
 ---
 name: localization-copy
-description: Writes and localizes player-facing text (English and Spanish) with gen-l10n, in Chigüibara's voice, and checks that it fits on screen.
+description: Writes and localizes player-facing text (English, Spanish, German, French, Catalan) with gen-l10n, in Chigüibara's voice, and checks that it fits on screen.
 ---
 
 # Localization and Copy
