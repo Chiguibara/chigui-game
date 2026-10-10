@@ -473,4 +473,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get tapsCapped =>
       'Chigüi\'s paws are tired of tapping! More tomorrow, or go for a real walk.';
+
+  @override
+  String get piggyBankFull =>
+      'Chigüi\'s piggy bank is full for today! Playing is still fun.';
 }

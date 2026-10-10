@@ -474,4 +474,8 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get tapsCapped =>
       'A Chigüi li fan mal les potetes de tant tocar! Demà més, o surt a caminar de debò.';
+
+  @override
+  String get piggyBankFull =>
+      'La guardiola de Chigüi és plena per avui! Però jugar continua sent divertit.';
 }

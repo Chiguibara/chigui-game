@@ -131,5 +131,6 @@
   "itemBalloon": "Ballon cœur",
   "itemSkateboard": "Skateboard",
   "itemRetroConsole": "Console rétro",
-  "tapsCapped": "Les pattes de Chigüi sont fatiguées de tapoter ! La suite demain, ou marche pour de vrai."
+  "tapsCapped": "Les pattes de Chigüi sont fatiguées de tapoter ! La suite demain, ou marche pour de vrai.",
+  "piggyBankFull": "La tirelire de Chigüi est pleine pour aujourd'hui ! Jouer reste amusant."
 }

@@ -474,4 +474,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get tapsCapped =>
       'Les pattes de Chigüi sont fatiguées de tapoter ! La suite demain, ou marche pour de vrai.';
+
+  @override
+  String get piggyBankFull =>
+      'La tirelire de Chigüi est pleine pour aujourd\'hui ! Jouer reste amusant.';
 }

@@ -104,6 +104,8 @@ class JsonGameRepository implements GameRepository {
     'coins': s.coins,
     'stepsToday': s.stepsToday,
     'tapStepsToday': s.tapStepsToday,
+    'minigameCoinsToday': s.minigameCoinsToday,
+    'minigameDay': _encodeTime(s.minigameDay),
     'stepsDay': _encodeTime(s.stepsDay),
     'owned': s.owned.toList(),
     'equipped': {for (final e in s.equipped.entries) e.key.name: e.value},
@@ -145,6 +147,8 @@ class JsonGameRepository implements GameRepository {
       coins: _count(json['coins']),
       stepsToday: _count(json['stepsToday']),
       tapStepsToday: _count(json['tapStepsToday']),
+      minigameCoinsToday: _count(json['minigameCoinsToday']),
+      minigameDay: _decodeTime(json['minigameDay']),
       stepsDay: _decodeTime(json['stepsDay']),
       owned: owned,
       ownedPacks: {

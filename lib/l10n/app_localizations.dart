@@ -895,6 +895,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chigüi\'s paws are tired of tapping! More tomorrow, or go for a real walk.'**
   String get tapsCapped;
+
+  /// Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi\'s piggy bank is full for today! Playing is still fun.'**
+  String get piggyBankFull;
 }
 
 class _AppLocalizationsDelegate

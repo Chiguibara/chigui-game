@@ -23,6 +23,24 @@ const fruitsPerCoin = 2;
 
 int coinsForFruits(int caught) => caught ~/ fruitsPerCoin;
 
+/// The minigame stops giving coins after this many in a day; playing stays
+/// fun (and still raises fun), the piggy bank is just full until tomorrow.
+const maxMinigameCoinsPerDay = 30;
+
+bool _sameDay(DateTime? a, DateTime b) {
+  final day = a?.toLocal();
+  final today = b.toLocal();
+  return day != null &&
+      day.year == today.year &&
+      day.month == today.month &&
+      day.day == today.day;
+}
+
+/// Minigame coins still available today.
+int minigameCoinsLeft(PetState state, DateTime now) =>
+    maxMinigameCoinsPerDay -
+    (_sameDay(state.minigameDay, now) ? state.minigameCoinsToday : 0);
+
 /// Every [stepsPerWalk] steps in a day count as a walk with Chigüi, up to
 /// [maxWalksPerDay]. Walks only reward; not walking costs nothing.
 const stepsPerWalk = 1000;
@@ -306,12 +324,15 @@ Outcome finishRound(PetState state, DateTime now, {required int caught}) {
   final current = advance(state, now);
   final s = current.state;
   if (s.asleepAt(now)) return (state: s, events: current.events, ok: false);
+  final left = max(0, minigameCoinsLeft(s, now));
+  final earned = min(coinsForFruits(caught), left);
+  final local = now.toLocal();
   return (
-    state: _raise(
-      s,
-      Need.fun,
-      playFunGain,
-    ).copyWith(coins: s.coins + coinsForFruits(caught)),
+    state: _raise(s, Need.fun, playFunGain).copyWith(
+      coins: s.coins + earned,
+      minigameCoinsToday: maxMinigameCoinsPerDay - left + earned,
+      minigameDay: DateTime(local.year, local.month, local.day),
+    ),
     events: [...current.events, GameEvent(EventType.played, now)],
     ok: true,
   );
@@ -412,14 +433,8 @@ PetState _withPack(PetState state, Pack pack) => state.copyWith(
 
 int walksFor(int steps) => min(steps ~/ stepsPerWalk, maxWalksPerDay);
 
-bool _sameStepsDay(PetState state, DateTime now) {
-  final day = state.stepsDay?.toLocal();
-  final today = now.toLocal();
-  return day != null &&
-      day.year == today.year &&
-      day.month == today.month &&
-      day.day == today.day;
-}
+bool _sameStepsDay(PetState state, DateTime now) =>
+    _sameDay(state.stepsDay, now);
 
 /// Steps counted today so far (real and tapped), from zero each new day.
 int stepsOn(PetState state, DateTime now) =>

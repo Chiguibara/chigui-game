@@ -79,6 +79,7 @@ class PetController extends ChangeNotifier {
   bool grantPack(Pack pack) => _apply(rules.grantPack(_state, now, pack));
   void syncPacks(Set<String> fromStore) =>
       _apply(rules.syncPacks(_state, now, fromStore));
+  int get minigameCoinsLeft => rules.minigameCoinsLeft(_state, now);
   bool finishRound(int caught) =>
       _apply(rules.finishRound(_state, now, caught: caught));
 

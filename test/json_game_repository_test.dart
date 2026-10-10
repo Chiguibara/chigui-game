@@ -40,6 +40,8 @@ void main() {
       coins: 12,
       stepsToday: 3400,
       tapStepsToday: 1200,
+      minigameCoinsToday: 12,
+      minigameDay: now,
       stepsDay: now,
       owned: {'beanie', 'stickerStar'},
       equipped: {Slot.head: 'beanie'},

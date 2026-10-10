@@ -22,6 +22,8 @@ class PetState {
     this.coins = 0,
     this.stepsToday = 0,
     this.tapStepsToday = 0,
+    this.minigameCoinsToday = 0,
+    this.minigameDay,
     this.stepsDay,
     this.owned = const {},
     this.equipped = const {},
@@ -71,6 +73,10 @@ class PetState {
 
   /// Of [stepsToday], how many came from tapping the feet.
   final int tapStepsToday;
+
+  /// Coins the minigame gave on [minigameDay] (a local calendar day).
+  final int minigameCoinsToday;
+  final DateTime? minigameDay;
   final DateTime? stepsDay;
 
   /// Ids of bought items (see `catalog`).
@@ -104,6 +110,8 @@ class PetState {
     int? coins,
     int? stepsToday,
     int? tapStepsToday,
+    int? minigameCoinsToday,
+    DateTime? minigameDay,
     DateTime? stepsDay,
     Set<String>? owned,
     Map<Slot, String>? equipped,
@@ -129,6 +137,8 @@ class PetState {
     coins: coins ?? this.coins,
     stepsToday: stepsToday ?? this.stepsToday,
     tapStepsToday: tapStepsToday ?? this.tapStepsToday,
+    minigameCoinsToday: minigameCoinsToday ?? this.minigameCoinsToday,
+    minigameDay: minigameDay ?? this.minigameDay,
     stepsDay: stepsDay ?? this.stepsDay,
     owned: owned ?? this.owned,
     equipped: equipped ?? this.equipped,

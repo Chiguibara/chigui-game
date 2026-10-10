@@ -239,6 +239,24 @@ void main() {
       expect(types(o), [EventType.played]);
     });
 
+    test('coins stop at the daily limit; playing stays fun', () {
+      var s = pet0(at(12), level: 0.2);
+      var total = 0;
+      for (var i = 0; i < 4; i++) {
+        s = finishRound(s, at(12, i), caught: 20).state; // 10 coins each
+        total = s.coins;
+      }
+      expect(total, maxMinigameCoinsPerDay);
+      expect(minigameCoinsLeft(s, at(13)), 0);
+      expect(s.level(Need.fun), 1.0, reason: "fun keeps rising");
+      // A new day fills the piggy bank again.
+      expect(minigameCoinsLeft(s, at(12, 0, 13)), maxMinigameCoinsPerDay);
+      expect(
+        finishRound(s, at(12, 0, 13), caught: 20).state.coins,
+        maxMinigameCoinsPerDay + 10,
+      );
+    });
+
     test('playing with no fruit caught is still fun', () {
       final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 0);
       expect(o.state.level(Need.fun), greaterThan(0.4));

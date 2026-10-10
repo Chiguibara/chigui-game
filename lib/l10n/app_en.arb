@@ -578,5 +578,9 @@
   "tapsCapped": "Chigüi's paws are tired of tapping! More tomorrow, or go for a real walk.",
   "@tapsCapped": {
     "description": "In the walk, when tapped feet have reached their daily limit of walks. Funny, never scolding; real steps still count."
+  },
+  "piggyBankFull": "Chigüi's piggy bank is full for today! Playing is still fun.",
+  "@piggyBankFull": {
+    "description": "Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'."
   }
 }

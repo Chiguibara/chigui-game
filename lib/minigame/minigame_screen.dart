@@ -36,6 +36,10 @@ class _MinigameScreenState extends State<MinigameScreen>
   Duration _last = Duration.zero;
   int _catchId = 0;
 
+  /// Coins this round actually gave (the daily cap may cut them).
+  int _earned = 0;
+  bool _piggyBankFull = false;
+
   @override
   void dispose() {
     _ticker.dispose();
@@ -63,6 +67,12 @@ class _MinigameScreenState extends State<MinigameScreen>
       if (_game.over) {
         _ticker.stop();
         _phase = _Phase.done;
+        final deserved = coinsForFruits(_game.caught);
+        _earned = math.min(
+          deserved,
+          math.max(0, widget.controller.minigameCoinsLeft),
+        );
+        _piggyBankFull = _earned < deserved;
         widget.controller.finishRound(_game.caught);
         sfx.play(_game.caught > 0 ? Sfx.reward : Sfx.pop);
       }
@@ -113,16 +123,24 @@ class _MinigameScreenState extends State<MinigameScreen>
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (coinsForFruits(_game.caught) > 0) ...[
+                      if (_earned > 0) ...[
                         const Coin(size: 28),
                         const SizedBox(width: 8),
                       ],
                       Text(
-                        l10n.coinsEarned(coinsForFruits(_game.caught)),
+                        l10n.coinsEarned(_earned),
                         style: textTheme.titleMedium,
                       ),
                     ],
                   ),
+                  if (_piggyBankFull) ...[
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.piggyBankFull,
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyLarge,
+                    ),
+                  ],
                   const SizedBox(height: 32),
                   _button(Icons.replay, l10n.playAgainButton, _start),
                   const SizedBox(height: 12),
