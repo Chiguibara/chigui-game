@@ -43,7 +43,7 @@ The website embeds it in `/juego/` with:
 ></iframe>
 ```
 
-Use `?lang=en` on the English page. `allow` lets the walk use the phone's motion sensor and play sounds inside the frame.
+Use `?lang=en` on the English page (`es`, `en`, `de`, `fr`, and `ca` are supported; without it, the game follows the browser's language). `allow` lets the walk use the phone's motion sensor and play sounds inside the frame.
 
 ## License
 

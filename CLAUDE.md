@@ -35,7 +35,7 @@ This file holds the project's working principles and confirmed decisions; anythi
 - Respect Chigüibara's visual identity: handmade-feeling kawaii, geeky, and playful; not generic or excessively childish.
 - Consequences for neglect stay mild, curable, and capped; no guilt-tripping copy. Never pressure players to spend.
 - Distinguish confirmed decisions, hypotheses, and open questions.
-- Code and technical documentation in English. Player-facing text is always localized (English first, Spanish supported); see the `localization-copy` skill.
+- Code and technical documentation in English. Player-facing text is always localized: English (template), Spanish, German, French, and Catalan; see the `localization-copy` skill.
 
 ## Workflow
 1. Inspect the project first.
