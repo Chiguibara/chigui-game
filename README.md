@@ -24,13 +24,13 @@ Only the web platform exists for now. Windows (for players) and Android will be 
 
 ## Deployment
 
-Every push to `main` runs the checks and, if they pass, publishes the web build to https://juego.chiguibara.es (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
+Every push to `main` and every pull request runs the checks. Publishing happens with a version tag (`git tag v0.2.0 && git push origin v0.2.0`): if the checks pass, the web build goes to https://juego.chiguibara.es and the Android test APKs to a GitHub pre-release (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
 
 One-time setup:
 
 1. In Cloudflare, create an API token from the **Edit Cloudflare Workers** template, limited to your account and the `chiguibara.es` zone.
 2. In GitHub (**Settings → Secrets and variables → Actions**), add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (shown in the Cloudflare dashboard sidebar).
-3. Push to `main`: the first deploy creates `juego.chiguibara.es` as a custom domain.
+3. Push a version tag: the first deploy creates `juego.chiguibara.es` as a custom domain.
 
 The website embeds it in `/juego/` with:
 
