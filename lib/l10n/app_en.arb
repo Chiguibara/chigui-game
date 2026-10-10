@@ -582,5 +582,9 @@
   "piggyBankFull": "Chigüi's piggy bank is full for today! Playing is still fun.",
   "@piggyBankFull": {
     "description": "Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'."
+  },
+  "schoolStatus": "I'm in class right now! See you after school.",
+  "@schoolStatus": {
+    "description": "Chigüi speaking, during class time (weekday mornings outside school holidays), when the minigame waits until after school."
   }
 }

@@ -28,6 +28,7 @@ class ChiguiView extends StatefulWidget {
     required this.size,
     this.face = Face.normal,
     this.wearing = const {},
+    this.studying = false,
     this.bubble,
     this.messes = 0,
     this.onTap,
@@ -40,6 +41,9 @@ class ChiguiView extends StatefulWidget {
   final double size;
   final Face face;
   final Map<Slot, String> wearing;
+
+  /// Class time: Chigüi holds an open book.
+  final bool studying;
   final Bubble? bubble;
   final int messes;
   final VoidCallback? onTap;
@@ -141,6 +145,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                               : 0,
                           legLift: walking ? math.sin(t * 4 * math.pi) : 0,
                           wearing: widget.wearing,
+                          studying: widget.studying,
                         ),
                       ),
                     ),
@@ -550,6 +555,7 @@ class _ChiguiPainter extends CustomPainter {
     this.cheekPuff = 0,
     this.legLift = 0,
     this.wearing = const {},
+    this.studying = false,
   });
 
   final Face face;
@@ -566,6 +572,8 @@ class _ChiguiPainter extends CustomPainter {
 
   /// Accessories worn, by slot.
   final Map<Slot, String> wearing;
+
+  final bool studying;
 
   void _accessories(Canvas canvas, Size size, Layer layer) {
     for (final id in wearing.values) {
@@ -821,6 +829,7 @@ class _ChiguiPainter extends CustomPainter {
     // Chigüi's signature bow tie at the neck, unless covered.
     if (wearing.containsKey(Slot.neck) || wearing.containsKey(Slot.body)) {
       _accessories(canvas, size, Layer.front);
+      if (studying) paintStudyBook(canvas, size);
       return;
     }
     final ink = Paint()..color = Palette.ink;
@@ -837,6 +846,7 @@ class _ChiguiPainter extends CustomPainter {
     canvas.drawPath(bow, ink);
     canvas.drawCircle(knot, w * 0.022, ink);
     _accessories(canvas, size, Layer.front);
+    if (studying) paintStudyBook(canvas, size);
   }
 
   /// A front-facing ghost face on the sheet that still shows the mood.
@@ -924,5 +934,6 @@ class _ChiguiPainter extends CustomPainter {
       old.mouthOpen != mouthOpen ||
       old.cheekPuff != cheekPuff ||
       old.legLift != legLift ||
-      !mapEquals(old.wearing, wearing);
+      !mapEquals(old.wearing, wearing) ||
+      old.studying != studying;
 }

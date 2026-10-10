@@ -21,8 +21,8 @@ import 'fake_motion.dart';
 import 'fake_pack_store.dart';
 
 void main() {
-  // Monday noon: no routine moment is active.
-  final noon = DateTime(2026, 10, 12, 12);
+  // Monday 16:00: after school, before the routine starts at 17:00.
+  final noon = DateTime(2026, 10, 12, 16);
 
   Future<PetController> controllerWith(
     PetState Function(PetState fresh) setUp, {
@@ -237,7 +237,7 @@ void main() {
   testWidgets('a sleeping Chigüi cannot play or walk', (tester) async {
     await start(
       tester,
-      (s) => s.copyWith(asleepUntil: DateTime(2026, 10, 12, 13)),
+      (s) => s.copyWith(asleepUntil: DateTime(2026, 10, 12, 18)),
     );
     expect(actionTile(tester, 'Play').onPressed, isNull);
     expect(actionTile(tester, 'Walk').onPressed, isNull);
@@ -248,6 +248,7 @@ void main() {
   ) async {
     final controller = await start(tester, same);
 
+    await tester.ensureVisible(find.text('+1000 steps'));
     await tester.tap(find.text('+1000 steps'));
     await tester.pump();
     expect(find.text('What a lovely walk!'), findsOneWidget);
@@ -568,6 +569,37 @@ void main() {
       );
       await walk(tester, motion, 20);
       expect(find.text('Walk with Chigüi'), findsNothing);
+    });
+  });
+
+  group('class time', () {
+    final inClass = DateTime(2026, 10, 12, 10); // Monday 10:00.
+
+    testWidgets('Chigüi studies and Play waits until after school', (
+      tester,
+    ) async {
+      final controller = await start(tester, same, now: inClass);
+      expect(controller.inSchool, isTrue);
+      expect(
+        find.text("I'm in class right now! See you after school."),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.text('Play'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Fruit catch'), findsNothing);
+      expect(
+        find.text("I'm in class right now! See you after school."),
+        findsOneWidget,
+      );
+      await tester.pump(const Duration(seconds: 2));
+
+      // Feeding still works.
+      await tester.tap(find.text('Feed'));
+      await tester.pump();
+      expect(find.text('Yum! Thank you!'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 3));
     });
   });
 

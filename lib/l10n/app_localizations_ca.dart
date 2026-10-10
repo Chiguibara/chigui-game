@@ -478,4 +478,7 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get piggyBankFull =>
       'La guardiola de Chigüi és plena per avui! Però jugar continua sent divertit.';
+
+  @override
+  String get schoolStatus => 'Ara mateix soc a classe! Ens veiem a la sortida.';
 }

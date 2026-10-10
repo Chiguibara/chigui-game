@@ -132,5 +132,6 @@
   "itemSkateboard": "Skateboard",
   "itemRetroConsole": "Console rétro",
   "tapsCapped": "Les pattes de Chigüi sont fatiguées de tapoter ! La suite demain, ou marche pour de vrai.",
-  "piggyBankFull": "La tirelire de Chigüi est pleine pour aujourd'hui ! Jouer reste amusant."
+  "piggyBankFull": "La tirelire de Chigüi est pleine pour aujourd'hui ! Jouer reste amusant.",
+  "schoolStatus": "Je suis en classe en ce moment ! À la sortie de l'école."
 }

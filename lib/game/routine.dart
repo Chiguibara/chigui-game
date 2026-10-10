@@ -23,6 +23,18 @@ const bedtimeWait = Duration(minutes: 30);
 const schoolDayWakeUp = (8, 0);
 const freeDayWakeUp = (9, 0);
 
+/// Class time, when playing the minigame waits until after school: weekdays
+/// in these hours (end excluded), outside the school holidays. The core
+/// hours shared by continuous and split school days in Spain.
+const schoolHours = ((9, 0), (14, 0));
+
+/// School holidays as inclusive (month, day) ranges; a range may wrap past
+/// New Year. Easter and local holidays vary and are not included.
+const schoolHolidays = [
+  ((6, 23), (9, 7)), // Summer.
+  ((12, 23), (1, 7)), // Christmas, until the day after Three Kings.
+];
+
 class TimeWindow {
   const TimeWindow(this.start, this.end);
 
@@ -103,6 +115,24 @@ List<DateTime> _pottyUrges(DateTime date, int seed, (int, int) hours) {
 }
 
 /// The next moment after [now] when the routine changes something.
+/// Whether children are probably in class at [now] (local time).
+bool inSchool(DateTime now) {
+  final t = now.toLocal();
+  if (_isWeekend(t)) return false;
+  int key((int, int) monthDay) => monthDay.$1 * 100 + monthDay.$2;
+  final today = t.month * 100 + t.day;
+  for (final (from, to) in schoolHolidays) {
+    final wraps = key(from) > key(to);
+    final inside = wraps
+        ? today >= key(from) || today <= key(to)
+        : today >= key(from) && today <= key(to);
+    if (inside) return false;
+  }
+  final minutes = t.hour * 60 + t.minute;
+  final ((startH, startM), (endH, endM)) = schoolHours;
+  return minutes >= startH * 60 + startM && minutes < endH * 60 + endM;
+}
+
 DateTime nextRoutineMoment(DateTime now, int seed) {
   final local = now.toLocal();
   final moments = [

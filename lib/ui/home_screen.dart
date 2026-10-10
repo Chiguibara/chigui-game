@@ -185,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _react(Reaction? reaction) {
     if (reaction == null) return;
+    _refusedForSchool = false;
     _clearReaction?.cancel();
     setState(() {
       _reaction = reaction;
@@ -240,9 +241,20 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
   );
 
-  void _onPlay() => Navigator.of(context).push(
-    MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
-  );
+  /// True when the last "no" was because it is class time.
+  bool _refusedForSchool = false;
+
+  void _onPlay() {
+    if (_pet.inSchool) {
+      sfx.play(Sfx.refuse);
+      _react(Reaction.refuse);
+      _refusedForSchool = true;
+      return;
+    }
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
+    );
+  }
 
   Face get _face {
     final state = _pet.state;
@@ -257,6 +269,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_pet.asleep) return null;
     if (state.sick) return Bubble.sick;
     if (state.needsPotty) return Bubble.potty;
+    if (_pet.inSchool) return null; // Busy studying.
     if (_pet.wantsSleep) return Bubble.sleepy;
     if (_pet.pendingMeal != null) return Bubble.food;
     return switch (_pet.wish) {
@@ -275,7 +288,8 @@ class _HomeScreenState extends State<HomeScreen> {
         < happyLevel => l10n.pettedMidStatus,
         _ => l10n.lovedStatus,
       },
-      Reaction.refuse => l10n.fullStatus,
+      Reaction.refuse =>
+        _refusedForSchool ? l10n.schoolStatus : l10n.fullStatus,
       Reaction.relief => l10n.reliefStatus,
       Reaction.cured => l10n.curedStatus,
       Reaction.cleaned => l10n.cleanedStatus,
@@ -286,6 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
       null when state.needsPotty => l10n.pottyStatus,
       null when _pet.wantsSleep => l10n.sleepyStatus,
       null when _pet.pendingMeal != null => l10n.mealtimeStatus,
+      null when _pet.inSchool => l10n.schoolStatus,
       null when state.messes > 0 => l10n.messStatus,
       null when state.grumpy => l10n.grumpyStatus,
       null => switch (_pet.wish) {
@@ -349,6 +364,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ChiguiView(
       size: size,
       face: _face,
+      studying: _pet.inSchool && !_pet.asleep,
       wearing: state.equipped,
       bubble: _bubble,
       messes: state.messes,

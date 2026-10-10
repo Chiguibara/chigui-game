@@ -6,7 +6,7 @@ import '../data/game_repository.dart';
 import 'game_event.dart';
 import 'catalog.dart';
 import 'pet_state.dart';
-import 'routine.dart';
+import 'routine.dart' as routine;
 import 'rules.dart' as rules;
 
 /// Single source of truth for the pet. Every change is saved right away, with
@@ -53,7 +53,10 @@ class PetController extends ChangeNotifier {
   Need? get wish => rules.wish(_state);
   bool get asleep => _state.asleepAt(now);
   bool get wantsSleep => rules.wantsSleep(_state, now);
-  TimeWindow? get pendingMeal => rules.pendingMeal(_state, now);
+
+  /// Class time: the minigame waits until after school.
+  bool get inSchool => routine.inSchool(now);
+  routine.TimeWindow? get pendingMeal => rules.pendingMeal(_state, now);
 
   // Each action returns false when it did not apply.
   bool pet() => _apply(rules.pet(_state, now));
@@ -108,7 +111,7 @@ class PetController extends ChangeNotifier {
 
   /// Jumps just past the next mealtime, potty, or bedtime change.
   void debugSkipToNextEvent() => debugSkip(
-    nextRoutineMoment(now, _state.seed).difference(now) +
+    routine.nextRoutineMoment(now, _state.seed).difference(now) +
         const Duration(seconds: 1),
   );
 

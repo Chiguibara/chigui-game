@@ -477,4 +477,7 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get piggyBankFull =>
       'Chigüi\'s piggy bank is full for today! Playing is still fun.';
+
+  @override
+  String get schoolStatus => 'I\'m in class right now! See you after school.';
 }

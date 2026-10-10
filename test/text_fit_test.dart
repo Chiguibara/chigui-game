@@ -96,6 +96,7 @@ void main() {
         ('curedStatus', l.curedStatus),
         ('cleanedStatus', l.cleanedStatus),
         ('walkedStatus', l.walkedStatus),
+        ('schoolStatus', l.schoolStatus),
       ]) {
         check(
           name,

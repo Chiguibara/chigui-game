@@ -478,4 +478,8 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get piggyBankFull =>
       'La tirelire de Chigüi est pleine pour aujourd\'hui ! Jouer reste amusant.';
+
+  @override
+  String get schoolStatus =>
+      'Je suis en classe en ce moment ! À la sortie de l\'école.';
 }

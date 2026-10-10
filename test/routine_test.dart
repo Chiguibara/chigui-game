@@ -67,4 +67,23 @@ void main() {
       DateTime(2026, 10, 13, 8),
     );
   });
+
+  group('school time', () {
+    test('weekday mornings are class time', () {
+      expect(inSchool(DateTime(2026, 10, 12, 9)), isTrue); // Monday
+      expect(inSchool(DateTime(2026, 10, 12, 13, 59)), isTrue);
+      expect(inSchool(DateTime(2026, 10, 12, 8, 59)), isFalse);
+      expect(inSchool(DateTime(2026, 10, 12, 14)), isFalse);
+    });
+
+    test('weekends and school holidays are free', () {
+      expect(inSchool(DateTime(2026, 10, 17, 10)), isFalse); // Saturday
+      expect(inSchool(DateTime(2026, 7, 15, 10)), isFalse); // Summer
+      expect(inSchool(DateTime(2026, 9, 7, 10)), isFalse); // Last summer day
+      expect(inSchool(DateTime(2026, 9, 8, 10)), isTrue); // Back to school
+      expect(inSchool(DateTime(2026, 12, 28, 10)), isFalse); // Christmas
+      expect(inSchool(DateTime(2027, 1, 7, 10)), isFalse);
+      expect(inSchool(DateTime(2027, 1, 8, 10)), isTrue); // Friday after
+    });
+  });
 }

@@ -901,6 +901,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chigüi\'s piggy bank is full for today! Playing is still fun.'**
   String get piggyBankFull;
+
+  /// Chigüi speaking, during class time (weekday mornings outside school holidays), when the minigame waits until after school.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m in class right now! See you after school.'**
+  String get schoolStatus;
 }
 
 class _AppLocalizationsDelegate

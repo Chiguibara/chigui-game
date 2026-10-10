@@ -31,30 +31,35 @@ class DevPanel extends StatelessWidget {
     return Container(
       color: Palette.ink.withValues(alpha: 0.85),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 4,
-        children: [
-          Text(
-            'DEV $time',
-            style: const TextStyle(color: Palette.mint, fontSize: 12),
-          ),
-          skip('+15m', const Duration(minutes: 15)),
-          skip('+1h', const Duration(hours: 1)),
-          skip('+6h', const Duration(hours: 6)),
-          _DevButton(
-            label: 'Next event',
-            onPressed: controller.debugSkipToNextEvent,
-          ),
-          _DevButton(
-            label: 'Next season',
-            onPressed: controller.debugJumpToNextSeason,
-          ),
-          _DevButton(label: '+1000 steps', onPressed: () => onSteps(1000)),
-          _DevButton(label: '+100 coins', onPressed: controller.debugAddCoins),
-          _DevButton(label: 'Reset', onPressed: controller.debugReset),
-        ],
+      // One scrollable row, so it never pushes the game off small screens.
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: 4,
+          children: [
+            Text(
+              'DEV $time',
+              style: const TextStyle(color: Palette.mint, fontSize: 12),
+            ),
+            skip('+15m', const Duration(minutes: 15)),
+            skip('+1h', const Duration(hours: 1)),
+            skip('+6h', const Duration(hours: 6)),
+            _DevButton(
+              label: 'Next event',
+              onPressed: controller.debugSkipToNextEvent,
+            ),
+            _DevButton(
+              label: 'Next season',
+              onPressed: controller.debugJumpToNextSeason,
+            ),
+            _DevButton(label: '+1000 steps', onPressed: () => onSteps(1000)),
+            _DevButton(
+              label: '+100 coins',
+              onPressed: controller.debugAddCoins,
+            ),
+            _DevButton(label: 'Reset', onPressed: controller.debugReset),
+          ],
+        ),
       ),
     );
   }

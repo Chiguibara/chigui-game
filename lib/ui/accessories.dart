@@ -715,6 +715,53 @@ Path _heartPath(Offset c, double r) => Path()
   )
   ..close();
 
+/// An open book Chigüi holds while in class.
+void paintStudyBook(Canvas canvas, Size size) {
+  final w = size.width;
+  final h = size.height;
+  final outline = Paint()
+    ..color = Palette.furOutline
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = w * 0.012
+    ..strokeJoin = StrokeJoin.round;
+  final cover = Path()
+    ..moveTo(w * 0.34, h * 0.7)
+    ..lineTo(w * 0.53, h * 0.74)
+    ..lineTo(w * 0.72, h * 0.7)
+    ..lineTo(w * 0.72, h * 0.86)
+    ..lineTo(w * 0.53, h * 0.9)
+    ..lineTo(w * 0.34, h * 0.86)
+    ..close();
+  canvas.drawPath(cover, Paint()..color = Palette.diving);
+  canvas.drawPath(cover, outline);
+  for (final (from, to) in [(0.36, 0.52), (0.54, 0.7)]) {
+    final page = Path()
+      ..moveTo(w * from, h * (from < 0.5 ? 0.69 : 0.73))
+      ..lineTo(w * to, h * (from < 0.5 ? 0.73 : 0.69))
+      ..lineTo(w * to, h * (from < 0.5 ? 0.86 : 0.82))
+      ..lineTo(w * from, h * (from < 0.5 ? 0.82 : 0.86))
+      ..close();
+    canvas.drawPath(page, Paint()..color = Palette.cloud);
+    canvas.drawPath(page, outline);
+  }
+  final line = Paint()
+    ..color = Palette.ink.withValues(alpha: 0.35)
+    ..strokeWidth = w * 0.008;
+  for (var i = 0; i < 3; i++) {
+    final y = 0.75 + i * 0.03;
+    canvas.drawLine(
+      Offset(w * 0.39, h * (y - 0.01)),
+      Offset(w * 0.49, h * y),
+      line,
+    );
+    canvas.drawLine(
+      Offset(w * 0.57, h * y),
+      Offset(w * 0.67, h * (y - 0.01)),
+      line,
+    );
+  }
+}
+
 void _star(Canvas canvas, Offset c, double r, Paint paint) {
   final path = Path();
   for (var i = 0; i < 10; i++) {
