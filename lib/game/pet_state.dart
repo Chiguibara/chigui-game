@@ -21,6 +21,7 @@ class PetState {
     this.grumpy = false,
     this.coins = 0,
     this.stepsToday = 0,
+    this.tapStepsToday = 0,
     this.stepsDay,
     this.owned = const {},
     this.equipped = const {},
@@ -67,6 +68,9 @@ class PetState {
 
   /// Steps counted on [stepsDay] (a local calendar day).
   final int stepsToday;
+
+  /// Of [stepsToday], how many came from tapping the feet.
+  final int tapStepsToday;
   final DateTime? stepsDay;
 
   /// Ids of bought items (see `catalog`).
@@ -99,6 +103,7 @@ class PetState {
     bool? grumpy,
     int? coins,
     int? stepsToday,
+    int? tapStepsToday,
     DateTime? stepsDay,
     Set<String>? owned,
     Map<Slot, String>? equipped,
@@ -123,6 +128,7 @@ class PetState {
     grumpy: grumpy ?? this.grumpy,
     coins: coins ?? this.coins,
     stepsToday: stepsToday ?? this.stepsToday,
+    tapStepsToday: tapStepsToday ?? this.tapStepsToday,
     stepsDay: stepsDay ?? this.stepsDay,
     owned: owned ?? this.owned,
     equipped: equipped ?? this.equipped,

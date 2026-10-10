@@ -1,5 +1,6 @@
 import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/pet_controller.dart';
+import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/game/rules.dart';
 import 'package:chigui_game/l10n/app_localizations.dart';
 import 'package:chigui_game/walk/motion_source.dart';
@@ -98,6 +99,32 @@ void main() {
     await tester.pump();
     expect(find.bySemanticsLabel('left foot'), findsOneWidget);
     expect(motion.listener, isNull, reason: 'the sensor is not even tried');
+  });
+
+  testWidgets('tapped feet stop counting at the daily limit', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final repo = await JsonGameRepository.open();
+    await repo.saveState(
+      PetState.fresh(now, seed: 1).copyWith(
+        stepsToday: maxTapStepsPerDay,
+        tapStepsToday: maxTapStepsPerDay,
+        stepsDay: DateTime(now.year, now.month, now.day),
+      ),
+    );
+    final controller = await PetController.load(repo, clock: () => now);
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: WalkScreen(controller: controller, onPhone: false),
+      ),
+    );
+    await tester.tap(find.text("Let's go!"));
+    await tester.pump();
+    await tester.tap(find.bySemanticsLabel('left foot'));
+    await tester.pump();
+    expect(find.textContaining('paws are tired of tapping'), findsOneWidget);
+    expect(controller.stepsToday, maxTapStepsPerDay);
   });
 
   testWidgets('with a sensor, real steps are counted', (tester) async {

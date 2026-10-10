@@ -185,15 +185,26 @@ class _WalkScreenState extends State<WalkScreen> {
       setState(() => _message = l10n.otherFoot);
       return;
     }
+    // Tapped feet only count for a few walks a day.
+    if (_pet.tapStepsLeft <= 0) {
+      sfx.play(Sfx.refuse);
+      setState(() => _message = l10n.tapsCapped);
+      return;
+    }
     _lastFoot = foot;
-    _pendingSteps += stepsPerFootTap;
-    _stepped(stepsPerFootTap, save: true);
+    _celebrate(
+      stepsPerFootTap,
+      walked: _pet.addSteps(stepsPerFootTap, tapped: true),
+    );
     // Keep the pedometer's celebration from repeating a walk the feet did.
     _walksBefore = _pet.walksToday;
   }
 
-  void _stepped(int steps, {required bool save}) {
-    final walked = save && _flush();
+  void _stepped(int steps, {required bool save}) =>
+      _celebrate(steps, walked: save && _flush());
+
+  /// Animates steps already counted, celebrating a completed walk.
+  void _celebrate(int steps, {required bool walked}) {
     _leftStep = !_leftStep;
     sfx.play(walked ? Sfx.reward : (_leftStep ? Sfx.stepLeft : Sfx.stepRight));
     setState(() {

@@ -235,7 +235,7 @@ void main() {
       final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 7);
       expect(o.ok, isTrue);
       expect(o.state.level(Need.fun), closeTo(0.4 + playFunGain, 1e-9));
-      expect(o.state.coins, 7 * coinsPerFruit);
+      expect(o.state.coins, 3, reason: 'one coin per two fruits');
       expect(types(o), [EventType.played]);
     });
 
@@ -252,6 +252,19 @@ void main() {
   });
 
   group('walks', () {
+    test('tapped feet count for at most three walks a day', () {
+      final o = addSteps(pet0(at(12)), at(12), 5000, tapped: true);
+      expect(o.state.stepsToday, maxTapStepsPerDay);
+      expect(o.state.coins, maxTapWalksPerDay * coinsPerWalk);
+      expect(tapStepsLeft(o.state, at(12)), 0);
+      expect(addSteps(o.state, at(13), 50, tapped: true).ok, isFalse);
+
+      // Real steps still count, and the taps come back tomorrow.
+      final walked = addSteps(o.state, at(14), 1000);
+      expect(walked.ok, isTrue);
+      expect(tapStepsLeft(walked.state, at(9, 0, 13)), maxTapStepsPerDay);
+    });
+
     test('every 1000 steps is a walk: more fun and coins', () {
       final o = addSteps(pet0(at(12), level: 0.4), at(12), 2500);
       expect(o.ok, isTrue);

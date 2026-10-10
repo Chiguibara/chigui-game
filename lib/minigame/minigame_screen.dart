@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
 import '../game/pet_controller.dart';
-import '../game/rules.dart' show coinsPerFruit;
+import '../game/rules.dart' show coinsForFruits;
 import '../l10n/app_localizations.dart';
 import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
@@ -113,12 +113,12 @@ class _MinigameScreenState extends State<MinigameScreen>
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (_game.caught > 0) ...[
+                      if (coinsForFruits(_game.caught) > 0) ...[
                         const Coin(size: 28),
                         const SizedBox(width: 8),
                       ],
                       Text(
-                        l10n.coinsEarned(_game.caught * coinsPerFruit),
+                        l10n.coinsEarned(coinsForFruits(_game.caught)),
                         style: textTheme.titleMedium,
                       ),
                     ],

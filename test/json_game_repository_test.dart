@@ -39,6 +39,7 @@ void main() {
       grumpy: true,
       coins: 12,
       stepsToday: 3400,
+      tapStepsToday: 1200,
       stepsDay: now,
       owned: {'beanie', 'stickerStar'},
       equipped: {Slot.head: 'beanie'},

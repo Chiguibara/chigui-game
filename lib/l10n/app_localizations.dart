@@ -889,6 +889,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retro console'**
   String get itemRetroConsole;
+
+  /// In the walk, when tapped feet have reached their daily limit of walks. Funny, never scolding; real steps still count.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi\'s paws are tired of tapping! More tomorrow, or go for a real walk.'**
+  String get tapsCapped;
 }
 
 class _AppLocalizationsDelegate

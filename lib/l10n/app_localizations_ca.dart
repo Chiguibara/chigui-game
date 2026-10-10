@@ -470,4 +470,8 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get itemRetroConsole => 'Consola retro';
+
+  @override
+  String get tapsCapped =>
+      'A Chigüi li fan mal les potetes de tant tocar! Demà més, o surt a caminar de debò.';
 }

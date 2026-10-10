@@ -471,4 +471,8 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get itemRetroConsole => 'Retro-Konsole';
+
+  @override
+  String get tapsCapped =>
+      'Chigüis Pfoten sind müde vom Tippen! Morgen geht\'s weiter – oder lauf richtig los.';
 }

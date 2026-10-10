@@ -469,4 +469,8 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemRetroConsole => 'Retro console';
+
+  @override
+  String get tapsCapped =>
+      'Chigüi\'s paws are tired of tapping! More tomorrow, or go for a real walk.';
 }

@@ -18,13 +18,20 @@ const feedGain = 0.3;
 const bedFunGain = 0.3;
 const playFunGain = 0.3;
 
-/// Coins per fruit caught in the minigame.
-const coinsPerFruit = 1;
+/// The minigame gives one coin for every this many fruits caught.
+const fruitsPerCoin = 2;
 
-/// Every [stepsPerWalk] real steps in a day count as a walk with Chigüi,
-/// up to [maxWalksPerDay]. Walks only reward; not walking costs nothing.
+int coinsForFruits(int caught) => caught ~/ fruitsPerCoin;
+
+/// Every [stepsPerWalk] steps in a day count as a walk with Chigüi, up to
+/// [maxWalksPerDay]. Walks only reward; not walking costs nothing.
 const stepsPerWalk = 1000;
-const maxWalksPerDay = 10;
+const maxWalksPerDay = 20;
+
+/// Tapped feet count for at most this many walks a day, so they are for
+/// playing while sitting still, not for farming coins.
+const maxTapWalksPerDay = 3;
+const maxTapStepsPerDay = maxTapWalksPerDay * stepsPerWalk;
 const walkFunGain = 0.1;
 const coinsPerWalk = 5;
 
@@ -304,7 +311,7 @@ Outcome finishRound(PetState state, DateTime now, {required int caught}) {
       s,
       Need.fun,
       playFunGain,
-    ).copyWith(coins: s.coins + caught * coinsPerFruit),
+    ).copyWith(coins: s.coins + coinsForFruits(caught)),
     events: [...current.events, GameEvent(EventType.played, now)],
     ok: true,
   );
@@ -405,30 +412,45 @@ PetState _withPack(PetState state, Pack pack) => state.copyWith(
 
 int walksFor(int steps) => min(steps ~/ stepsPerWalk, maxWalksPerDay);
 
-/// Steps today so far, starting from zero on a new local day.
-int stepsOn(PetState state, DateTime now) {
+bool _sameStepsDay(PetState state, DateTime now) {
   final day = state.stepsDay?.toLocal();
   final today = now.toLocal();
-  final sameDay =
-      day != null &&
+  return day != null &&
       day.year == today.year &&
       day.month == today.month &&
       day.day == today.day;
-  return sameDay ? state.stepsToday : 0;
 }
 
-/// Real steps from the device pedometer (or the dev panel). Each new walk
-/// reached today raises fun and earns coins. [ok] is true when at least one
-/// new walk was completed.
-Outcome addSteps(PetState state, DateTime now, int steps) {
+/// Steps counted today so far (real and tapped), from zero each new day.
+int stepsOn(PetState state, DateTime now) =>
+    _sameStepsDay(state, now) ? state.stepsToday : 0;
+
+/// How many more tapped steps count today.
+int tapStepsLeft(PetState state, DateTime now) =>
+    maxTapStepsPerDay - (_sameStepsDay(state, now) ? state.tapStepsToday : 0);
+
+/// Steps from the pedometer or motion sensor, or ([tapped]) from tapping the
+/// feet, which only count up to [maxTapStepsPerDay]. Each new walk reached
+/// today raises fun and earns coins. [ok] is true when at least one new walk
+/// was completed.
+Outcome addSteps(
+  PetState state,
+  DateTime now,
+  int steps, {
+  bool tapped = false,
+}) {
   final current = advance(state, now);
   final s = current.state;
+  var counted = steps > 0 ? steps : 0;
+  if (tapped) counted = min(counted, max(0, tapStepsLeft(s, now)));
   final before = stepsOn(s, now);
-  final after = before + (steps > 0 ? steps : 0);
+  final after = before + counted;
   final walks = walksFor(after) - walksFor(before);
   final local = now.toLocal();
+  final tappedBefore = _sameStepsDay(s, now) ? s.tapStepsToday : 0;
   final next = s.copyWith(
     stepsToday: after,
+    tapStepsToday: tappedBefore + (tapped ? counted : 0),
     stepsDay: DateTime(local.year, local.month, local.day),
     coins: s.coins + walks * coinsPerWalk,
   );

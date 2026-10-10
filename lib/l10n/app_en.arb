@@ -574,5 +574,9 @@
   "itemRetroConsole": "Retro console",
   "@itemRetroConsole": {
     "description": "Shop item (coins)."
+  },
+  "tapsCapped": "Chigüi's paws are tired of tapping! More tomorrow, or go for a real walk.",
+  "@tapsCapped": {
+    "description": "In the walk, when tapped feet have reached their daily limit of walks. Funny, never scolding; real steps still count."
   }
 }

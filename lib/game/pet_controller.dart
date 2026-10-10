@@ -64,7 +64,9 @@ class PetController extends ChangeNotifier {
   bool sendToBed() => _apply(rules.sendToBed(_state, now));
 
   /// Called by the step counter (Android pedometer, or the dev panel).
-  bool addSteps(int steps) => _apply(rules.addSteps(_state, now, steps));
+  bool addSteps(int steps, {bool tapped = false}) =>
+      _apply(rules.addSteps(_state, now, steps, tapped: tapped));
+  int get tapStepsLeft => rules.tapStepsLeft(_state, now);
   int get stepsToday => rules.stepsOn(_state, now);
   int get walksToday => rules.walksToday(_state, now);
   rules.BuyResult canBuy(Item item) => rules.canBuy(_state, item, now);
