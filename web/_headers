@@ -1,7 +1,8 @@
 # Cloudflare static-asset headers for juego.chiguibara.es.
 /*
-  # Only chiguibara.es (and its preview deployments) may embed the game.
-  Content-Security-Policy: frame-ancestors 'self' https://chiguibara.es https://www.chiguibara.es https://*.workers.dev
+  # Only chiguibara.es (its preview deployments and its dev tunnel) may embed
+  # the game.
+  Content-Security-Policy: frame-ancestors 'self' https://chiguibara.es https://www.chiguibara.es https://localhost.chiguibara.es https://*.workers.dev
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
 
