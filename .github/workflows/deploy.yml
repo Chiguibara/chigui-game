@@ -1,10 +1,12 @@
 name: Test and deploy
 
 # Every push to main is checked and, if green, published to
-# https://juego.chiguibara.es. Pull requests are only checked.
+# https://juego.chiguibara.es. Pull requests are only checked. A version tag
+# (v0.1.0) publishes the Android test APKs as a GitHub pre-release.
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
@@ -53,19 +55,59 @@ jobs:
           restore-keys: android-
       - run: yes | sdkmanager --install "ndk;28.2.13676358" "platforms;android-35" "cmake;3.22.1" > /dev/null
       - run: flutter pub get
-      - run: flutter build apk --release
+      # Version tags set the app version (v0.1.0 -> 0.1.0); the build number
+      # always grows with each run.
+      - name: Build APKs (one per CPU, plus a universal one)
+        shell: bash
+        run: |
+          VERSION=1.0.0
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then VERSION="${GITHUB_REF_NAME#v}"; fi
+          ARGS="--release --build-name=$VERSION --build-number=$GITHUB_RUN_NUMBER"
+          flutter build apk $ARGS --split-per-abi
+          flutter build apk $ARGS
+          mkdir -p apks
+          OUT=build/app/outputs/flutter-apk
+          for abi in arm64-v8a armeabi-v7a x86_64; do
+            cp "$OUT/app-$abi-release.apk" "apks/chigui-$abi.apk"
+          done
+          cp "$OUT/app-release.apk" apks/chigui-universal.apk
+          ls -la apks
       # Release builds must never ask for the internet (see CLAUDE.md).
-      - run: |
-          if $ANDROID_HOME/build-tools/36.0.0/aapt2 dump permissions build/app/outputs/flutter-apk/app-release.apk | grep -q android.permission.INTERNET; then
-            echo "::error::The release APK requests the INTERNET permission"; exit 1
-          fi
-      # A debug-signed test APK; in this public repo anyone can download it,
-      # so it is kept only for a week.
+      - name: Check no APK requests the internet
+        shell: bash
+        run: |
+          for apk in apks/*.apk; do
+            if $ANDROID_HOME/build-tools/36.0.0/aapt2 dump permissions "$apk" | grep -q android.permission.INTERNET; then
+              echo "::error::$apk requests the INTERNET permission"; exit 1
+            fi
+          done
+      # Debug-signed test APKs; in this public repo anyone can download them.
       - uses: actions/upload-artifact@v5
         with:
-          name: chigui-test-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: chigui-test-apks
+          path: apks/*.apk
           retention-days: 7
+
+  release:
+    needs: [build, android]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/download-artifact@v5
+        with:
+          name: chigui-test-apks
+          path: apks
+      - name: Publish the pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" apks/*.apk \
+            --prerelease \
+            --title "Chigüi $GITHUB_REF_NAME (pruebas Android)" \
+            --notes-file .github/test-release-notes.md
 
   deploy:
     needs: build
