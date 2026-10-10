@@ -460,6 +460,12 @@ void main() {
       expect(find.text('Yours!'), findsOneWidget);
       await tester.pump(const Duration(seconds: 2));
 
+      // The shop is long; scroll to the new item in Accessories.
+      await tester.scrollUntilVisible(
+        find.text('Wizard hat'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.tap(find.text('Wizard hat'));
       await tester.pump(const Duration(seconds: 2));
       expect(controller.state.equipped[Slot.head], 'wizardHat');
