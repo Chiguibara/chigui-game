@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Chigüibara mint: adaptive icon background and launch screen. -->
+    <color name="ic_launcher_background">#B1F1D7</color>
+</resources>
