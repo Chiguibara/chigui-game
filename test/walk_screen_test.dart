@@ -112,7 +112,7 @@ void main() {
     }
     await tester.pump();
     expect(
-      find.text('Walking for real! Keep the phone in your hand.'),
+      find.text('Walk with the phone in your hand, or tap the feet!'),
       findsOneWidget,
     );
 

@@ -650,16 +650,16 @@ abstract class AppLocalizations {
   /// **'Let\'s go!'**
   String get startWalkButton;
 
-  /// Shown while real steps are counted from the phone's motion sensor.
+  /// Shown in the walk on phones' browsers: real steps from the motion sensor and the feet both count.
   ///
   /// In en, this message translates to:
-  /// **'Walking for real! Keep the phone in your hand.'**
+  /// **'Walk with the phone in your hand, or tap the feet!'**
   String get sensorWalkHint;
 
-  /// Shown in the walk on the Android app, which counts real steps with the system pedometer.
+  /// Shown in the walk on the Android app: real steps (system pedometer) and the feet both count.
   ///
   /// In en, this message translates to:
-  /// **'Walking for real! Your steps count, even with the phone in your pocket.'**
+  /// **'Walk for real (even with the phone in your pocket), or tap the feet!'**
   String get pedometerWalkHint;
 
   /// Shown while the player taps the feet to walk.

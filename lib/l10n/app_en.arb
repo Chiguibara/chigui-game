@@ -406,13 +406,13 @@
   "@startWalkButton": {
     "description": "Starts the walk."
   },
-  "sensorWalkHint": "Walking for real! Keep the phone in your hand.",
+  "sensorWalkHint": "Walk with the phone in your hand, or tap the feet!",
   "@sensorWalkHint": {
-    "description": "Shown while real steps are counted from the phone's motion sensor."
+    "description": "Shown in the walk on phones' browsers: real steps from the motion sensor and the feet both count."
   },
-  "pedometerWalkHint": "Walking for real! Your steps count, even with the phone in your pocket.",
+  "pedometerWalkHint": "Walk for real (even with the phone in your pocket), or tap the feet!",
   "@pedometerWalkHint": {
-    "description": "Shown in the walk on the Android app, which counts real steps with the system pedometer."
+    "description": "Shown in the walk on the Android app: real steps (system pedometer) and the feet both count."
   },
   "tapFeetHint": "Left, right, left, right…",
   "@tapFeetHint": {

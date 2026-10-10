@@ -339,11 +339,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get startWalkButton => 'Let\'s go!';
 
   @override
-  String get sensorWalkHint => 'Walking for real! Keep the phone in your hand.';
+  String get sensorWalkHint =>
+      'Walk with the phone in your hand, or tap the feet!';
 
   @override
   String get pedometerWalkHint =>
-      'Walking for real! Your steps count, even with the phone in your pocket.';
+      'Walk for real (even with the phone in your pocket), or tap the feet!';
 
   @override
   String get tapFeetHint => 'Left, right, left, right…';

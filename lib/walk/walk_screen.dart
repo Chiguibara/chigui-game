@@ -188,6 +188,8 @@ class _WalkScreenState extends State<WalkScreen> {
     _lastFoot = foot;
     _pendingSteps += stepsPerFootTap;
     _stepped(stepsPerFootTap, save: true);
+    // Keep the pedometer's celebration from repeating a walk the feet did.
+    _walksBefore = _pet.walksToday;
   }
 
   void _stepped(int steps, {required bool save}) {
@@ -400,8 +402,9 @@ class _WalkScreenState extends State<WalkScreen> {
               minimumSize: const Size(180, 56),
             ),
           ),
-          _Mode.sensor => const SizedBox(height: 56),
-          _Mode.tapping => Row(
+          // With real steps too, the feet stay available so players who are
+          // sitting still can keep walking with Chigüi.
+          _Mode.sensor || _Mode.tapping => Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _footButton(_Foot.left, l10n.leftFoot, l10n),

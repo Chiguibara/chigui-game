@@ -3,6 +3,7 @@ import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
+import 'package:chigui_game/game/rules.dart' show stepsPerFootTap;
 import 'package:chigui_game/sound/sound_effects.dart';
 import 'package:chigui_game/store/pack_store.dart';
 import 'package:chigui_game/store/packs_controller.dart';
@@ -492,13 +493,13 @@ void main() {
       final (controller, motion) = await startWalker(tester);
       await walk(tester, motion, 8);
       expect(
-        find.text('Walking for real! Keep the phone in your hand.'),
+        find.text('Walk with the phone in your hand, or tap the feet!'),
         findsNothing,
       );
 
       await walk(tester, motion, 12);
       expect(
-        find.text('Walking for real! Keep the phone in your hand.'),
+        find.text('Walk with the phone in your hand, or tap the feet!'),
         findsOneWidget,
       );
 
@@ -540,11 +541,17 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
       expect(
         find.text(
-          'Walking for real! Your steps count, even with the phone in your pocket.',
+          'Walk for real (even with the phone in your pocket), or tap the feet!',
         ),
         findsOneWidget,
       );
       expect(controller.stepsToday, 170, reason: 'counted once, not twice');
+
+      // Sitting still: the feet still work alongside the pedometer.
+      await tester.tap(find.bySemanticsLabel('left foot'));
+      await tester.pump();
+      expect(controller.stepsToday, 170 + stepsPerFootTap);
+      await tester.pump(const Duration(seconds: 2));
     });
 
     testWidgets('not while Chigüi sleeps', (tester) async {
