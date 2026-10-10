@@ -817,6 +817,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cupcake'**
   String get itemCupcake;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Cap'**
+  String get itemCap;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Viking helmet'**
+  String get itemVikingHelmet;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Crown'**
+  String get itemCrown;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Mustache'**
+  String get itemMustache;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'3D glasses'**
+  String get itemGlasses3d;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Bandana'**
+  String get itemBandana;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Medal'**
+  String get itemMedal;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Superhero cape'**
+  String get itemCape;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Heart balloon'**
+  String get itemBalloon;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Skateboard'**
+  String get itemSkateboard;
+
+  /// Shop item (coins).
+  ///
+  /// In en, this message translates to:
+  /// **'Retro console'**
+  String get itemRetroConsole;
 }
 
 class _AppLocalizationsDelegate

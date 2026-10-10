@@ -530,5 +530,49 @@
   "itemCupcake": "Cupcake",
   "@itemCupcake": {
     "description": "Pack item."
+  },
+  "itemCap": "Cap",
+  "@itemCap": {
+    "description": "Shop item (coins)."
+  },
+  "itemVikingHelmet": "Viking helmet",
+  "@itemVikingHelmet": {
+    "description": "Shop item (coins)."
+  },
+  "itemCrown": "Crown",
+  "@itemCrown": {
+    "description": "Shop item (coins)."
+  },
+  "itemMustache": "Mustache",
+  "@itemMustache": {
+    "description": "Shop item (coins)."
+  },
+  "itemGlasses3d": "3D glasses",
+  "@itemGlasses3d": {
+    "description": "Shop item (coins)."
+  },
+  "itemBandana": "Bandana",
+  "@itemBandana": {
+    "description": "Shop item (coins)."
+  },
+  "itemMedal": "Medal",
+  "@itemMedal": {
+    "description": "Shop item (coins)."
+  },
+  "itemCape": "Superhero cape",
+  "@itemCape": {
+    "description": "Shop item (coins)."
+  },
+  "itemBalloon": "Heart balloon",
+  "@itemBalloon": {
+    "description": "Shop item (coins)."
+  },
+  "itemSkateboard": "Skateboard",
+  "@itemSkateboard": {
+    "description": "Shop item (coins)."
+  },
+  "itemRetroConsole": "Retro console",
+  "@itemRetroConsole": {
+    "description": "Shop item (coins)."
   }
 }

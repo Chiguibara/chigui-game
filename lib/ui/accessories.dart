@@ -345,6 +345,231 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
       canvas.drawCircle(p(0.87, 0.71), w * 0.025, fill(Palette.santaRed));
       canvas.drawCircle(p(0.87, 0.71), w * 0.025, outline);
 
+    case ('cap', Layer.overHead):
+      final dome = Rect.fromLTRB(w * 0.38, h * 0.1, w * 0.76, h * 0.38);
+      canvas.drawArc(dome, math.pi, math.pi, true, fill(Palette.capColor));
+      canvas.drawArc(dome, math.pi, math.pi, true, outline);
+      final brim = RRect.fromLTRBR(
+        w * 0.62,
+        h * 0.21,
+        w * 0.93,
+        h * 0.26,
+        Radius.circular(w * 0.03),
+      );
+      canvas.drawRRect(brim, fill(Palette.capColor));
+      canvas.drawRRect(brim, outline);
+      canvas.drawCircle(p(0.57, 0.1), w * 0.02, fill(Palette.capColor));
+      canvas.drawCircle(p(0.57, 0.1), w * 0.02, outline);
+      _star(canvas, p(0.55, 0.18), w * 0.03, fill(Palette.cloud));
+
+    case ('vikingHelmet', Layer.overHead):
+      final horn = fill(Palette.horn);
+      for (final (base, tip, control) in [
+        ((0.4, 0.2), (0.3, 0.02), (0.28, 0.16)),
+        ((0.72, 0.2), (0.84, 0.02), (0.86, 0.16)),
+      ]) {
+        final path = Path()
+          ..moveTo(w * base.$1 - w * 0.03, h * base.$2)
+          ..quadraticBezierTo(
+            w * control.$1,
+            h * control.$2,
+            w * tip.$1,
+            h * tip.$2,
+          )
+          ..quadraticBezierTo(
+            w * (control.$1 + 0.06),
+            h * (control.$2 + 0.04),
+            w * base.$1 + w * 0.03,
+            h * base.$2,
+          )
+          ..close();
+        canvas.drawPath(path, horn);
+        canvas.drawPath(path, outline);
+      }
+      final dome = Rect.fromLTRB(w * 0.37, h * 0.09, w * 0.75, h * 0.37);
+      canvas.drawArc(dome, math.pi, math.pi, true, fill(Palette.steel));
+      canvas.drawArc(dome, math.pi, math.pi, true, outline);
+      final band = RRect.fromLTRBR(
+        w * 0.36,
+        h * 0.2,
+        w * 0.76,
+        h * 0.26,
+        Radius.circular(w * 0.02),
+      );
+      canvas.drawRRect(band, fill(Palette.furDark));
+      canvas.drawRRect(band, outline);
+      for (final x in [0.44, 0.56, 0.68]) {
+        canvas.drawCircle(p(x, 0.23), w * 0.01, fill(Palette.sparkle));
+      }
+
+    case ('crown', Layer.overHead):
+      final crown = Path()
+        ..moveTo(w * 0.42, h * 0.25)
+        ..lineTo(w * 0.42, h * 0.12)
+        ..lineTo(w * 0.48, h * 0.18)
+        ..lineTo(w * 0.53, h * 0.07)
+        ..lineTo(w * 0.58, h * 0.18)
+        ..lineTo(w * 0.64, h * 0.07)
+        ..lineTo(w * 0.68, h * 0.18)
+        ..lineTo(w * 0.73, h * 0.12)
+        ..lineTo(w * 0.73, h * 0.25)
+        ..close();
+      canvas.drawPath(crown, fill(Palette.sparkle));
+      canvas.drawPath(crown, outline);
+      for (final (x, c) in [
+        (0.48, Palette.santaRed),
+        (0.575, Palette.diving),
+        (0.665, Palette.leaf),
+      ]) {
+        canvas.drawCircle(p(x, 0.215), w * 0.016, fill(c));
+      }
+
+    case ('mustache', Layer.overHead):
+      final stache = Path()
+        ..moveTo(w * 0.8, h * 0.41)
+        ..cubicTo(w * 0.76, h * 0.38, w * 0.71, h * 0.4, w * 0.7, h * 0.44)
+        ..cubicTo(w * 0.69, h * 0.47, w * 0.72, h * 0.48, w * 0.73, h * 0.46)
+        ..cubicTo(w * 0.75, h * 0.44, w * 0.78, h * 0.45, w * 0.8, h * 0.44)
+        ..cubicTo(w * 0.82, h * 0.45, w * 0.85, h * 0.44, w * 0.87, h * 0.46)
+        ..cubicTo(w * 0.88, h * 0.48, w * 0.91, h * 0.47, w * 0.9, h * 0.44)
+        ..cubicTo(w * 0.89, h * 0.4, w * 0.84, h * 0.38, w * 0.8, h * 0.41)
+        ..close();
+      canvas.drawPath(stache, fill(Palette.ink));
+
+    case ('glasses3d', Layer.overHead):
+      final frame = RRect.fromLTRBR(
+        w * 0.52,
+        h * 0.285,
+        w * 0.76,
+        h * 0.395,
+        Radius.circular(w * 0.015),
+      );
+      canvas.drawRRect(frame, fill(Palette.cloud));
+      canvas.drawRRect(frame, outline);
+      canvas.drawRect(
+        Rect.fromLTRB(w * 0.54, h * 0.3, w * 0.66, h * 0.38),
+        fill(Palette.lens3dRed),
+      );
+      canvas.drawRect(
+        Rect.fromLTRB(w * 0.68, h * 0.3, w * 0.74, h * 0.38),
+        fill(Palette.lens3dBlue),
+      );
+      canvas.drawLine(
+        p(0.52, 0.32),
+        p(0.46, 0.3),
+        Paint()
+          ..color = Palette.cloud
+          ..strokeWidth = w * 0.02,
+      );
+
+    case ('bandana', Layer.overHead):
+      final scarf = Path()
+        ..moveTo(w * 0.39, h * 0.58)
+        ..quadraticBezierTo(w * 0.54, h * 0.63, w * 0.69, h * 0.58)
+        ..lineTo(w * 0.55, h * 0.76)
+        ..close();
+      canvas.drawPath(scarf, fill(Palette.santaRed));
+      canvas.drawPath(scarf, outline);
+      for (final (x, y) in [(0.47, 0.63), (0.6, 0.63), (0.54, 0.69)]) {
+        canvas.drawCircle(p(x, y), w * 0.012, fill(Palette.cloud));
+      }
+
+    case ('medal', Layer.overHead):
+      final ribbon = Path()
+        ..moveTo(w * 0.43, h * 0.58)
+        ..lineTo(w * 0.51, h * 0.7)
+        ..lineTo(w * 0.57, h * 0.7)
+        ..lineTo(w * 0.65, h * 0.58)
+        ..lineTo(w * 0.59, h * 0.58)
+        ..lineTo(w * 0.54, h * 0.66)
+        ..lineTo(w * 0.49, h * 0.58)
+        ..close();
+      canvas.drawPath(ribbon, fill(Palette.diving));
+      canvas.drawCircle(p(0.54, 0.74), w * 0.05, fill(Palette.sparkle));
+      canvas.drawCircle(p(0.54, 0.74), w * 0.05, outline);
+      _star(canvas, p(0.54, 0.74), w * 0.028, fill(Palette.coinRim));
+
+    case ('cape', Layer.behind):
+      // Billowing out behind Chigüi's back, like in the wind.
+      final cape = Path()
+        ..moveTo(w * 0.42, h * 0.54)
+        ..quadraticBezierTo(w * 0.2, h * 0.3, w * -0.02, h * 0.38)
+        ..quadraticBezierTo(w * 0.06, h * 0.46, w * -0.04, h * 0.56)
+        ..quadraticBezierTo(w * 0.06, h * 0.62, w * -0.02, h * 0.74)
+        ..quadraticBezierTo(w * 0.1, h * 0.8, w * 0.1, h * 0.92)
+        ..lineTo(w * 0.5, h * 0.92)
+        ..close();
+      canvas.drawPath(cape, fill(Palette.santaRed));
+      canvas.drawPath(cape, outline);
+
+    case ('cape', Layer.overHead):
+      canvas.drawCircle(p(0.52, 0.62), w * 0.03, fill(Palette.sparkle));
+      canvas.drawCircle(p(0.52, 0.62), w * 0.03, outline);
+
+    case ('balloon', Layer.front):
+      canvas.drawPath(
+        Path()
+          ..moveTo(w * 0.9, h * 0.18)
+          ..quadraticBezierTo(w * 0.98, h * 0.5, w * 0.56, h * 0.8),
+        Paint()
+          ..color = Palette.ink
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = w * 0.008,
+      );
+      final heart = _heartPath(p(0.9, 0.1), w * 0.08);
+      canvas.drawPath(heart, fill(Palette.santaRed));
+      canvas.drawPath(heart, outline);
+      canvas.drawCircle(p(0.87, 0.07), w * 0.012, fill(Palette.cloud));
+
+    case ('skateboard', Layer.front):
+      final deck = RRect.fromLTRBR(
+        w * 0.6,
+        h * 0.885,
+        w * 0.99,
+        h * 0.935,
+        Radius.circular(w * 0.025),
+      );
+      canvas.drawRRect(deck, fill(Palette.santaRed));
+      canvas.drawRRect(deck, outline);
+      for (final x in [0.67, 0.92]) {
+        canvas.drawCircle(p(x, 0.955), w * 0.022, fill(Palette.ink));
+        canvas.drawCircle(p(x, 0.955), w * 0.008, fill(Palette.cloud));
+      }
+
+    case ('retroConsole', Layer.front):
+      final body = RRect.fromLTRBR(
+        w * 0.77,
+        h * 0.7,
+        w * 0.97,
+        h * 0.96,
+        Radius.circular(w * 0.02),
+      );
+      canvas.drawRRect(body, fill(Palette.console));
+      canvas.drawRRect(body, outline);
+      canvas.drawRect(
+        Rect.fromLTRB(w * 0.795, h * 0.73, w * 0.945, h * 0.82),
+        fill(Palette.consoleScreen),
+      );
+      final pad = fill(Palette.ink);
+      canvas.drawRect(
+        Rect.fromCenter(
+          center: p(0.82, 0.88),
+          width: w * 0.045,
+          height: h * 0.015,
+        ),
+        pad,
+      );
+      canvas.drawRect(
+        Rect.fromCenter(
+          center: p(0.82, 0.88),
+          width: w * 0.015,
+          height: h * 0.045,
+        ),
+        pad,
+      );
+      canvas.drawCircle(p(0.9, 0.9), w * 0.013, fill(Palette.santaRed));
+      canvas.drawCircle(p(0.93, 0.87), w * 0.013, fill(Palette.santaRed));
+
     case ('pumpkin', Layer.front):
       final body = Rect.fromLTRB(w * 0.74, h * 0.76, w * 0.99, h * 0.96);
       canvas.drawRect(

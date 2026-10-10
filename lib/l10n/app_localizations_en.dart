@@ -436,4 +436,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get itemCupcake => 'Cupcake';
+
+  @override
+  String get itemCap => 'Cap';
+
+  @override
+  String get itemVikingHelmet => 'Viking helmet';
+
+  @override
+  String get itemCrown => 'Crown';
+
+  @override
+  String get itemMustache => 'Mustache';
+
+  @override
+  String get itemGlasses3d => '3D glasses';
+
+  @override
+  String get itemBandana => 'Bandana';
+
+  @override
+  String get itemMedal => 'Medal';
+
+  @override
+  String get itemCape => 'Superhero cape';
+
+  @override
+  String get itemBalloon => 'Heart balloon';
+
+  @override
+  String get itemSkateboard => 'Skateboard';
+
+  @override
+  String get itemRetroConsole => 'Retro console';
 }

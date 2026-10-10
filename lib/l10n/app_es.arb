@@ -119,5 +119,16 @@
   "itemLaptop": "Portátil con pegatinas",
   "itemBunnyEars": "Orejas de conejo",
   "itemHeartGlasses": "Gafas de corazón",
-  "itemCupcake": "Magdalena"
+  "itemCupcake": "Magdalena",
+  "itemCap": "Gorra",
+  "itemVikingHelmet": "Casco vikingo",
+  "itemCrown": "Corona",
+  "itemMustache": "Bigote",
+  "itemGlasses3d": "Gafas 3D",
+  "itemBandana": "Pañuelo",
+  "itemMedal": "Medalla",
+  "itemCape": "Capa de superhéroe",
+  "itemBalloon": "Globo de corazón",
+  "itemSkateboard": "Monopatín",
+  "itemRetroConsole": "Consola retro"
 }

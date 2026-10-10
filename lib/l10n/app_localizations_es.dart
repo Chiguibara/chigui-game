@@ -438,4 +438,37 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get itemCupcake => 'Magdalena';
+
+  @override
+  String get itemCap => 'Gorra';
+
+  @override
+  String get itemVikingHelmet => 'Casco vikingo';
+
+  @override
+  String get itemCrown => 'Corona';
+
+  @override
+  String get itemMustache => 'Bigote';
+
+  @override
+  String get itemGlasses3d => 'Gafas 3D';
+
+  @override
+  String get itemBandana => 'Pañuelo';
+
+  @override
+  String get itemMedal => 'Medalla';
+
+  @override
+  String get itemCape => 'Capa de superhéroe';
+
+  @override
+  String get itemBalloon => 'Globo de corazón';
+
+  @override
+  String get itemSkateboard => 'Monopatín';
+
+  @override
+  String get itemRetroConsole => 'Consola retro';
 }

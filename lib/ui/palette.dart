@@ -45,5 +45,12 @@ abstract final class Palette {
   static const heartLens = Color(0x99F6A5C0);
   static const wrapper = Color(0xFF7FC8E8);
   static const frosting = Color(0xFFF6A5C0);
+  static const capColor = Color(0xFF3FA796);
+  static const horn = Color(0xFFF3E6C8);
+  static const steel = Color(0xFFB8C2CC);
+  static const lens3dRed = Color(0xCCE5484D);
+  static const lens3dBlue = Color(0xCC3B8FE0);
+  static const console = Color(0xFFD9D6CF);
+  static const consoleScreen = Color(0xFF9BBC5A);
   static const outside = Color(0xFF2E4A3F);
 }
