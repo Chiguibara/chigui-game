@@ -50,7 +50,7 @@ analyze: l10n ## Run static analysis
 	$(FLUTTER) analyze
 
 format: ## Format Dart code
-	$(RUN) dart format lib test
+	$(RUN) dart format lib test tools
 
 clean: ## Remove build outputs
 	$(FLUTTER) clean

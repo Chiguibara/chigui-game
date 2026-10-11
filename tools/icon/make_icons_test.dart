@@ -124,18 +124,38 @@ void main() {
   });
 
   testWidgets('web and store icons', (tester) async {
-    await _render(tester, 'web/favicon.png', 32,
-        backdrop: _Backdrop.rounded, span: 0.8);
+    await _render(
+      tester,
+      'web/favicon.png',
+      32,
+      backdrop: _Backdrop.rounded,
+      span: 0.8,
+    );
     for (final px in [192, 512]) {
-      await _render(tester, 'web/icons/Icon-$px.png', px,
-          backdrop: _Backdrop.rounded, span: 0.72);
+      await _render(
+        tester,
+        'web/icons/Icon-$px.png',
+        px,
+        backdrop: _Backdrop.rounded,
+        span: 0.72,
+      );
       // Maskable: the platform crops to a shape; keep the face in the
       // central 80% safe zone.
-      await _render(tester, 'web/icons/Icon-maskable-$px.png', px,
-          backdrop: _Backdrop.full, span: 0.56);
+      await _render(
+        tester,
+        'web/icons/Icon-maskable-$px.png',
+        px,
+        backdrop: _Backdrop.full,
+        span: 0.56,
+      );
     }
     // Google Play listing (512 px, square; Play rounds the corners itself).
-    await _render(tester, 'store/play-icon-512.png', 512,
-        backdrop: _Backdrop.full, span: 0.68);
+    await _render(
+      tester,
+      'store/play-icon-512.png',
+      512,
+      backdrop: _Backdrop.full,
+      span: 0.68,
+    );
   });
 }

@@ -1,0 +1,3 @@
+# Generated from lib/l10n/*.arb by `make l10n`: diffs show only that they
+# changed (review the ARB files), and GitHub folds them in pull requests.
+lib/l10n/app_localizations*.dart linguist-generated=true -diff

@@ -28,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test tools
       - run: flutter analyze
       - run: flutter test
       - run: flutter build web --release --no-web-resources-cdn

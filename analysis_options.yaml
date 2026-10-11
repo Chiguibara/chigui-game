@@ -9,6 +9,11 @@
 # packages, and plugins designed to encourage good coding practices.
 include: package:flutter_lints/flutter.yaml
 
+# Keep trailing commas: a list, argument list, map, or enum written one item
+# per line stays that way, so adding an item is a one-line diff.
+formatter:
+  trailing_commas: preserve
+
 linter:
   # The lint rules applied to this project can be customized in the
   # section below to disable rules from the `package:flutter_lints/flutter.yaml`

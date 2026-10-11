@@ -8,9 +8,9 @@ description: Writes and localizes player-facing text (English, Spanish, German, 
 English is the template language; Spanish, German, French, and Catalan are supported translations (one ARB file each in `lib/l10n/`). No player-facing string may be hard-coded.
 
 ## Adding or changing text
-- Add the key to `lib/l10n/app_en.arb` with an `@key` entry whose `description` tells translators where it appears and its tone; add the same key to every other ARB file. `test/l10n_test.dart` fails if any language misses a text or a placeholder.
+- Add the key to `lib/l10n/app_en.arb`, next to related keys and never after the last key (JSON has no trailing commas, so appending would also change the previous line), with an `@key` entry whose `description` tells translators where it appears and its tone; add the same key to every other ARB file. `test/l10n_test.dart` fails if any language misses a text or a placeholder.
 - Use ICU plurals and typed placeholders (`{count, plural, =1{…} other{…}}`) for numbers.
-- `make test` and `make analyze` regenerate the code (`make l10n`); commit the generated `app_localizations*.dart` too.
+- `make test` and `make analyze` regenerate the code (`make l10n`); commit the generated `app_localizations*.dart` too (`.gitattributes` hides their contents from diffs; review the ARB files instead).
 - Not player-facing (dev panel, logs) may stay in plain English.
 
 ## Voice

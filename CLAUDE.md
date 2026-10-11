@@ -36,6 +36,7 @@ This file holds the project's working principles and confirmed decisions; anythi
 - Respect Chigüibara's visual identity: handmade-feeling kawaii, geeky, and playful; not generic or excessively childish.
 - Consequences for neglect stay mild, curable, and capped; no guilt-tripping copy. Never pressure players to spend.
 - Distinguish confirmed decisions, hypotheses, and open questions.
+- Keep diffs small: run `make format` before committing; write lists, argument lists, maps, and enums that may grow one item per line with a trailing comma; in JSON (no trailing commas) insert new entries before the last one, never after it.
 - Code and technical documentation in English. Player-facing text is always localized: English (template), Spanish, German, French, and Catalan; see the `localization-copy` skill.
 
 ## Workflow
