@@ -20,11 +20,11 @@ Use `WEB_PORT=9000 make web` if port 8080 is taken.
 
 After adding, renaming, or deleting files in `assets/` (sounds, fonts) or changing `pubspec.yaml`, reloading the page is not enough: quit `make web` with `q` and start it again.
 
-Only the web platform exists for now. Windows (for players) and Android will be added later; see `CLAUDE.md`.
+The web and Android versions exist; Windows (for players) may follow, see `CLAUDE.md`.
 
 ## Deployment
 
-Every push to `main` and every pull request runs the checks. Publishing happens with a version tag (`git tag v0.2.0 && git push origin v0.2.0`): if the checks pass, the web build goes to https://juego.chiguibara.es and the Android test APKs to a GitHub pre-release (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
+Every push to `main` and every pull request runs the checks. Publishing happens with a version tag (`git tag v0.2.0 && git push origin v0.2.0`): if the checks pass, the web build goes to https://juego.chiguibara.es and the Android app to Google Play production; a beta tag (`v0.2.0-beta.1`) sends the app only to Play's internal testing (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
 
 One-time setup:
 
