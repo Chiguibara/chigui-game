@@ -4,8 +4,9 @@ name: Test and deploy
 # build). Publishing happens only with a version tag: v0.2.0 deploys the web
 # to https://juego.chiguibara.es and sends the Android app to Google Play
 # production; v0.2.0-rc.1 sends it only to Play's closed testing, and
-# v0.2.0-beta.1 only to internal testing. Manual
-# runs from the Actions tab also build the Android app bundle.
+# v0.2.0-beta.1 only to internal testing, with the notes in
+# distribution/whatsnew/ as "What's new". Manual runs from the Actions tab
+# also build the Android app bundle.
 on:
   push:
     branches: [main]
@@ -98,17 +99,47 @@ jobs:
           path: build/app/outputs/bundle/release/app-release.aab
           retention-days: 7
 
+  # Google Play shows distribution/whatsnew/ as the release's "What's new"
+  # (one file per store listing language, 500 characters at most). Each
+  # version brings its own: they must have changed since the previous
+  # production tag, so test tags of a version share them with its final tag.
+  # The release-notes skill writes them.
+  release-notes:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check the release notes
+        shell: bash
+        run: |
+          dir=distribution/whatsnew
+          for f in "$dir"/whatsnew-*; do
+            length=$(python3 -c 'import sys; print(len(open(sys.argv[1], encoding="utf-8").read().strip()))' "$f")
+            if (( length == 0 || length > 500 )); then
+              echo "::error file=$f::release notes must have 1 to 500 characters, not $length"; exit 1
+            fi
+          done
+          previous=$(git describe --tags --abbrev=0 --match 'v*' --exclude '*-*' "$GITHUB_SHA^" 2>/dev/null || true)
+          if [[ -n "$previous" ]] && git diff --quiet "$previous" "$GITHUB_SHA" -- "$dir"; then
+            echo "::error::$dir has not changed since $previous; write this version's notes"; exit 1
+          fi
+
   # v0.2.0 goes to production (Google reviews it, then it is published);
   # v0.2.0-rc.1 to closed testing (the "alpha" track) and v0.2.0-beta.1 to
   # internal testing only.
   google-play:
-    needs: [build, android]
+    needs: [build, android, release-notes]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment:
       name: google-play
       url: https://play.google.com/store/apps/details?id=es.chiguibara.chigui_game
     steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: distribution
       - uses: actions/download-artifact@v5
         with:
           name: chigui-aab
@@ -118,6 +149,7 @@ jobs:
           packageName: es.chiguibara.chigui_game
           releaseFiles: app-release.aab
           releaseName: ${{ github.ref_name }}
+          whatsNewDirectory: distribution/whatsnew
           track: ${{ contains(github.ref_name, '-rc.') && 'alpha' || contains(github.ref_name, '-') && 'internal' || 'production' }}
           status: completed
 

@@ -24,7 +24,7 @@ The web and Android versions exist; Windows (for players) may follow, see `CLAUD
 
 ## Deployment
 
-Every push to `main` and every pull request runs the checks. Publishing happens with a version tag (`git tag v0.2.0 && git push origin v0.2.0`): if the checks pass, the web build goes to https://juego.chiguibara.es and the Android app to Google Play production; a beta tag (`v0.2.0-beta.1`) sends the app only to Play's internal testing (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
+Every push to `main` and every pull request runs the checks. Publishing happens with a version tag (`git tag v0.2.0 && git push origin v0.2.0`): if the checks pass, the web build goes to https://juego.chiguibara.es and the Android app to Google Play production; a release candidate tag (`v0.2.0-rc.1`) sends the app only to Play's closed testing and a beta tag (`v0.2.0-beta.1`) only to internal testing (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). Before tagging a new version, update its Google Play "What's new" notes in `distribution/whatsnew/` (one file per store listing language, 500 characters at most); the workflow fails if they have not changed since the previous production tag. It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
 
 One-time setup:
 

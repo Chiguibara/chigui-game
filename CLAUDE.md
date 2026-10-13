@@ -48,4 +48,4 @@ This file holds the project's working principles and confirmed decisions; anythi
 
 ## Agents and skills
 - Agents: game design `.claude/agents/game-designer.md`, technical architecture `.claude/agents/game-architect.md`, review `.claude/agents/reviewer.md`.
-- Skills in `.claude/skills/`: `game-design`, `progression-monetization`, `mobile-architecture` (including adding Android), `2d-art-pipeline` (code-drawn art), `sound-effects`, `localization-copy`, and `mvp-qa` (including visual checks).
+- Skills in `.claude/skills/`: `game-design`, `progression-monetization`, `mobile-architecture` (including adding Android), `2d-art-pipeline` (code-drawn art), `sound-effects`, `localization-copy`, `mvp-qa` (including visual checks), and `release-notes` (Google Play "What's new" before each version tag).
