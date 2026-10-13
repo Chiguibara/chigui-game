@@ -30,7 +30,9 @@ class MinigameScreen extends StatefulWidget {
 
 class _MinigameScreenState extends State<MinigameScreen>
     with SingleTickerProviderStateMixin {
-  late final Ticker _ticker = createTicker(_tick);
+  // Created up front: created lazily, leaving without playing would create it
+  // in dispose(), when looking up the TickerMode is no longer allowed.
+  late final Ticker _ticker;
   late CatchGame _game = widget.game ?? CatchGame();
   _Phase _phase = _Phase.ready;
   Duration _last = Duration.zero;
@@ -39,6 +41,12 @@ class _MinigameScreenState extends State<MinigameScreen>
   /// Coins this round actually gave (the daily cap may cut them).
   int _earned = 0;
   bool _piggyBankFull = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = createTicker(_tick);
+  }
 
   @override
   void dispose() {
