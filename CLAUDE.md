@@ -18,6 +18,7 @@ This file holds the project's working principles and confirmed decisions; anythi
 - All game audio is FLAC; players can mute it (see the `sound-effects` skill).
 - Notifications: none on the web (closed-page notifications would need Web Push and a server). In the Android app (later), local notifications scheduled from the known routine (meals, potty, bedtime), off by default and switched on by a grown-up, few per day, only in the routine's hours, gentle copy.
 - Persistence goes through `GameRepository` (domain types only); today it is JSON in `shared_preferences`, and moving to SQLite with drift must only need a new implementation. Saves are local only. An event log keeps the last 90 days. JSON stays for production; switch to SQLite only for a concrete need (e.g. a history screen with queries).
+- Audience: all ages, content for PEGI 3. On Google Play every age group is selected, so the app is under the Families policy: no ads, no data or identifiers leave the device, child-appropriate content, and paid packs only with a grown-up's approval through the store.
 - Analytics: only page-level analytics on the website hosting the game (behind its consent banner), to know whether children play. The game itself sends no tracking or personal data. In Spain, consent for under-14s must come from a parent; review the banner with whoever handles legal.
 - The repository is public but not open source: all rights reserved (see `LICENSE`). The code is Daniel Ripoll's; the Chigüibara brand (name, logo, Chigüi character) is Karina Antequera's. Never commit secrets (signing keys, tokens, `key.properties`); they live in GitHub secrets. Do not add open-source licenses or third-party art or audio without approval.
 
@@ -26,7 +27,6 @@ This file holds the project's working principles and confirmed decisions; anythi
 - Needs display (provisional, validate in playtests): mainly Chigüi's mood with small secondary meters.
 - When the Windows build is needed, and how it reaches the children.
 - Who produces the final art and with which tool.
-- Target player age (affects store policies for children before the Android release).
 
 ## Working principles
 - Inspect the repository and its configuration before proposing changes.
