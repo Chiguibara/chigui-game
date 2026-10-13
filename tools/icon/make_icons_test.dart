@@ -1,11 +1,14 @@
 // Renders the app icons from the code-drawn Chigüi: Android (adaptive with
-// monochrome, plus legacy for Android 7), the web, and the Play Store.
+// monochrome, plus legacy for Android 7), the web, and the Play Store (icon
+// and feature graphic).
 // Run with `make icons`; it overwrites the files in place.
 import 'dart:io';
 import 'dart:ui' as ui;
 
+import 'package:chigui_game/minigame/catch_game.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/ui/palette.dart';
+import 'package:chigui_game/ui/sprites.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -51,15 +54,66 @@ Widget _icon(double size, {required _Backdrop backdrop, required double span}) {
   };
 }
 
+/// Google Play's feature graphic (1024 x 500): Chigüi on the right and the
+/// minigame's fruit and coins falling on the left. No text: Play shows the
+/// app's name, and it works in every language.
+Widget _featureGraphic() {
+  const width = 1024.0;
+  const height = 500.0;
+  // Ears to bow tie fill most of the height; the body is cut by the bottom
+  // edge, as in the icon.
+  const portrait = 0.84 * height / 0.58;
+  Widget at(double x, double y, double angle, Widget child) => Positioned(
+    left: x,
+    top: y,
+    child: Transform.rotate(angle: angle, child: child),
+  );
+  return Stack(
+    clipBehavior: Clip.hardEdge,
+    children: [
+      const Positioned.fill(child: ColoredBox(color: Palette.mint)),
+      at(70, 60, -0.2, const FruitSprite(kind: FruitKind.watermelon, size: 96)),
+      at(250, 30, 0.25, const FruitSprite(kind: FruitKind.orange, size: 72)),
+      at(170, 220, 0.1, const FruitSprite(kind: FruitKind.orange, size: 84)),
+      at(
+        380,
+        150,
+        -0.15,
+        const FruitSprite(kind: FruitKind.watermelon, size: 80),
+      ),
+      at(60, 330, 0, const Coin(size: 64)),
+      at(300, 340, 0, const Coin(size: 52)),
+      at(190, 420, 0, const Coin(size: 40)),
+      Positioned(
+        left: 0.7 * width - 0.62 * portrait,
+        top: 0.5 * height - 0.41 * portrait,
+        child: const ChiguiPortrait(size: portrait),
+      ),
+    ],
+  );
+}
+
 Future<void> _render(
   WidgetTester tester,
   String path,
   int px, {
   required _Backdrop backdrop,
   required double span,
-}) async {
+}) => _renderWidget(
+  tester,
+  path,
+  Size(px.toDouble(), px.toDouble()),
+  _icon(px.toDouble(), backdrop: backdrop, span: span),
+);
+
+Future<void> _renderWidget(
+  WidgetTester tester,
+  String path,
+  Size size,
+  Widget child,
+) async {
   final key = GlobalKey();
-  tester.view.physicalSize = Size(px.toDouble(), px.toDouble());
+  tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   await tester.pumpWidget(
     Directionality(
@@ -67,10 +121,7 @@ Future<void> _render(
       child: Center(
         child: RepaintBoundary(
           key: key,
-          child: SizedBox.square(
-            dimension: px.toDouble(),
-            child: _icon(px.toDouble(), backdrop: backdrop, span: span),
-          ),
+          child: SizedBox.fromSize(size: size, child: child),
         ),
       ),
     ),
@@ -156,6 +207,12 @@ void main() {
       512,
       backdrop: _Backdrop.full,
       span: 0.68,
+    );
+    await _renderWidget(
+      tester,
+      'store/play-feature-graphic.png',
+      const Size(1024, 500),
+      _featureGraphic(),
     );
   });
 }
