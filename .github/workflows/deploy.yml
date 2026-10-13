@@ -3,7 +3,8 @@ name: Test and deploy
 # Pushes to main and pull requests are only checked (analysis, tests, web
 # build). Publishing happens only with a version tag: v0.2.0 deploys the web
 # to https://juego.chiguibara.es and sends the Android app to Google Play
-# production; v0.2.0-beta.1 sends it only to Play's internal testing. Manual
+# production; v0.2.0-rc.1 sends it only to Play's closed testing, and
+# v0.2.0-beta.1 only to internal testing. Manual
 # runs from the Actions tab also build the Android app bundle.
 on:
   push:
@@ -98,7 +99,8 @@ jobs:
           retention-days: 7
 
   # v0.2.0 goes to production (Google reviews it, then it is published);
-  # v0.2.0-beta.1 goes to internal testing only.
+  # v0.2.0-rc.1 to closed testing (the "alpha" track) and v0.2.0-beta.1 to
+  # internal testing only.
   google-play:
     needs: [build, android]
     if: startsWith(github.ref, 'refs/tags/v')
@@ -116,12 +118,12 @@ jobs:
           packageName: es.chiguibara.chigui_game
           releaseFiles: app-release.aab
           releaseName: ${{ github.ref_name }}
-          track: ${{ contains(github.ref_name, '-') && 'internal' || 'production' }}
+          track: ${{ contains(github.ref_name, '-rc.') && 'alpha' || contains(github.ref_name, '-') && 'internal' || 'production' }}
           status: completed
 
   deploy:
     needs: build
-    # Beta tags (v0.2.0-beta.1) are only for Android testers.
+    # Test tags (v0.2.0-rc.1, v0.2.0-beta.1) are only for Android testers.
     if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, '-')
     runs-on: ubuntu-latest
     environment:
