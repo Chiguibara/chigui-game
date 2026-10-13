@@ -294,6 +294,8 @@ class _HomeScreenState extends State<HomeScreen> {
       Reaction.cleaned => l10n.cleanedStatus,
       Reaction.chomp => l10n.ateStatus,
       Reaction.walk => l10n.walkedStatus,
+      // Only the minigame's stones bonk Chigüi.
+      Reaction.ouch => l10n.ouchSound,
       null when _pet.asleep => l10n.asleepStatus,
       null when state.sick => l10n.sickStatus,
       null when state.needsPotty => l10n.pottyStatus,

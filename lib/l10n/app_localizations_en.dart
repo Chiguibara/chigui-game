@@ -122,7 +122,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minigameTitle => 'Fruit catch';
 
   @override
-  String get minigameHint => 'Drag to move Chigüi and catch the fruit!';
+  String get minigameHint =>
+      'Drag to move Chigüi: catch the fruit and dodge the stones!';
 
   @override
   String get startButton => 'Start';
@@ -167,6 +168,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chompSound => 'Chomp!';
+
+  @override
+  String get ouchSound => 'Ouch!';
 
   @override
   String get walkedStatus => 'What a lovely walk!';

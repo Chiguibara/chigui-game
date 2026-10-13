@@ -311,7 +311,7 @@ abstract class AppLocalizations {
   /// How to play, shown before starting.
   ///
   /// In en, this message translates to:
-  /// **'Drag to move Chigüi and catch the fruit!'**
+  /// **'Drag to move Chigüi: catch the fruit and dodge the stones!'**
   String get minigameHint;
 
   /// Starts a minigame round.
@@ -361,6 +361,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Chomp!'**
   String get chompSound;
+
+  /// Cartoon exclamation shown when a falling stone bonks Chigüi in the minigame. Playful, not painful. Keep very short.
+  ///
+  /// In en, this message translates to:
+  /// **'Ouch!'**
+  String get ouchSound;
 
   /// Shown when the player's real steps complete a walk with Chigüi.
   ///

@@ -122,7 +122,8 @@ class AppLocalizationsFr extends AppLocalizations {
   String get minigameTitle => 'Attrape les fruits';
 
   @override
-  String get minigameHint => 'Fais glisser Chigüi pour attraper les fruits !';
+  String get minigameHint =>
+      'Fais glisser Chigüi : attrape les fruits et évite les cailloux !';
 
   @override
   String get startButton => 'C\'est parti !';
@@ -167,6 +168,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get chompSound => 'Miam !';
+
+  @override
+  String get ouchSound => 'Aïe !';
 
   @override
   String get walkedStatus => 'Quelle belle promenade !';

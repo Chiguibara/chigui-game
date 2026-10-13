@@ -22,15 +22,100 @@ void main() {
   test('Chigüi catches fruit that falls on them', () {
     final game = CatchGame(random: Random(1));
     game.fruits.add(Fruit(FruitKind.orange, 0.5, catchLine - 0.01));
-    expect(game.update(0.1), 1);
+    expect(game.update(0.1).caught, 1);
     expect(game.caught, 1);
   });
 
   test('fruit that falls far away is simply missed', () {
     final game = CatchGame(random: Random(1));
     game.fruits.add(Fruit(FruitKind.orange, 0.9, catchLine - 0.01));
-    expect(game.update(0.1), 0);
+    expect(game.update(0.1).caught, 0);
     expect(game.caught, 0);
+  });
+
+  test('a stone that lands on Chigüi bonks instead of counting', () {
+    final game = CatchGame(random: Random(1));
+    game.fruits.add(Fruit(FruitKind.stone, 0.5, catchLine - 0.01));
+    expect(game.update(0.1), (caught: 0, bonks: 1));
+    expect(game.caught, 0);
+    expect(game.bonks, 1);
+  });
+
+  test('a dodged stone just falls away', () {
+    final game = CatchGame(random: Random(1));
+    game.fruits.add(Fruit(FruitKind.stone, 0.9, catchLine - 0.01));
+    game.update(1);
+    expect(game.bonks, 0);
+  });
+
+  test('fruit falls faster and more often as the round goes on', () {
+    double fallTime(CatchGame game) {
+      final fruit = Fruit(FruitKind.orange, 0.05, 0);
+      game.fruits.add(fruit);
+      var t = 0.0;
+      while (game.fruits.contains(fruit)) {
+        game.update(1 / 60);
+        t += 1 / 60;
+      }
+      return t;
+    }
+
+    final game = CatchGame(random: Random(1))..aimAt(1);
+    final early = fallTime(game);
+    game.update(20 - early);
+    expect(fallTime(game), lessThan(early * 0.7));
+  });
+
+  test('stones are few, never early and never two in a row', () {
+    for (var seed = 0; seed < 50; seed++) {
+      final game = CatchGame(random: Random(seed));
+      final seen = <Fruit>{};
+      final kinds = <FruitKind>[];
+      var t = 0.0;
+      while (!game.over) {
+        game.update(1 / 60);
+        t += 1 / 60;
+        for (final fruit in game.fruits.where(seen.add)) {
+          kinds.add(fruit.kind);
+          if (fruit.kind == FruitKind.stone) {
+            expect(
+              t,
+              greaterThanOrEqualTo(stonesFromEarliest),
+              reason: 'seed $seed',
+            );
+            expect(kinds.reversed.skip(1).first, isNot(FruitKind.stone));
+          }
+        }
+      }
+      final stones = kinds.where((k) => k == FruitKind.stone).length;
+      expect(
+        stones,
+        lessThanOrEqualTo(kinds.length * 0.25),
+        reason: 'seed $seed',
+      );
+    }
+  });
+
+  test('stones come at different moments every round', () {
+    double? firstStone(int seed) {
+      final game = CatchGame(random: Random(seed));
+      final seen = <Fruit>{};
+      var t = 0.0;
+      while (!game.over) {
+        game.update(1 / 60);
+        t += 1 / 60;
+        for (final fruit in game.fruits.where(seen.add)) {
+          if (fruit.kind == FruitKind.stone) return t;
+        }
+      }
+      return null;
+    }
+
+    final firsts = {
+      for (var seed = 0; seed < 20; seed++)
+        firstStone(seed)?.toStringAsFixed(1),
+    };
+    expect(firsts.length, greaterThan(10));
   });
 
   test('Chigüi moves towards the finger at a limited speed', () {
@@ -55,9 +140,12 @@ void main() {
     while (!game.over) {
       final before = game.fruits.length;
       game.update(1 / 60);
-      if (game.fruits.length > before) spawned++;
+      if (game.fruits.length > before &&
+          game.fruits.last.kind != FruitKind.stone) {
+        spawned++;
+      }
       final next = game.fruits
-          .where((f) => f.y < catchLine)
+          .where((f) => f.kind != FruitKind.stone && f.y < catchLine)
           .fold<Fruit?>(null, (a, f) => a == null || f.y > a.y ? f : a);
       if (next != null) game.aimAt(next.x);
     }

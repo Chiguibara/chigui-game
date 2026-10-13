@@ -149,7 +149,7 @@
   "@minigameTitle": {
     "description": "Name of the minigame."
   },
-  "minigameHint": "Drag to move Chigüi and catch the fruit!",
+  "minigameHint": "Drag to move Chigüi: catch the fruit and dodge the stones!",
   "@minigameHint": {
     "description": "How to play, shown before starting."
   },
@@ -199,6 +199,10 @@
   "chompSound": "Chomp!",
   "@chompSound": {
     "description": "Big, cute eating sound shown when Chigüi catches fruit in the minigame. Keep very short."
+  },
+  "ouchSound": "Ouch!",
+  "@ouchSound": {
+    "description": "Cartoon exclamation shown when a falling stone bonks Chigüi in the minigame. Playful, not painful. Keep very short."
   },
   "walkedStatus": "What a lovely walk!",
   "@walkedStatus": {

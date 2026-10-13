@@ -52,5 +52,16 @@ abstract final class Palette {
   static const lens3dBlue = Color(0xCC3B8FE0);
   static const console = Color(0xFFD9D6CF);
   static const consoleScreen = Color(0xFF9BBC5A);
+  static const guava = Color(0xFFB5D96A);
+  static const mango = Color(0xFFF7B733);
+  static const mangoBlush = Color(0xFFF07A3C);
+  static const starApple = Color(0xFF7E3F7C);
+  static const starAppleFlesh = Color(0xFFE9D7EC);
+  static const melonRind = Color(0xFF9CC96B);
+  static const melonStripe = Color(0xFF5E8F3E);
+  static const banana = Color(0xFFF6D64A);
+  static const apple = Color(0xFFE04F4F);
+  static const stone = Color(0xFF9A9A94);
+  static const stoneShade = Color(0xFF6F6F6A);
   static const outside = Color(0xFF2E4A3F);
 }

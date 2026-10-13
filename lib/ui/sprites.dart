@@ -36,7 +36,7 @@ class _CoinPainter extends CustomPainter {
   bool shouldRepaint(_CoinPainter old) => false;
 }
 
-/// Fruit for the minigame, drawn in code.
+/// Fruit (and the odd stone) for the minigame, drawn in code.
 class FruitSprite extends StatelessWidget {
   const FruitSprite({super.key, required this.kind, required this.size});
 
@@ -95,8 +95,172 @@ class _FruitPainter extends CustomPainter {
           ),
           Paint()..color = Palette.leaf,
         );
+      case FruitKind.guava:
+        // Round and pale green, with a little crown at the bottom.
+        final c = Offset(w / 2, w * 0.54);
+        canvas.drawOval(
+          Rect.fromCenter(center: c, width: w * 0.74, height: w * 0.8),
+          Paint()..color = Palette.guava,
+        );
+        canvas.drawOval(
+          Rect.fromCenter(center: c, width: w * 0.74, height: w * 0.8),
+          outline,
+        );
+        canvas.drawCircle(
+          Offset(w * 0.5, w * 0.9),
+          w * 0.04,
+          Paint()..color = Palette.furOutline,
+        );
+        _leaf(canvas, w, Offset(w * 0.6, w * 0.14));
+      case FruitKind.mango:
+        // A plump, slanted kidney shape, golden with a sunset blush.
+        final body = Path()
+          ..moveTo(w * 0.3, w * 0.2)
+          ..quadraticBezierTo(w * 0.85, w * 0.05, w * 0.88, w * 0.55)
+          ..quadraticBezierTo(w * 0.86, w * 0.92, w * 0.48, w * 0.92)
+          ..quadraticBezierTo(w * 0.1, w * 0.9, w * 0.14, w * 0.5)
+          ..quadraticBezierTo(w * 0.16, w * 0.28, w * 0.3, w * 0.2)
+          ..close();
+        canvas.drawPath(body, Paint()..color = Palette.mango);
+        canvas.save();
+        canvas.clipPath(body);
+        canvas.drawCircle(
+          Offset(w * 0.25, w * 0.85),
+          w * 0.38,
+          Paint()..color = Palette.mangoBlush,
+        );
+        canvas.restore();
+        canvas.drawPath(body, outline);
+        _leaf(canvas, w, Offset(w * 0.42, w * 0.14));
+      case FruitKind.starApple:
+        // Caimito: a purple ball, cut open on one side to show its star.
+        final c = Offset(w / 2, w * 0.55);
+        canvas.drawCircle(c, w * 0.38, Paint()..color = Palette.starApple);
+        canvas.drawCircle(
+          c,
+          w * 0.24,
+          Paint()..color = Palette.starAppleFlesh,
+        );
+        final star = Path();
+        for (var i = 0; i < 10; i++) {
+          final r = w * (i.isEven ? 0.17 : 0.07);
+          final a = -math.pi / 2 + i * math.pi / 5;
+          final p = c + Offset(math.cos(a) * r, math.sin(a) * r);
+          i == 0 ? star.moveTo(p.dx, p.dy) : star.lineTo(p.dx, p.dy);
+        }
+        canvas.drawPath(star..close(), Paint()..color = Palette.starApple);
+        canvas.drawCircle(c, w * 0.38, outline);
+        canvas.drawLine(
+          Offset(w * 0.5, w * 0.17),
+          Offset(w * 0.54, w * 0.06),
+          outline,
+        );
+      case FruitKind.melon:
+        // A whole green melon with darker stripes.
+        final rect = Rect.fromCenter(
+          center: Offset(w / 2, w * 0.55),
+          width: w * 0.88,
+          height: w * 0.66,
+        );
+        canvas.drawOval(rect, Paint()..color = Palette.melonRind);
+        canvas.save();
+        canvas.clipPath(Path()..addOval(rect));
+        final stripe = Paint()
+          ..color = Palette.melonStripe
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = w * 0.04;
+        for (final x in [0.3, 0.5, 0.7]) {
+          canvas.drawArc(
+            Rect.fromCenter(
+              center: Offset(w * 0.5, w * 0.55),
+              width: w * 2 * (x - 0.5).abs() + w * 0.04,
+              height: w * 0.66,
+            ),
+            x < 0.5 ? math.pi / 2 : -math.pi / 2,
+            math.pi,
+            false,
+            stripe,
+          );
+        }
+        canvas.restore();
+        canvas.drawOval(rect, outline);
+      case FruitKind.banana:
+        // A curved yellow banana with brown tips.
+        final body = Path()
+          ..moveTo(w * 0.12, w * 0.3)
+          ..quadraticBezierTo(w * 0.2, w * 0.82, w * 0.86, w * 0.68)
+          ..quadraticBezierTo(w * 0.92, w * 0.62, w * 0.84, w * 0.58)
+          ..quadraticBezierTo(w * 0.36, w * 0.62, w * 0.26, w * 0.24)
+          ..close();
+        canvas.drawPath(body, Paint()..color = Palette.banana);
+        canvas.drawPath(body, outline);
+        final tip = Paint()..color = Palette.furOutline;
+        canvas.drawCircle(Offset(w * 0.88, w * 0.64), w * 0.04, tip);
+        canvas.drawLine(
+          Offset(w * 0.19, w * 0.27),
+          Offset(w * 0.16, w * 0.14),
+          outline,
+        );
+      case FruitKind.apple:
+        // A shiny red apple with a stem and a leaf.
+        final body = Path()
+          ..moveTo(w * 0.5, w * 0.3)
+          ..cubicTo(w * 0.7, w * 0.16, w * 0.98, w * 0.32, w * 0.86, w * 0.66)
+          ..cubicTo(w * 0.78, w * 0.9, w * 0.6, w * 0.94, w * 0.5, w * 0.86)
+          ..cubicTo(w * 0.4, w * 0.94, w * 0.22, w * 0.9, w * 0.14, w * 0.66)
+          ..cubicTo(w * 0.02, w * 0.32, w * 0.3, w * 0.16, w * 0.5, w * 0.3)
+          ..close();
+        canvas.drawPath(body, Paint()..color = Palette.apple);
+        canvas.drawPath(body, outline);
+        canvas.drawCircle(
+          Offset(w * 0.32, w * 0.46),
+          w * 0.06,
+          Paint()..color = Palette.cloud.withValues(alpha: 0.7),
+        );
+        canvas.drawLine(
+          Offset(w * 0.5, w * 0.3),
+          Offset(w * 0.52, w * 0.12),
+          outline,
+        );
+        _leaf(canvas, w, Offset(w * 0.64, w * 0.16));
+      case FruitKind.stone:
+        // A lumpy grey pebble, darker below, with a highlight and speckles.
+        final rock = Path()
+          ..moveTo(w * 0.12, w * 0.62)
+          ..quadraticBezierTo(w * 0.08, w * 0.3, w * 0.38, w * 0.2)
+          ..quadraticBezierTo(w * 0.62, w * 0.1, w * 0.8, w * 0.3)
+          ..quadraticBezierTo(w * 0.96, w * 0.48, w * 0.86, w * 0.7)
+          ..quadraticBezierTo(w * 0.7, w * 0.9, w * 0.42, w * 0.86)
+          ..quadraticBezierTo(w * 0.16, w * 0.84, w * 0.12, w * 0.62)
+          ..close();
+        canvas.drawPath(rock, Paint()..color = Palette.stoneShade);
+        canvas.drawPath(
+          rock.shift(Offset(-w * 0.03, -w * 0.05)),
+          Paint()..color = Palette.stone,
+        );
+        canvas.drawPath(rock, outline..color = Palette.stoneShade);
+        canvas.drawArc(
+          Rect.fromLTWH(w * 0.26, w * 0.26, w * 0.3, w * 0.24),
+          math.pi * 1.1,
+          math.pi * 0.5,
+          false,
+          Paint()
+            ..color = Palette.cloud.withValues(alpha: 0.7)
+            ..style = PaintingStyle.stroke
+            ..strokeCap = StrokeCap.round
+            ..strokeWidth = w * 0.05,
+        );
+        final speckle = Paint()..color = Palette.stoneShade;
+        for (final (x, y) in [(0.62, 0.52), (0.46, 0.66), (0.7, 0.36)]) {
+          canvas.drawCircle(Offset(w * x, w * y), w * 0.03, speckle);
+        }
     }
   }
+
+  static void _leaf(Canvas canvas, double w, Offset center) => canvas.drawOval(
+    Rect.fromCenter(center: center, width: w * 0.24, height: w * 0.12),
+    Paint()..color = Palette.leaf,
+  );
 
   @override
   bool shouldRepaint(_FruitPainter old) => old.kind != kind;

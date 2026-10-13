@@ -36,7 +36,8 @@ class _MinigameScreenState extends State<MinigameScreen>
   late CatchGame _game = widget.game ?? CatchGame();
   _Phase _phase = _Phase.ready;
   Duration _last = Duration.zero;
-  int _catchId = 0;
+  int _reactionId = 0;
+  Reaction _reaction = Reaction.chomp;
 
   /// Coins this round actually gave (the daily cap may cut them).
   int _earned = 0;
@@ -68,8 +69,14 @@ class _MinigameScreenState extends State<MinigameScreen>
     final dt = (elapsed - _last).inMicroseconds / 1e6;
     _last = elapsed;
     setState(() {
-      if (_game.update(dt) > 0) {
-        _catchId++;
+      final step = _game.update(dt);
+      if (step.bonks > 0) {
+        _reaction = Reaction.ouch;
+        _reactionId++;
+        sfx.play(Sfx.bonk);
+      } else if (step.caught > 0) {
+        _reaction = Reaction.chomp;
+        _reactionId++;
         sfx.play(Sfx.chomp);
       }
       if (_game.over) {
@@ -227,8 +234,8 @@ class _MinigameScreenState extends State<MinigameScreen>
                 child: IgnorePointer(
                   child: ChiguiView(
                     size: chiguiSize,
-                    reaction: Reaction.chomp,
-                    reactionId: _catchId,
+                    reaction: _reaction,
+                    reactionId: _reactionId,
                   ),
                 ),
               ),

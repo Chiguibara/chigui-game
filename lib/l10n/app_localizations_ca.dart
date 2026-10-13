@@ -123,7 +123,8 @@ class AppLocalizationsCa extends AppLocalizations {
   String get minigameTitle => 'Atrapa la fruita';
 
   @override
-  String get minigameHint => 'Arrossega per moure Chigüi i atrapar la fruita!';
+  String get minigameHint =>
+      'Arrossega per moure Chigüi: atrapa la fruita i esquiva les pedres!';
 
   @override
   String get startButton => 'A jugar!';
@@ -168,6 +169,9 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get chompSound => 'Nyam!';
+
+  @override
+  String get ouchSound => 'Ai!';
 
   @override
   String get walkedStatus => 'Quin passeig més bonic!';

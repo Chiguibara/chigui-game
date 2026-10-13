@@ -11,7 +11,19 @@ import 'palette.dart';
 import 'poop.dart';
 import 'sprites.dart';
 
-enum Reaction { love, refuse, relief, cured, cleaned, chomp, walk }
+enum Reaction {
+  love,
+  refuse,
+  relief,
+  cured,
+  cleaned,
+  chomp,
+  walk,
+
+  /// A stone bonked Chigüi in the minigame: a squash, little stars and an
+  /// "Ouch!", nothing more.
+  ouch,
+}
 
 enum Face { normal, happy, asleep, sick, grumpy }
 
@@ -85,6 +97,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     if (widget.reactionId != old.reactionId && widget.reaction != null) {
       _react.duration = switch (widget.reaction!) {
         Reaction.chomp => const Duration(milliseconds: 700),
+        Reaction.ouch => const Duration(milliseconds: 900),
         Reaction.walk => const Duration(milliseconds: 1600),
         _ => const Duration(milliseconds: 1200),
       };
@@ -174,6 +187,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                 _floating(size, t, Icons.auto_awesome, Palette.sparkle),
               if (reaction == Reaction.cured) ..._vet(size, t),
               if (reaction == Reaction.chomp) ..._chomp(size, t, l10n),
+              if (reaction == Reaction.ouch) ..._ouch(size, t, l10n),
               if (reaction == Reaction.walk)
                 Positioned(
                   left: size * (0.05 + 0.1 * t),
@@ -200,6 +214,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     // Wide-eyed while opening wide, blissful while chewing.
     Reaction.chomp => _react.value < 0.3 ? Face.normal : Face.happy,
     Reaction.walk => Face.happy,
+    // Wincing, with a little sweat drop.
+    Reaction.ouch => _react.value < 0.7 ? Face.sick : widget.face,
     _ => widget.face,
   };
 
@@ -219,6 +235,14 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       _ => null,
     };
     if (reaction == Reaction.chomp) return _chompScales(_react.value);
+    if (reaction == Reaction.ouch) {
+      // Squashed by the bonk, then springs back.
+      final t = _react.value;
+      final k = t < 0.12
+          ? t / 0.12
+          : 1 - Curves.easeOut.transform((t - 0.12) / 0.88);
+      return (1 + 0.1 * k, 1 - 0.14 * k);
+    }
     if (reaction == Reaction.walk) {
       final landing = 1 - math.sin(_react.value * 4 * math.pi).abs();
       return (1 + 0.03 * landing, 1 - 0.04 * landing);
@@ -250,6 +274,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     return switch (reaction) {
       // A gentle "no, thanks" side-to-side wobble.
       Reaction.refuse => (math.sin(t * 6 * math.pi) * size * 0.03 * (1 - t), 0),
+      // A dizzy little wobble after the bonk.
+      Reaction.ouch => (math.sin(t * 4 * math.pi) * size * 0.02 * (1 - t), 0),
       // Four little hops forward and back.
       Reaction.walk => (
         math.sin(t * 2 * math.pi) * size * 0.08,
@@ -329,33 +355,72 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
             ),
           );
         }(),
-      Positioned(
-        left: size * 0.5,
-        top: -size * 0.14,
-        child: ExcludeSemantics(
-          child: Opacity(
-            opacity: fade,
-            child: Transform.rotate(
-              angle: -0.2,
-              child: Transform.scale(
-                scale: _reduceMotion ? 1 : pop,
-                child: Text(
-                  l10n.chompSound,
-                  style: TextStyle(
-                    fontSize: size * 0.18,
-                    fontWeight: FontWeight.w900,
-                    color: Palette.ink,
-                    decoration: TextDecoration.none,
-                    shadows: const [
-                      Shadow(color: Palette.cloud, offset: Offset(2, 2)),
-                    ],
-                  ),
-                ),
+      _soundWord(size, l10n.chompSound, pop: pop, fade: fade),
+    ];
+  }
+
+  /// A comic-style word ("Chomp!", "Ouch!") popping out above Chigüi.
+  Widget _soundWord(
+    double size,
+    String word, {
+    required double pop,
+    required double fade,
+  }) => Positioned(
+    left: size * 0.5,
+    top: -size * 0.14,
+    child: ExcludeSemantics(
+      child: Opacity(
+        opacity: fade,
+        child: Transform.rotate(
+          angle: -0.2,
+          child: Transform.scale(
+            scale: _reduceMotion ? 1 : pop,
+            child: Text(
+              word,
+              style: TextStyle(
+                fontSize: size * 0.18,
+                fontWeight: FontWeight.w900,
+                color: Palette.ink,
+                decoration: TextDecoration.none,
+                shadows: const [
+                  Shadow(color: Palette.cloud, offset: Offset(2, 2)),
+                ],
               ),
             ),
           ),
         ),
       ),
+    ),
+  );
+
+  /// The stone's bonk: little stars circle Chigüi's head and an "Ouch!"
+  /// pops out. Cartoonish on purpose: nothing hurts for real.
+  List<Widget> _ouch(double size, double t, AppLocalizations l10n) {
+    final pop = t < 0.15
+        ? lerpDouble(0.3, 1.3, t / 0.15)!
+        : t < 0.25
+        ? lerpDouble(1.3, 1, (t - 0.15) / 0.1)!
+        : 1.0;
+    final fade = t > 0.75 ? 1 - (t - 0.75) / 0.25 : 1.0;
+    final head = Offset(size * 0.62, size * 0.12);
+    final turn = _reduceMotion ? 0.0 : t * 2 * math.pi;
+    return [
+      for (var i = 0; i < 3; i++)
+        () {
+          final angle = turn + i * 2 * math.pi / 3;
+          final star = size * 0.13;
+          return Positioned(
+            left: head.dx + math.cos(angle) * size * 0.16 - star / 2,
+            top: head.dy + math.sin(angle) * size * 0.05 - star / 2,
+            child: ExcludeSemantics(
+              child: Opacity(
+                opacity: fade,
+                child: Icon(Icons.star, color: Palette.sparkle, size: star),
+              ),
+            ),
+          );
+        }(),
+      _soundWord(size, l10n.ouchSound, pop: pop, fade: fade),
     ];
   }
 

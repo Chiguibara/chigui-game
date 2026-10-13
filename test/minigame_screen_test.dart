@@ -41,4 +41,29 @@ void main() {
     await tester.pump(const Duration(milliseconds: 250));
     expect(find.text('Chomp!'), findsOneWidget);
   });
+
+  testWidgets('a stone bonks Chigüi, who says "Ouch!"', (tester) async {
+    SharedPreferences.setMockInitialValues({});
+    final controller = await PetController.load(
+      await JsonGameRepository.open(),
+      clock: () => DateTime(2026, 10, 12, 12),
+    );
+    final game = CatchGame(random: Random(1))
+      ..fruits.add(Fruit(FruitKind.stone, 0.5, catchLine - 0.05));
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: MinigameScreen(controller: controller, game: game),
+      ),
+    );
+    await tester.tap(find.text('Start'));
+    await tester.pump();
+    while (game.bonks == 0) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('Ouch!'), findsOneWidget);
+  });
 }

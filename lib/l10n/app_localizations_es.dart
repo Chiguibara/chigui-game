@@ -123,7 +123,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get minigameHint =>
-      '¡Arrastra para mover a Chigüi y atrapar la fruta!';
+      'Arrastra para mover a Chigüi: ¡atrapa la fruta y esquiva las piedras!';
 
   @override
   String get startButton => '¡A jugar!';
@@ -168,6 +168,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chompSound => '¡Ñam!';
+
+  @override
+  String get ouchSound => '¡Auch!';
 
   @override
   String get walkedStatus => '¡Qué paseo más bonito!';
