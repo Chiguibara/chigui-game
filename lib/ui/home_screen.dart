@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../game/pet_controller.dart';
@@ -331,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SafeArea(
                 child: Column(
                   children: [
-                    if (kDebugMode)
+                    if (DevPanel.enabled)
                       DevPanel(controller: _pet, onSteps: _onSteps),
                     _counters(l10n, textTheme, state.coins),
                     Expanded(

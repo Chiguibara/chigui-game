@@ -6,7 +6,7 @@ RUN := docker compose run --rm flutter
 FLUTTER := $(RUN) flutter
 
 .DEFAULT_GOAL := help
-.PHONY: help image shell deps l10n sounds icons web build-web build-site apk test analyze format clean
+.PHONY: help image shell deps l10n sounds icons screenshots web build-web build-site apk test analyze format clean
 
 help: ## Show available targets
 	@grep -E '^[a-z0-9-]+:.*## ' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  make %-10s %s\n", $$1, $$2}'
@@ -28,6 +28,9 @@ sounds: ## Regenerate the synthesized sound effects in assets/sounds
 
 icons: ## Regenerate the app icons (Android, web, Play) from the code-drawn Chigüi
 	$(FLUTTER) test tools/icon/make_icons_test.dart
+
+screenshots: ## Regenerate the Google Play phone screenshots (store/screenshots) from the real app
+	$(FLUTTER) test tools/screenshots/make_screenshots_test.dart
 
 web: ## Run with hot reload at http://localhost:8080 (WEB_PORT=… to change; r = reload, q = quit)
 	docker compose run --rm --service-ports flutter \

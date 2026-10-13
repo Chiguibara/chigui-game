@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../game/pet_controller.dart';
@@ -8,6 +9,10 @@ import 'palette.dart';
 /// intentionally not localized.
 class DevPanel extends StatelessWidget {
   const DevPanel({super.key, required this.controller, required this.onSteps});
+
+  /// Debug builds only; tools that render the real screens (store
+  /// screenshots) turn it off.
+  static bool enabled = kDebugMode;
 
   final PetController controller;
 
