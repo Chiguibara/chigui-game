@@ -92,7 +92,11 @@ typedef Outcome = ({PetState state, List<GameEvent> events, bool ok});
 /// potty, bedtime) is replayed. A clock moved backwards counts as no time.
 Outcome advance(PetState state, DateTime now) {
   if (!now.isAfter(state.updatedAt)) {
-    return (state: state.copyWith(updatedAt: now), events: [], ok: true);
+    return (
+      state: _asleepAtNight(state.copyWith(updatedAt: now), now),
+      events: [],
+      ok: true,
+    );
   }
   final away = now.difference(state.updatedAt) > awayAfter;
   final pauseAt = state.updatedAt.add(routinePause);
@@ -104,16 +108,28 @@ Outcome advance(PetState state, DateTime now) {
   }
   final hours = now.difference(state.updatedAt).inMilliseconds / 3600000;
   return (
-    state: replay.state.copyWith(
-      needs: {
-        for (final need in Need.values)
-          need: _decay(state.level(need), decayPerHour[need]! * hours),
-      },
-      updatedAt: now,
+    state: _asleepAtNight(
+      replay.state.copyWith(
+        needs: {
+          for (final need in Need.values)
+            need: _decay(state.level(need), decayPerHour[need]! * hours),
+        },
+        updatedAt: now,
+      ),
+      now,
     ),
     events: replay.events,
     ok: true,
   );
+}
+
+/// At night Chigüi is always asleep until morning, even when no bedtime was
+/// replayed (a new game, or after the routine paused). Not grumpy: nobody
+/// forgot to send them to bed.
+PetState _asleepAtNight(PetState state, DateTime now) {
+  final wakeUp = nightUntil(now, state.seed);
+  if (wakeUp == null || state.asleepAt(now)) return state;
+  return state.copyWith(asleepUntil: wakeUp);
 }
 
 double _decay(double level, double amount) {

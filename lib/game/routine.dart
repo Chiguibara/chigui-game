@@ -114,7 +114,23 @@ List<DateTime> _pottyUrges(DateTime date, int seed, (int, int) hours) {
   ];
 }
 
-/// The next moment after [now] when the routine changes something.
+/// Night, from the end of bedtime until waking up: the wake-up time if [now]
+/// falls in it, otherwise null. Chigüi always sleeps then, also in a new game
+/// or when the routine paused, where no bedtime was replayed.
+DateTime? nightUntil(DateTime now, int seed) {
+  final local = now.toLocal();
+  for (final d in [-1, 0]) {
+    final s = scheduleFor(
+      DateTime(local.year, local.month, local.day + d),
+      seed,
+    );
+    if (!now.isBefore(s.bedtime.end) && now.isBefore(s.wakeUp)) {
+      return s.wakeUp;
+    }
+  }
+  return null;
+}
+
 /// Whether children are probably in class at [now] (local time).
 bool inSchool(DateTime now) {
   final t = now.toLocal();
@@ -133,6 +149,7 @@ bool inSchool(DateTime now) {
   return minutes >= startH * 60 + startM && minutes < endH * 60 + endM;
 }
 
+/// The next moment after [now] when the routine changes something.
 DateTime nextRoutineMoment(DateTime now, int seed) {
   final local = now.toLocal();
   final moments = [
