@@ -344,11 +344,101 @@ abstract class AppLocalizations {
   /// **'Play again'**
   String get playAgainButton;
 
-  /// Leaves the minigame.
+  /// Leaves the minigames for the home screen.
   ///
   /// In en, this message translates to:
   /// **'Back home'**
   String get backHomeButton;
+
+  /// Leaves a minigame for the list of games.
+  ///
+  /// In en, this message translates to:
+  /// **'Other games'**
+  String get otherGamesButton;
+
+  /// Title of the screen that lists the minigames.
+  ///
+  /// In en, this message translates to:
+  /// **'What shall we play?'**
+  String get gamesTitle;
+
+  /// Name of the memory card game, with fruit cards.
+  ///
+  /// In en, this message translates to:
+  /// **'Fruit memory'**
+  String get memoryTitle;
+
+  /// How to play memory, shown before starting.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn over two cards at a time and find all the pairs!'**
+  String get memoryHint;
+
+  /// Button that starts memory with a board of this many cards.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} cards'**
+  String cardsCount(int count);
+
+  /// Screen reader label for a memory card.
+  ///
+  /// In en, this message translates to:
+  /// **'Card'**
+  String get memoryCard;
+
+  /// Memory result.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 pair found} other{{count} pairs found}}'**
+  String pairsFound(int count);
+
+  /// Name of the hide-and-seek game: Chigüi hides under one of three boxes that swap places.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide and seek'**
+  String get hideTitle;
+
+  /// How to play hide-and-seek, shown before starting.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi hides under a box, then the boxes move. Keep your eyes on it!'**
+  String get hideHint;
+
+  /// Hide-and-seek, while the boxes move.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your eyes on Chigüi\'s box…'**
+  String get hideWatch;
+
+  /// Hide-and-seek, when the player picks a box.
+  ///
+  /// In en, this message translates to:
+  /// **'Where is Chigüi?'**
+  String get hidePick;
+
+  /// Hide-and-seek, Chigüi was under the picked box. Chigüi speaks.
+  ///
+  /// In en, this message translates to:
+  /// **'You found me!'**
+  String get hideFound;
+
+  /// Hide-and-seek, Chigüi was under another box and pops out, giggling. Playful, never a reproach.
+  ///
+  /// In en, this message translates to:
+  /// **'Peekaboo! I was over here!'**
+  String get hideMissed;
+
+  /// Screen reader label for a hide-and-seek box, by position from the left.
+  ///
+  /// In en, this message translates to:
+  /// **'Box {number}'**
+  String hideBox(int number);
+
+  /// Hide-and-seek result. Never discouraging.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{Chigüi is great at hiding!} =1{You found Chigüi once} other{You found Chigüi {count} times}}'**
+  String timesFound(int count);
 
   /// Big, cute eating sound shown when Chigüi catches fruit in the minigame. Keep very short.
   ///

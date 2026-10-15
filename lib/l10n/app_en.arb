@@ -190,7 +190,87 @@
   },
   "backHomeButton": "Back home",
   "@backHomeButton": {
-    "description": "Leaves the minigame."
+    "description": "Leaves the minigames for the home screen."
+  },
+  "otherGamesButton": "Other games",
+  "@otherGamesButton": {
+    "description": "Leaves a minigame for the list of games."
+  },
+  "gamesTitle": "What shall we play?",
+  "@gamesTitle": {
+    "description": "Title of the screen that lists the minigames."
+  },
+  "memoryTitle": "Fruit memory",
+  "@memoryTitle": {
+    "description": "Name of the memory card game, with fruit cards."
+  },
+  "memoryHint": "Turn over two cards at a time and find all the pairs!",
+  "@memoryHint": {
+    "description": "How to play memory, shown before starting."
+  },
+  "cardsCount": "{count} cards",
+  "@cardsCount": {
+    "description": "Button that starts memory with a board of this many cards.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "memoryCard": "Card",
+  "@memoryCard": {
+    "description": "Screen reader label for a memory card."
+  },
+  "pairsFound": "{count, plural, =1{1 pair found} other{{count} pairs found}}",
+  "@pairsFound": {
+    "description": "Memory result.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hideTitle": "Hide and seek",
+  "@hideTitle": {
+    "description": "Name of the hide-and-seek game: Chigüi hides under one of three boxes that swap places."
+  },
+  "hideHint": "Chigüi hides under a box, then the boxes move. Keep your eyes on it!",
+  "@hideHint": {
+    "description": "How to play hide-and-seek, shown before starting."
+  },
+  "hideWatch": "Keep your eyes on Chigüi's box…",
+  "@hideWatch": {
+    "description": "Hide-and-seek, while the boxes move."
+  },
+  "hidePick": "Where is Chigüi?",
+  "@hidePick": {
+    "description": "Hide-and-seek, when the player picks a box."
+  },
+  "hideFound": "You found me!",
+  "@hideFound": {
+    "description": "Hide-and-seek, Chigüi was under the picked box. Chigüi speaks."
+  },
+  "hideMissed": "Peekaboo! I was over here!",
+  "@hideMissed": {
+    "description": "Hide-and-seek, Chigüi was under another box and pops out, giggling. Playful, never a reproach."
+  },
+  "hideBox": "Box {number}",
+  "@hideBox": {
+    "description": "Screen reader label for a hide-and-seek box, by position from the left.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "timesFound": "{count, plural, =0{Chigüi is great at hiding!} =1{You found Chigüi once} other{You found Chigüi {count} times}}",
+  "@timesFound": {
+    "description": "Hide-and-seek result. Never discouraging.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
   },
   "chompSound": "Chomp!",
   "@chompSound": {

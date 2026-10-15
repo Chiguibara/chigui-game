@@ -198,14 +198,14 @@ void main() {
       for (final o in [
         pet(s, at(22)),
         feed(s, at(22)),
-        finishRound(s, at(22), caught: 4),
+        finishRound(s, at(22), coins: coinsForFruits(4)),
         wake(s, at(22)),
       ]) {
         expect(o.ok, isTrue);
         expect(asleep(o.state, at(22)), isFalse);
         expect(sleepy(o.state, at(22)), isTrue);
       }
-      expect(finishRound(s, at(22), caught: 4).state.coins, 2);
+      expect(finishRound(s, at(22), coins: coinsForFruits(4)).state.coins, 2);
     });
 
     test('an hour after the last thing done together, sleep again', () {
@@ -261,7 +261,11 @@ void main() {
 
   group('minigame', () {
     test('a round raises fun and earns a coin per fruit', () {
-      final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 7);
+      final o = finishRound(
+        pet0(at(12), level: 0.4),
+        at(12),
+        coins: coinsForFruits(7),
+      );
       expect(o.ok, isTrue);
       expect(o.state.level(Need.fun), closeTo(0.4 + playFunGain, 1e-9));
       expect(o.state.coins, 3, reason: 'one coin per two fruits');
@@ -272,7 +276,11 @@ void main() {
       var s = pet0(at(12), level: 0.2);
       var total = 0;
       for (var i = 0; i < 4; i++) {
-        s = finishRound(s, at(12, i), caught: 20).state; // 10 coins each
+        s = finishRound(
+          s,
+          at(12, i),
+          coins: coinsForFruits(20),
+        ).state; // 10 coins each
         total = s.coins;
       }
       expect(total, maxMinigameCoinsPerDay);
@@ -281,13 +289,17 @@ void main() {
       // A new day fills the piggy bank again.
       expect(minigameCoinsLeft(s, at(12, 0, 13)), maxMinigameCoinsPerDay);
       expect(
-        finishRound(s, at(12, 0, 13), caught: 20).state.coins,
+        finishRound(s, at(12, 0, 13), coins: coinsForFruits(20)).state.coins,
         maxMinigameCoinsPerDay + 10,
       );
     });
 
     test('playing with no fruit caught is still fun', () {
-      final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 0);
+      final o = finishRound(
+        pet0(at(12), level: 0.4),
+        at(12),
+        coins: coinsForFruits(0),
+      );
       expect(o.state.level(Need.fun), greaterThan(0.4));
       expect(o.state.coins, 0);
     });

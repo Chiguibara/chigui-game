@@ -8,10 +8,9 @@ import '../game/rules.dart' show coinsForFruits;
 import '../l10n/app_localizations.dart';
 import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
-import '../ui/palette.dart';
-import '../ui/game_frame.dart';
 import '../ui/sprites.dart';
 import 'catch_game.dart';
+import 'game_parts.dart';
 
 enum _Phase { ready, playing, done }
 
@@ -39,9 +38,7 @@ class _MinigameScreenState extends State<MinigameScreen>
   int _reactionId = 0;
   Reaction _reaction = Reaction.chomp;
 
-  /// Coins this round actually gave (the daily cap may cut them).
-  int _earned = 0;
-  bool _piggyBankFull = false;
+  RoundPay _pay = (earned: 0, piggyBankFull: false);
 
   @override
   void initState() {
@@ -82,13 +79,7 @@ class _MinigameScreenState extends State<MinigameScreen>
       if (_game.over) {
         _ticker.stop();
         _phase = _Phase.done;
-        final deserved = coinsForFruits(_game.caught);
-        _earned = math.min(
-          deserved,
-          math.max(0, widget.controller.minigameCoinsLeft),
-        );
-        _piggyBankFull = _earned < deserved;
-        widget.controller.finishRound(_game.caught);
+        _pay = payRound(widget.controller, coinsForFruits(_game.caught));
         sfx.play(_game.caught > 0 ? Sfx.reward : Sfx.pop);
       }
     });
@@ -97,105 +88,28 @@ class _MinigameScreenState extends State<MinigameScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme;
-    final title = textTheme.headlineMedium?.copyWith(
-      color: Palette.ink,
-      fontWeight: FontWeight.w700,
-    );
-
-    return Scaffold(
-      backgroundColor: Palette.outside,
-      body: GameFrame(
-        child: ColoredBox(
-          color: Palette.mint,
-          child: SafeArea(
-            child: switch (_phase) {
-              _Phase.ready => _menu(
-                children: [
-                  Text(l10n.minigameTitle, style: title),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.minigameHint,
-                    textAlign: TextAlign.center,
-                    style: textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 32),
-                  _button(Icons.play_arrow, l10n.startButton, _start),
-                  const SizedBox(height: 12),
-                  _backButton(l10n),
-                ],
-              ),
-              _Phase.playing => _playArea(l10n, textTheme),
-              _Phase.done => _menu(
-                children: [
-                  Text(l10n.roundDone, style: title),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.fruitsCaught(_game.caught),
-                    style: textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (_earned > 0) ...[
-                        const Coin(size: 28),
-                        const SizedBox(width: 8),
-                      ],
-                      Text(
-                        l10n.coinsEarned(_earned),
-                        style: textTheme.titleMedium,
-                      ),
-                    ],
-                  ),
-                  if (_piggyBankFull) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.piggyBankFull,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyLarge,
-                    ),
-                  ],
-                  const SizedBox(height: 32),
-                  _button(Icons.replay, l10n.playAgainButton, _start),
-                  const SizedBox(height: 12),
-                  _backButton(l10n),
-                ],
-              ),
-            },
-          ),
+    return MinigameScaffold(
+      child: switch (_phase) {
+        _Phase.ready => GameIntro(
+          title: l10n.minigameTitle,
+          hint: l10n.minigameHint,
+          start: [
+            GameButton(
+              icon: Icons.play_arrow,
+              label: l10n.startButton,
+              onPressed: _start,
+            ),
+          ],
         ),
-      ),
+        _Phase.playing => _playArea(l10n, Theme.of(context).textTheme),
+        _Phase.done => RoundResult(
+          summary: l10n.fruitsCaught(_game.caught),
+          pay: _pay,
+          onPlayAgain: _start,
+        ),
+      },
     );
   }
-
-  Widget _menu({required List<Widget> children}) => Center(
-    child: Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(mainAxisSize: MainAxisSize.min, children: children),
-    ),
-  );
-
-  Widget _button(IconData icon, String label, VoidCallback onPressed) =>
-      FilledButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon),
-        label: Text(label),
-        style: FilledButton.styleFrom(
-          backgroundColor: Palette.ink,
-          foregroundColor: Palette.mint,
-          minimumSize: const Size(180, 52),
-        ),
-      );
-
-  Widget _backButton(AppLocalizations l10n) => TextButton(
-    onPressed: () => Navigator.of(context).pop(),
-    style: TextButton.styleFrom(
-      foregroundColor: Palette.ink,
-      minimumSize: const Size(120, 48),
-    ),
-    child: Text(l10n.backHomeButton),
-  );
 
   Widget _playArea(AppLocalizations l10n, TextTheme textTheme) {
     return LayoutBuilder(

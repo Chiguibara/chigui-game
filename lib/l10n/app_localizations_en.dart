@@ -163,6 +163,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backHomeButton => 'Back home';
 
   @override
+  String get otherGamesButton => 'Other games';
+
+  @override
+  String get gamesTitle => 'What shall we play?';
+
+  @override
+  String get memoryTitle => 'Fruit memory';
+
+  @override
+  String get memoryHint =>
+      'Turn over two cards at a time and find all the pairs!';
+
+  @override
+  String cardsCount(int count) {
+    return '$count cards';
+  }
+
+  @override
+  String get memoryCard => 'Card';
+
+  @override
+  String pairsFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count pairs found',
+      one: '1 pair found',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get hideTitle => 'Hide and seek';
+
+  @override
+  String get hideHint =>
+      'Chigüi hides under a box, then the boxes move. Keep your eyes on it!';
+
+  @override
+  String get hideWatch => 'Keep your eyes on Chigüi\'s box…';
+
+  @override
+  String get hidePick => 'Where is Chigüi?';
+
+  @override
+  String get hideFound => 'You found me!';
+
+  @override
+  String get hideMissed => 'Peekaboo! I was over here!';
+
+  @override
+  String hideBox(int number) {
+    return 'Box $number';
+  }
+
+  @override
+  String timesFound(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'You found Chigüi $count times',
+      one: 'You found Chigüi once',
+      zero: 'Chigüi is great at hiding!',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get chompSound => 'Chomp!';
 
   @override

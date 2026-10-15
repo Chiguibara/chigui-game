@@ -7,7 +7,7 @@ import '../game/pet_controller.dart';
 import '../game/pet_state.dart';
 import '../game/rules.dart' show happyLevel, wishLevel;
 import '../l10n/app_localizations.dart';
-import '../minigame/minigame_screen.dart';
+import '../minigame/games_screen.dart';
 import '../shop/shop_screen.dart';
 import '../store/packs_controller.dart';
 import '../walk/walk_screen.dart';
@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     _pet.wake();
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
+      MaterialPageRoute<void>(builder: (_) => GamesScreen(controller: _pet)),
     );
   }
 

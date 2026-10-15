@@ -215,7 +215,9 @@ void main() {
 
     await tester.tap(find.text('Play'));
     await tester.pumpAndSettle();
-    expect(find.text('Fruit catch'), findsOneWidget);
+    expect(find.text('What shall we play?'), findsOneWidget);
+    await tester.tap(find.text('Fruit catch'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('Start'));
     for (var i = 0; i < 31 * 10; i++) {
@@ -329,6 +331,9 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.text('Play'));
+      await tester.pump();
+      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.text('Fruit catch'));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
       await tester.tap(find.text('Start'));

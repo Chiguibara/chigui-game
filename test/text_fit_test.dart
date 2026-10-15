@@ -108,6 +108,19 @@ void main() {
         );
       }
 
+      // Hide-and-seek status and the game list's cards: two lines, large.
+      for (final (name, text, width) in [
+        ('hideWatch', l.hideWatch, frame - 32),
+        ('hidePick', l.hidePick, frame - 32),
+        ('hideFound', l.hideFound, frame - 32),
+        ('hideMissed', l.hideMissed, frame - 32),
+        ('minigameTitle', l.minigameTitle, 300 - 32 - 64 - 16.0),
+        ('memoryTitle', l.memoryTitle, 300 - 32 - 64 - 16.0),
+        ('hideTitle', l.hideTitle, 300 - 32 - 64 - 16.0),
+      ]) {
+        check(name, text, width: width, lines: 2, size: 22);
+      }
+
       // Shop message: three lines, 16 px padding each side.
       for (final (name, text) in [
         ('shopHint', l.shopHint),

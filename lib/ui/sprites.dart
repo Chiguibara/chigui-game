@@ -36,6 +36,94 @@ class _CoinPainter extends CustomPainter {
   bool shouldRepaint(_CoinPainter old) => false;
 }
 
+/// An upside-down cardboard box for hide-and-seek, with a strip of tape and
+/// a little heart stamp. [size] is its width; it is a bit shorter than wide.
+class HidingBox extends StatelessWidget {
+  const HidingBox({super.key, required this.size});
+
+  static const aspect = 0.9;
+
+  final double size;
+
+  @override
+  Widget build(BuildContext context) => CustomPaint(
+    size: Size(size, size * aspect),
+    painter: _HidingBoxPainter(),
+  );
+}
+
+class _HidingBoxPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final w = size.width;
+    final h = size.height;
+    final outline = Paint()
+      ..color = Palette.furOutline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.025
+      ..strokeJoin = StrokeJoin.round;
+    // The bottom of the box, now on top, seen a little from above.
+    final top = Path()
+      ..moveTo(w * 0.04, h * 0.2)
+      ..lineTo(w * 0.16, h * 0.04)
+      ..lineTo(w * 0.84, h * 0.04)
+      ..lineTo(w * 0.96, h * 0.2)
+      ..close();
+    final front = RRect.fromLTRBR(
+      w * 0.04,
+      h * 0.2,
+      w * 0.96,
+      h * 0.98,
+      Radius.circular(w * 0.03),
+    );
+    canvas.drawPath(top, Paint()..color = Palette.cardboard);
+    canvas.drawRRect(front, Paint()..color = Palette.cardboardDark);
+    // Tape across the top and down the front.
+    canvas.drawPath(
+      Path()
+        ..moveTo(w * 0.44, h * 0.04)
+        ..lineTo(w * 0.56, h * 0.04)
+        ..lineTo(w * 0.58, h * 0.2)
+        ..lineTo(w * 0.42, h * 0.2)
+        ..close(),
+      Paint()..color = Palette.tape,
+    );
+    canvas.drawRect(
+      Rect.fromLTRB(w * 0.42, h * 0.2, w * 0.58, h * 0.44),
+      Paint()..color = Palette.tape,
+    );
+    // A heart stamp.
+    final c = Offset(w * 0.5, h * 0.66);
+    final r = w * 0.07;
+    canvas.drawPath(
+      Path()
+        ..moveTo(c.dx, c.dy + r)
+        ..cubicTo(
+          c.dx - r * 2,
+          c.dy - r * 0.2,
+          c.dx - r,
+          c.dy - r * 1.6,
+          c.dx,
+          c.dy - r * 0.6,
+        )
+        ..cubicTo(
+          c.dx + r,
+          c.dy - r * 1.6,
+          c.dx + r * 2,
+          c.dy - r * 0.2,
+          c.dx,
+          c.dy + r,
+        ),
+      Paint()..color = Palette.blush,
+    );
+    canvas.drawPath(top, outline);
+    canvas.drawRRect(front, outline);
+  }
+
+  @override
+  bool shouldRepaint(_HidingBoxPainter old) => false;
+}
+
 /// Fruit (and the odd stone) for the minigame, drawn in code.
 class FruitSprite extends StatelessWidget {
   const FruitSprite({super.key, required this.kind, required this.size});

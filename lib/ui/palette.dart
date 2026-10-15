@@ -63,5 +63,8 @@ abstract final class Palette {
   static const apple = Color(0xFFE04F4F);
   static const stone = Color(0xFF9A9A94);
   static const stoneShade = Color(0xFF6F6F6A);
+  static const cardboard = Color(0xFFD9A86C);
+  static const cardboardDark = Color(0xFFB9854C);
+  static const tape = Color(0xFFF1D9A6);
   static const outside = Color(0xFF2E4A3F);
 }

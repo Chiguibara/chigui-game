@@ -83,8 +83,8 @@ class PetController extends ChangeNotifier {
   void syncPacks(Set<String> fromStore) =>
       _apply(rules.syncPacks(_state, now, fromStore));
   int get minigameCoinsLeft => rules.minigameCoinsLeft(_state, now);
-  bool finishRound(int caught) =>
-      _apply(rules.finishRound(_state, now, caught: caught));
+  bool finishRound(int coins) =>
+      _apply(rules.finishRound(_state, now, coins: coins));
 
   /// Catches up with the clock: call periodically and when the app resumes.
   void refresh() => _apply(rules.advance(_state, now));

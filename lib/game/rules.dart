@@ -22,8 +22,14 @@ const fruitsPerCoin = 2;
 
 int coinsForFruits(int caught) => caught ~/ fruitsPerCoin;
 
-/// The minigame stops giving coins after this many in a day; playing stays
-/// fun (and still raises fun), the piggy bank is just full until tomorrow.
+/// Memory gives this many coins per pair found, and hide-and-seek per time
+/// Chigüi is found.
+const coinsPerPair = 1;
+const coinsPerFind = 2;
+
+/// The minigames stop giving coins after this many in a day (all games
+/// together); playing stays fun (and still raises fun), the piggy bank is
+/// just full until tomorrow.
 const maxMinigameCoinsPerDay = 30;
 
 bool _sameDay(DateTime? a, DateTime b) {
@@ -310,12 +316,13 @@ Outcome visitVet(PetState state, DateTime now) {
   );
 }
 
-/// A finished minigame round: more fun, plus coins for each fruit caught.
-Outcome finishRound(PetState state, DateTime now, {required int caught}) {
+/// A finished minigame round: more fun, plus the [coins] it was worth, up to
+/// what the daily limit allows.
+Outcome finishRound(PetState state, DateTime now, {required int coins}) {
   final current = advance(state, now);
   final s = _together(current.state, now);
   final left = max(0, minigameCoinsLeft(s, now));
-  final earned = min(coinsForFruits(caught), left);
+  final earned = min(max(0, coins), left);
   final local = now.toLocal();
   return (
     state: _raise(s, Need.fun, playFunGain).copyWith(
