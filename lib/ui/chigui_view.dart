@@ -23,9 +23,12 @@ enum Reaction {
   /// A stone bonked Chigüi in the minigame: a squash, little stars and an
   /// "Ouch!", nothing more.
   ouch,
+
+  /// Woken up: a slow stretch with a big, sleepy yawn.
+  yawn,
 }
 
-enum Face { normal, happy, asleep, sick, grumpy }
+enum Face { normal, happy, asleep, sick }
 
 /// What Chigüi is thinking about, shown in a thought bubble.
 enum Bubble { potty, sleepy, sick, food, affection, fun }
@@ -98,7 +101,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       _react.duration = switch (widget.reaction!) {
         Reaction.chomp => const Duration(milliseconds: 700),
         Reaction.ouch => const Duration(milliseconds: 900),
-        Reaction.walk => const Duration(milliseconds: 1600),
+        Reaction.walk || Reaction.yawn => const Duration(milliseconds: 1600),
         _ => const Duration(milliseconds: 1200),
       };
       _react.forward(from: 0);
@@ -150,9 +153,11 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                         painter: _ChiguiPainter(
                           face: _face(reaction),
                           blink: _isBlinking(),
-                          mouthOpen: reaction == Reaction.chomp
-                              ? _chompOpen(t)
-                              : 0,
+                          mouthOpen: switch (reaction) {
+                            Reaction.chomp => _chompOpen(t),
+                            Reaction.yawn => _yawnOpen(t),
+                            _ => 0,
+                          },
                           cheekPuff: reaction == Reaction.chomp
                               ? _chompPuff(t)
                               : 0,
@@ -216,6 +221,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     Reaction.walk => Face.happy,
     // Wincing, with a little sweat drop.
     Reaction.ouch => _react.value < 0.7 ? Face.sick : widget.face,
+    // Eyes still shut while yawning, then open.
+    Reaction.yawn => _react.value < 0.8 ? Face.asleep : Face.normal,
     _ => widget.face,
   };
 
@@ -242,6 +249,11 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
           ? t / 0.12
           : 1 - Curves.easeOut.transform((t - 0.12) / 0.88);
       return (1 + 0.1 * k, 1 - 0.14 * k);
+    }
+    if (reaction == Reaction.yawn) {
+      // Stretches up tall while yawning, then settles.
+      final k = math.sin(_react.value * math.pi);
+      return (1 - 0.05 * k, 1 + 0.08 * k);
     }
     if (reaction == Reaction.walk) {
       final landing = 1 - math.sin(_react.value * 4 * math.pi).abs();
@@ -283,6 +295,15 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       ),
       _ => (0, 0),
     };
+  }
+
+  /// The yawn opens slowly, holds, and closes (0 with reduced motion).
+  double _yawnOpen(double t) {
+    if (_reduceMotion) return 0;
+    if (t < 0.4) return 0.8 * Curves.easeOut.transform(t / 0.4);
+    if (t < 0.6) return 0.8;
+    if (t < 0.8) return 0.8 * (1 - (t - 0.6) / 0.2);
+    return 0;
   }
 
   // The chomp: open very wide (0–0.3), snap shut (0.3–0.42), then chew with
@@ -834,14 +855,6 @@ class _ChiguiPainter extends CustomPainter {
       case _:
         canvas.drawCircle(eye, w * 0.028, Paint()..color = Palette.ink);
     }
-    if (face == Face.grumpy) {
-      // Brow lowered towards the muzzle.
-      canvas.drawLine(
-        Offset(eye.dx - w * 0.04, eye.dy - h * 0.08),
-        Offset(eye.dx + w * 0.04, eye.dy - h * 0.05),
-        stroke,
-      );
-    }
 
     final mouth = Rect.fromCenter(
       center: Offset(w * 0.8, h * 0.475),
@@ -850,7 +863,7 @@ class _ChiguiPainter extends CustomPainter {
     );
     stroke.strokeWidth = w * 0.012;
     if (mouthOpen > 0.05) {
-      // Wide open for the chomp, jaw dropping below the muzzle.
+      // Wide open for the chomp or a yawn, jaw dropping below the muzzle.
       final open = Rect.fromLTWH(
         w * (0.76 - 0.02 * mouthOpen),
         h * 0.44,
@@ -871,7 +884,7 @@ class _ChiguiPainter extends CustomPainter {
       canvas.drawRRect(rounded, outline);
     } else {
       switch (face) {
-        case Face.grumpy || Face.sick:
+        case Face.sick:
           // A small pout.
           canvas.drawArc(
             mouth.shift(Offset(0, h * 0.03)),
@@ -969,18 +982,9 @@ class _ChiguiPainter extends CustomPainter {
             ink,
           );
       }
-      if (face == Face.grumpy) {
-        // Brows tilted down towards the middle.
-        final inner = x < 0.7 ? 0.03 : -0.03;
-        canvas.drawLine(
-          Offset(w * (x - inner), h * 0.27),
-          Offset(w * (x + inner), h * 0.295),
-          stroke,
-        );
-      }
     }
 
-    // A little "o" mouth; wide open for the chomp.
+    // A little "o" mouth; wide open for the chomp or a yawn.
     final mouth = Offset(w * 0.69, h * (0.44 + 0.03 * mouthOpen));
     canvas.drawOval(
       Rect.fromCenter(

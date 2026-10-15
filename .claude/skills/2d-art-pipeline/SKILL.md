@@ -8,7 +8,7 @@ description: Draws Chigüi, accessories, and sprites in code (Flutter CustomPain
 There is no game engine and no image assets for characters: Chigüi, accessories, food, and props are drawn with Flutter's `CustomPainter`. Respect Chigüibara's identity: handmade-feeling, playful kawaii with personality (a sitting capybara with a bow tie); avoid generic AI aesthetics, clutter, and an excessively childish look. Do not replace the art with generated or third-party images without explicit approval.
 
 ## Where things are
-- `lib/ui/chigui_view.dart`: `ChiguiView` (animated: breathing, blinking, reactions, thought bubble, messes) and `ChiguiPortrait` (still, for previews). Its `_ChiguiPainter` draws Chigüi from `Face` (normal, happy, asleep, sick, grumpy), `blink`, `mouthOpen`, `cheekPuff`, `legLift`, and `wearing`.
+- `lib/ui/chigui_view.dart`: `ChiguiView` (animated: breathing, blinking, reactions, thought bubble, messes) and `ChiguiPortrait` (still, for previews). Its `_ChiguiPainter` draws Chigüi from `Face` (normal, happy, asleep, sick), `blink`, `mouthOpen`, `cheekPuff`, `legLift`, and `wearing`.
 - `lib/ui/accessories.dart`: one `case` per item and `Layer` (`behind`, `overBody`, `overHead`, `front`). Items that hide Chigüi's face (the ghost sheet) are drawn by the painter itself so the face keeps showing the mood.
 - `lib/ui/sprites.dart` (coin, fruit, footprints, stickers) and `lib/ui/poop.dart`.
 - `lib/ui/palette.dart`: every color. Add named colors there; no inline color literals.

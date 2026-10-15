@@ -8,8 +8,6 @@ enum EventType {
   cleaned,
   gotSick,
   vetVisit,
-  sentToBed,
-  wentToBedAlone,
   played,
   walked,
   bought,

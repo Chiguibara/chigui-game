@@ -16,12 +16,16 @@ const pottyUrgesPerDay = 2;
 /// How long Chigüi can wait for the toilet before an accident.
 const pottyWait = Duration(minutes: 60);
 
-/// Chigüi gets sleepy at bedtime and goes to bed alone after [bedtimeWait].
+/// Chigüi falls asleep alone at bedtime and wakes up in the morning. Nothing
+/// waits while Chigüi sleeps: playing with Chigüi wakes them up.
 const schoolNightBedtime = (21, 0);
 const lateBedtime = (21, 30);
-const bedtimeWait = Duration(minutes: 30);
 const schoolDayWakeUp = (8, 0);
 const freeDayWakeUp = (9, 0);
+
+/// Woken up at night, Chigüi stays awake (and sleepy) this long after the
+/// last thing done together, then falls asleep again.
+const stayAwakeFor = Duration(hours: 1);
 
 /// Class time, when playing the minigame waits until after school: weekdays
 /// in these hours (end excluded), outside the school holidays. The core
@@ -55,8 +59,8 @@ class DaySchedule {
   final List<TimeWindow> meals;
   final List<DateTime> pottyUrges;
 
-  /// From sleepy to going to bed alone.
-  final TimeWindow bedtime;
+  /// When Chigüi falls asleep.
+  final DateTime bedtime;
 
   /// The next morning.
   final DateTime wakeUp;
@@ -76,7 +80,6 @@ DaySchedule scheduleFor(DateTime day, int seed) {
   final tomorrow = DateTime(date.year, date.month, date.day + 1);
   final schoolTomorrow = !_isWeekend(tomorrow);
 
-  final bedStart = at(schoolTomorrow ? schoolNightBedtime : lateBedtime);
   final wake = schoolTomorrow ? schoolDayWakeUp : freeDayWakeUp;
 
   return DaySchedule(
@@ -89,7 +92,7 @@ DaySchedule scheduleFor(DateTime day, int seed) {
       seed,
       weekend ? weekendPottyHours : weekdayPottyHours,
     ),
-    bedtime: TimeWindow(bedStart, bedStart.add(bedtimeWait)),
+    bedtime: at(schoolTomorrow ? schoolNightBedtime : lateBedtime),
     wakeUp: DateTime(
       tomorrow.year,
       tomorrow.month,
@@ -114,21 +117,17 @@ List<DateTime> _pottyUrges(DateTime date, int seed, (int, int) hours) {
   ];
 }
 
-/// Night, from the end of bedtime until waking up: the wake-up time if [now]
-/// falls in it, otherwise null. Chigüi always sleeps then, also in a new game
-/// or when the routine paused, where no bedtime was replayed.
-DateTime? nightUntil(DateTime now, int seed) {
+/// Night, from bedtime until waking up, when Chigüi sleeps unless woken up.
+bool isNight(DateTime now, int seed) {
   final local = now.toLocal();
   for (final d in [-1, 0]) {
     final s = scheduleFor(
       DateTime(local.year, local.month, local.day + d),
       seed,
     );
-    if (!now.isBefore(s.bedtime.end) && now.isBefore(s.wakeUp)) {
-      return s.wakeUp;
-    }
+    if (!now.isBefore(s.bedtime) && now.isBefore(s.wakeUp)) return true;
   }
-  return null;
+  return false;
 }
 
 /// Whether children are probably in class at [now] (local time).
@@ -163,8 +162,7 @@ DateTime nextRoutineMoment(DateTime now, int seed) {
           ...s.pottyUrges,
           for (final urge in s.pottyUrges) urge.add(pottyWait),
           for (final meal in s.meals) ...[meal.start, meal.end],
-          s.bedtime.start,
-          s.bedtime.end,
+          s.bedtime,
           s.wakeUp,
         ];
       }(),

@@ -185,29 +185,26 @@ void main() {
     expect(find.text('Vet'), findsNothing);
   });
 
-  testWidgets('at bedtime Chigüi can be sent to bed', (tester) async {
+  testWidgets('at night Chigüi sleeps, and a cuddle wakes them up', (
+    tester,
+  ) async {
     final controller = await start(
       tester,
       same,
-      now: DateTime(2026, 10, 12, 21, 5),
+      now: DateTime(2026, 10, 12, 22),
     );
-    expect(find.text('Chigüi is sleepy'), findsOneWidget);
-
-    await tester.tap(find.text('Bedtime'));
-    await tester.pump();
     expect(controller.asleep, isTrue);
     expect(find.text('Shh… Chigüi is sleeping'), findsOneWidget);
-    expect(actionTile(tester, 'Feed').onPressed, isNull);
-  });
-
-  testWidgets('a grumpy Chigüi is won over with a cuddle', (tester) async {
-    final controller = await start(tester, (s) => s.copyWith(grumpy: true));
-    expect(find.textContaining('grumpy'), findsOneWidget);
+    for (final label in ['Feed', 'Play', 'Walk', 'Shop']) {
+      expect(actionTile(tester, label).onPressed, isNotNull);
+    }
 
     await tester.tap(chigui());
     await tester.pump();
-    expect(controller.state.grumpy, isFalse);
-    await finishReaction(tester);
+    expect(controller.asleep, isFalse);
+    expect(find.text('Yaaawn… Chigüi woke up!'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 1700));
+    expect(find.text('Chigüi is sleepy'), findsOneWidget);
   });
 
   testWidgets('a minigame round raises fun and goes back home', (tester) async {
@@ -234,13 +231,16 @@ void main() {
     expect(find.bySemanticsLabel(RegExp(r'^\d+ coins?$')), findsOneWidget);
   });
 
-  testWidgets('a sleeping Chigüi cannot play or walk', (tester) async {
-    await start(
+  testWidgets('a sleeping Chigüi wakes up to play', (tester) async {
+    final controller = await start(
       tester,
-      (s) => s.copyWith(asleepUntil: DateTime(2026, 10, 12, 18)),
+      same,
+      now: DateTime(2026, 10, 12, 22),
     );
-    expect(actionTile(tester, 'Play').onPressed, isNull);
-    expect(actionTile(tester, 'Walk').onPressed, isNull);
+    await tester.tap(find.text('Play'));
+    await tester.pumpAndSettle();
+    expect(find.text('Fruit catch'), findsOneWidget);
+    expect(controller.asleep, isFalse);
   });
 
   testWidgets('the dev panel simulates steps, and Chigüi walks', (
@@ -373,7 +373,8 @@ void main() {
     ) async {
       final controller = await start(
         tester,
-        (s) => s.copyWith(asleepUntil: noon.add(const Duration(hours: 1))),
+        same,
+        now: DateTime(2026, 10, 12, 22),
       );
       await tester.pump(HomeScreen.snoreEvery);
       await tester.pump(HomeScreen.snoreEvery);
@@ -477,13 +478,14 @@ void main() {
     Future<(PetController, FakeMotion)> startWalker(
       WidgetTester tester, {
       PetState Function(PetState)? setUp,
+      DateTime? now,
     }) async {
       final motion = FakeMotion();
       final steps = StepWatcher(motion);
       await steps.start();
       tester.view.physicalSize = const Size(1080, 2340);
       addTearDown(tester.view.reset);
-      final controller = await controllerWith(setUp ?? same);
+      final controller = await controllerWith(setUp ?? same, now: now);
       await tester.pumpWidget(ChiguiApp(controller: controller, steps: steps));
       return (controller, motion);
     }
@@ -561,14 +563,18 @@ void main() {
       await tester.pump(const Duration(seconds: 2));
     });
 
-    testWidgets('not while Chigüi sleeps', (tester) async {
-      final (_, motion) = await startWalker(
+    testWidgets('also while Chigüi sleeps, waking them up', (tester) async {
+      final (controller, motion) = await startWalker(
         tester,
-        setUp: (s) =>
-            s.copyWith(asleepUntil: noon.add(const Duration(hours: 1))),
+        now: DateTime(2026, 10, 12, 22),
       );
+      expect(controller.asleep, isTrue);
       await walk(tester, motion, 20);
-      expect(find.text('Walk with Chigüi'), findsNothing);
+      expect(
+        find.text('Walk with the phone in your hand, or tap the feet!'),
+        findsOneWidget,
+      );
+      expect(controller.asleep, isFalse);
     });
   });
 

@@ -22,14 +22,14 @@ void main() {
   });
 
   test('bedtime is earlier before a school day', () {
-    expect(scheduleFor(monday, seed).bedtime.start, DateTime(2026, 10, 12, 21));
+    expect(scheduleFor(monday, seed).bedtime, DateTime(2026, 10, 12, 21));
     expect(scheduleFor(monday, seed).wakeUp, DateTime(2026, 10, 13, 8));
     expect(
-      scheduleFor(friday, seed).bedtime.start,
+      scheduleFor(friday, seed).bedtime,
       DateTime(2026, 10, 16, 21, 30),
     );
     expect(scheduleFor(friday, seed).wakeUp, DateTime(2026, 10, 17, 9));
-    expect(scheduleFor(sunday, seed).bedtime.start, DateTime(2026, 10, 18, 21));
+    expect(scheduleFor(sunday, seed).bedtime, DateTime(2026, 10, 18, 21));
   });
 
   test('potty urges fall outside school hours and before bedtime', () {
@@ -42,7 +42,7 @@ void main() {
       for (final urge in s.pottyUrges) {
         expect(urge.hour, greaterThanOrEqualTo(from));
         expect(
-          urge.add(pottyWait).isAfter(s.bedtime.start),
+          urge.add(pottyWait).isAfter(s.bedtime),
           isFalse,
           reason: '$urge',
         );

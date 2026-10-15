@@ -77,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _ticker = Timer.periodic(HomeScreen.refreshEvery, (_) => _pet.refresh());
     _wasNeedingPotty = _pet.state.needsPotty;
     _messes = _pet.state.messes;
+    _wasAsleep = _pet.asleep;
     _pet.addListener(_soundRoutine);
     _stepsSubscription = widget.steps?.steps.listen((_) => _onRealStep());
     _pedometerSubscription = widget.pedometer?.liveSteps.listen(_onRealStep);
@@ -101,18 +102,13 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _walkOpen = false;
 
   /// Opens the walk on its own once the player is clearly walking (about
-  /// 10 m in a row) on this screen, awake. Never during the minigame or in
-  /// the shop, where shaking the phone is not walking.
+  /// 10 m in a row) on this screen. Never during the minigame or in the
+  /// shop, where shaking the phone is not walking.
   void _onRealStep([int count = 1]) {
     final now = DateTime.now();
     final onTop = ModalRoute.of(context)?.isCurrent ?? true;
     final waiting = _noAutoWalkUntil != null && now.isBefore(_noAutoWalkUntil!);
-    if (!mounted ||
-        !_visible ||
-        !onTop ||
-        _walkOpen ||
-        _pet.asleep ||
-        waiting) {
+    if (!mounted || !_visible || !onTop || _walkOpen || waiting) {
       _walkStart.reset();
       return;
     }
@@ -124,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _openWalk({int? startedWalking}) async {
     _walkOpen = true;
+    _pet.wake();
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => WalkScreen(
@@ -143,15 +140,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late bool _wasNeedingPotty;
   late int _messes;
+  late bool _wasAsleep;
 
   /// Audible cues when the routine changes on its own: "uh-oh" when Chigüi
-  /// needs the toilet, "plop" for an accident.
+  /// needs the toilet, "plop" for an accident, a lullaby on falling asleep.
   void _soundRoutine() {
     final state = _pet.state;
+    final asleep = _pet.asleep;
     if (state.needsPotty && !_wasNeedingPotty) sfx.play(Sfx.uhOh);
     if (state.messes > _messes) sfx.play(Sfx.plop);
+    if (asleep && !_wasAsleep) sfx.play(Sfx.lullaby);
     _wasNeedingPotty = state.needsPotty;
     _messes = state.messes;
+    _wasAsleep = asleep;
   }
 
   @override
@@ -192,10 +193,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  /// A cuddle; a sleeping Chigüi wakes up with a big yawn.
   void _onPet() {
-    if (!_pet.pet()) return;
+    final woke = _pet.asleep;
+    _pet.pet();
     sfx.play(Sfx.pet);
-    _react(Reaction.love);
+    _react(woke ? Reaction.yawn : Reaction.love);
   }
 
   void _onFeed() {
@@ -222,10 +225,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _react(Reaction.cured);
   }
 
-  void _onBed() {
-    if (_pet.sendToBed()) sfx.play(Sfx.lullaby);
-  }
-
   /// Real steps from the pedometer (Android, not wired yet) or the dev panel.
   void _onSteps(int steps) {
     sfx.play(_pet.addSteps(steps) ? Sfx.reward : Sfx.stepLeft);
@@ -250,6 +249,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _refusedForSchool = true;
       return;
     }
+    _pet.wake();
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => MinigameScreen(controller: _pet)),
     );
@@ -259,7 +259,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final state = _pet.state;
     if (_pet.asleep) return Face.asleep;
     if (state.sick) return Face.sick;
-    if (state.grumpy) return Face.grumpy;
     return Face.normal;
   }
 
@@ -269,7 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (state.sick) return Bubble.sick;
     if (state.needsPotty) return Bubble.potty;
     if (_pet.inSchool) return null; // Busy studying.
-    if (_pet.wantsSleep) return Bubble.sleepy;
+    if (_pet.sleepy) return Bubble.sleepy;
     if (_pet.pendingMeal != null) return Bubble.food;
     return switch (_pet.wish) {
       Need.food => Bubble.food,
@@ -294,16 +293,16 @@ class _HomeScreenState extends State<HomeScreen> {
       Reaction.cleaned => l10n.cleanedStatus,
       Reaction.chomp => l10n.ateStatus,
       Reaction.walk => l10n.walkedStatus,
+      Reaction.yawn => l10n.yawnStatus,
       // Only the minigame's stones bonk Chigüi.
       Reaction.ouch => l10n.ouchSound,
       null when _pet.asleep => l10n.asleepStatus,
       null when state.sick => l10n.sickStatus,
       null when state.needsPotty => l10n.pottyStatus,
-      null when _pet.wantsSleep => l10n.sleepyStatus,
+      null when _pet.sleepy => l10n.sleepyStatus,
       null when _pet.pendingMeal != null => l10n.mealtimeStatus,
       null when _pet.inSchool => l10n.schoolStatus,
       null when state.messes > 0 => l10n.messStatus,
-      null when state.grumpy => l10n.grumpyStatus,
       null => switch (_pet.wish) {
         Need.food => l10n.wantsFood,
         Need.affection => l10n.wantsAffection,
@@ -404,7 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
       const SizedBox(height: 16),
       _meters(),
       const SizedBox(height: 20),
-      _actions(l10n, asleep: _pet.asleep),
+      _actions(l10n),
       const Spacer(flex: 2),
     ],
   );
@@ -437,7 +436,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 24),
               _meters(),
               const SizedBox(height: 32),
-              _actions(l10n, asleep: _pet.asleep),
+              _actions(l10n),
             ],
           ),
         ),
@@ -514,10 +513,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  /// Urgent, contextual actions (toilet, bed, vet) in a row of fixed height,
+  /// Urgent, contextual actions (toilet, vet) in a row of fixed height,
   /// so nothing below moves when they come and go; then the four everyday
   /// actions, which always fit in one row on a phone.
-  Widget _actions(AppLocalizations l10n, {required bool asleep}) {
+  Widget _actions(AppLocalizations l10n) {
     final state = _pet.state;
     Widget urgent(IconData icon, String label, VoidCallback onPressed) =>
         FilledButton.icon(
@@ -544,8 +543,6 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 if (state.needsPotty)
                   urgent(Icons.wc, l10n.toiletButton, _onToilet),
-                if (_pet.wantsSleep)
-                  urgent(Icons.bedtime, l10n.bedButton, _onBed),
                 if (state.sick) urgent(Icons.vaccines, l10n.vetButton, _onVet),
               ],
             ),
@@ -556,17 +553,9 @@ class _HomeScreenState extends State<HomeScreen> {
             spacing: 8,
             children: [
               for (final (icon, label, onPressed) in [
-                (Icons.eco, l10n.feedButton, asleep ? null : _onFeed),
-                (
-                  Icons.sports_esports,
-                  l10n.playButton,
-                  asleep ? null : _onPlay,
-                ),
-                (
-                  Icons.directions_walk,
-                  l10n.walkButton,
-                  asleep ? null : _onWalk,
-                ),
+                (Icons.eco, l10n.feedButton, _onFeed),
+                (Icons.sports_esports, l10n.playButton, _onPlay),
+                (Icons.directions_walk, l10n.walkButton, _onWalk),
                 (Icons.storefront, l10n.shopButton, _onShop),
               ])
                 Flexible(

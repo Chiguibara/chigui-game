@@ -65,9 +65,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get toiletButton => 'Al baño';
 
   @override
-  String get bedButton => 'A dormir';
-
-  @override
   String get vetButton => 'Al veterinario';
 
   @override
@@ -89,8 +86,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get mealtimeStatus => '¡Es la hora de comer!';
 
   @override
-  String get grumpyStatus =>
-      'Anoche nadie acostó a Chigüi y está de morros. ¡Unos mimos y se le pasa!';
+  String get yawnStatus => 'Uaaah… ¡Chigüi se ha despertado!';
 
   @override
   String get messStatus => 'Algo huele raro… ¡toca limpiar!';

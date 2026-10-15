@@ -90,7 +90,7 @@ void main() {
         ('pottyStatus', l.pottyStatus),
         ('sleepyStatus', l.sleepyStatus),
         ('mealtimeStatus', l.mealtimeStatus),
-        ('grumpyStatus', l.grumpyStatus),
+        ('yawnStatus', l.yawnStatus),
         ('messStatus', l.messStatus),
         ('reliefStatus', l.reliefStatus),
         ('curedStatus', l.curedStatus),

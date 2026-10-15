@@ -212,12 +212,6 @@ abstract class AppLocalizations {
   /// **'Toilet'**
   String get toiletButton;
 
-  /// Button that sends a sleepy Chigüi to bed.
-  ///
-  /// In en, this message translates to:
-  /// **'Bedtime'**
-  String get bedButton;
-
   /// Button that takes a sick Chigüi to the vet.
   ///
   /// In en, this message translates to:
@@ -230,7 +224,7 @@ abstract class AppLocalizations {
   /// **'clean up'**
   String get cleanAction;
 
-  /// Shown while Chigüi sleeps.
+  /// Shown while Chigüi sleeps at night. Nothing is blocked: tapping or playing wakes Chigüi up.
   ///
   /// In en, this message translates to:
   /// **'Shh… Chigüi is sleeping'**
@@ -248,7 +242,7 @@ abstract class AppLocalizations {
   /// **'Chigüi needs the toilet!'**
   String get pottyStatus;
 
-  /// Shown at bedtime, until Chigüi is sent to bed.
+  /// Shown at night while Chigüi is awake after being woken up, until falling asleep again.
   ///
   /// In en, this message translates to:
   /// **'Chigüi is sleepy'**
@@ -260,11 +254,11 @@ abstract class AppLocalizations {
   /// **'It\'s mealtime!'**
   String get mealtimeStatus;
 
-  /// Shown after Chigüi went to bed alone, until petted. Light-hearted, not scolding.
+  /// Shown when a cuddle wakes a sleeping Chigüi, who yawns. Cheerful, never a reproach for waking them.
   ///
   /// In en, this message translates to:
-  /// **'Nobody sent Chigüi to bed, so Chigüi is a bit grumpy. A cuddle will help!'**
-  String get grumpyStatus;
+  /// **'Yaaawn… Chigüi woke up!'**
+  String get yawnStatus;
 
   /// Shown while there is an uncleaned accident.
   ///

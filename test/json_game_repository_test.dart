@@ -35,8 +35,7 @@ void main() {
       lastMealServed: now.subtract(const Duration(hours: 2)),
       missedMealsInARow: 1,
       sick: true,
-      asleepUntil: now.add(const Duration(hours: 8)),
-      grumpy: true,
+      awakeUntil: now.add(const Duration(hours: 1)),
       coins: 12,
       stepsToday: 3400,
       tapStepsToday: 1200,
@@ -68,7 +67,7 @@ void main() {
     expect(state.level(Need.food), 0.4);
     expect(state.messes, 0);
     expect(state.sick, isFalse);
-    expect(state.asleepUntil, isNull);
+    expect(state.awakeUntil, isNull);
   });
 
   test('fills missing or invalid fields with defaults', () async {

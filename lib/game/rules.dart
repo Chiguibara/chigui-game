@@ -15,7 +15,6 @@ const decayPerHour = {Need.food: 0.08, Need.affection: 0.06, Need.fun: 0.07};
 
 const petGain = 0.1;
 const feedGain = 0.3;
-const bedFunGain = 0.3;
 const playFunGain = 0.3;
 
 /// The minigame gives one coin for every this many fruits caught.
@@ -85,18 +84,14 @@ const maxMissedMealsWhileAway = 1;
 const routinePause = Duration(hours: 24);
 
 /// A new state plus what happened, for the history log. [ok] is false when an
-/// action did not apply (e.g. feeding a full or sleeping Chigüi).
+/// action did not apply (e.g. feeding a full Chigüi).
 typedef Outcome = ({PetState state, List<GameEvent> events, bool ok});
 
 /// Brings the pet up to [now]: needs decay, and the routine (mealtimes,
-/// potty, bedtime) is replayed. A clock moved backwards counts as no time.
+/// potty) is replayed. A clock moved backwards counts as no time.
 Outcome advance(PetState state, DateTime now) {
   if (!now.isAfter(state.updatedAt)) {
-    return (
-      state: _asleepAtNight(state.copyWith(updatedAt: now), now),
-      events: [],
-      ok: true,
-    );
+    return (state: state.copyWith(updatedAt: now), events: [], ok: true);
   }
   final away = now.difference(state.updatedAt) > awayAfter;
   final pauseAt = state.updatedAt.add(routinePause);
@@ -108,29 +103,30 @@ Outcome advance(PetState state, DateTime now) {
   }
   final hours = now.difference(state.updatedAt).inMilliseconds / 3600000;
   return (
-    state: _asleepAtNight(
-      replay.state.copyWith(
-        needs: {
-          for (final need in Need.values)
-            need: _decay(state.level(need), decayPerHour[need]! * hours),
-        },
-        updatedAt: now,
-      ),
-      now,
+    state: replay.state.copyWith(
+      needs: {
+        for (final need in Need.values)
+          need: _decay(state.level(need), decayPerHour[need]! * hours),
+      },
+      updatedAt: now,
     ),
     events: replay.events,
     ok: true,
   );
 }
 
-/// At night Chigüi is always asleep until morning, even when no bedtime was
-/// replayed (a new game, or after the routine paused). Not grumpy: nobody
-/// forgot to send them to bed.
-PetState _asleepAtNight(PetState state, DateTime now) {
-  final wakeUp = nightUntil(now, state.seed);
-  if (wakeUp == null || state.asleepAt(now)) return state;
-  return state.copyWith(asleepUntil: wakeUp);
-}
+/// At night Chigüi sleeps, unless played with in the last [stayAwakeFor].
+/// Sleeping never blocks anything: doing something together wakes them up.
+bool asleep(PetState state, DateTime now) =>
+    isNight(now, state.seed) && !state.keptAwakeAt(now);
+
+/// Awake at night after being woken up, until falling asleep again.
+bool sleepy(PetState state, DateTime now) =>
+    isNight(now, state.seed) && state.keptAwakeAt(now);
+
+/// Doing something together keeps (or makes) Chigüi awake for a while.
+PetState _together(PetState state, DateTime now) =>
+    state.copyWith(awakeUntil: now.add(stayAwakeFor));
 
 double _decay(double level, double amount) {
   if (level <= needFloor) return level;
@@ -158,8 +154,6 @@ List<void Function(_Replay)> _steps(PetState s, DateTime from, DateTime to) {
     for (final meal in schedule.meals) {
       add(meal.end, (r) => r.mealEnded(meal));
     }
-    final bedtimeEnd = schedule.bedtime.end;
-    add(bedtimeEnd, (r) => r.bedtimeEnded(bedtimeEnd, schedule.wakeUp));
   }
   moments.sort((a, b) => a.$1.compareTo(b.$1));
   return [for (final m in moments) m.$2];
@@ -176,7 +170,7 @@ class _Replay {
   int _missesLeft;
 
   void pottyUrge(DateTime at) {
-    if (state.asleepAt(at) || state.needsPotty) return;
+    if (asleep(state, at) || state.needsPotty) return;
     state = state.copyWith(pottyUrgeSince: at);
   }
 
@@ -206,13 +200,6 @@ class _Replay {
     _checkSick(meal.end);
   }
 
-  void bedtimeEnded(DateTime at, DateTime wakeUp) {
-    final until = state.asleepUntil;
-    if (until != null && until.isAtSameMomentAs(wakeUp)) return;
-    state = state.copyWith(asleepUntil: wakeUp, grumpy: true);
-    events.add(GameEvent(EventType.wentToBedAlone, at));
-  }
-
   void _checkSick(DateTime at) {
     final recent = [
       for (final t in state.recentAccidents)
@@ -228,14 +215,24 @@ class _Replay {
   }
 }
 
-// Player actions. Each one first brings the pet up to [now].
+// Player actions. Each one first brings the pet up to [now], and the ones
+// done together with Chigüi wake them up.
+
+/// Wakes Chigüi up, e.g. to play or walk; [ok] is false if already awake.
+Outcome wake(PetState state, DateTime now) {
+  final current = advance(state, now);
+  final s = current.state;
+  return (
+    state: _together(s, now),
+    events: current.events,
+    ok: asleep(s, now),
+  );
+}
 
 Outcome pet(PetState state, DateTime now) {
   final current = advance(state, now);
-  final s = current.state;
-  if (s.asleepAt(now)) return (state: s, events: current.events, ok: false);
   return (
-    state: _raise(s, Need.affection, petGain).copyWith(grumpy: false),
+    state: _together(_raise(current.state, Need.affection, petGain), now),
     events: current.events,
     ok: true,
   );
@@ -256,12 +253,11 @@ TimeWindow? pendingMeal(PetState state, DateTime now) {
 bool isFull(PetState state) => state.level(Need.food) >= fullLevel;
 
 /// Feeding during a mealtime counts as on time and is never refused; outside
-/// one it is a snack, refused when full. Sleeping Chigüi cannot eat.
+/// one it is a snack, refused when full.
 Outcome feed(PetState state, DateTime now) {
   final current = advance(state, now);
-  final s = current.state;
+  final s = _together(current.state, now);
   final events = [...current.events];
-  if (s.asleepAt(now)) return (state: s, events: events, ok: false);
 
   final meal = pendingMeal(s, now);
   if (meal != null) {
@@ -283,7 +279,7 @@ Outcome feed(PetState state, DateTime now) {
 
 Outcome takeToToilet(PetState state, DateTime now) {
   final current = advance(state, now);
-  final s = current.state;
+  final s = _together(current.state, now);
   if (!s.needsPotty) return (state: s, events: current.events, ok: false);
   return (
     state: s.copyWith(pottyUrgeSince: null),
@@ -294,7 +290,7 @@ Outcome takeToToilet(PetState state, DateTime now) {
 
 Outcome cleanUp(PetState state, DateTime now) {
   final current = advance(state, now);
-  final s = current.state;
+  final s = _together(current.state, now);
   if (s.messes == 0) return (state: s, events: current.events, ok: false);
   return (
     state: s.copyWith(messes: s.messes - 1),
@@ -305,7 +301,7 @@ Outcome cleanUp(PetState state, DateTime now) {
 
 Outcome visitVet(PetState state, DateTime now) {
   final current = advance(state, now);
-  final s = current.state;
+  final s = _together(current.state, now);
   if (!s.sick) return (state: s, events: current.events, ok: false);
   return (
     state: s.copyWith(sick: false, recentAccidents: [], missedMealsInARow: 0),
@@ -314,32 +310,10 @@ Outcome visitVet(PetState state, DateTime now) {
   );
 }
 
-/// Whether Chigüi is sleepy and waiting to be sent to bed.
-bool wantsSleep(PetState state, DateTime now) =>
-    !state.asleepAt(now) &&
-    scheduleFor(now.toLocal(), state.seed).bedtime.contains(now);
-
-Outcome sendToBed(PetState state, DateTime now) {
-  final current = advance(state, now);
-  final s = current.state;
-  if (!wantsSleep(s, now)) return (state: s, events: current.events, ok: false);
-  return (
-    state: _raise(
-      s,
-      Need.fun,
-      bedFunGain,
-    ).copyWith(asleepUntil: scheduleFor(now.toLocal(), s.seed).wakeUp),
-    events: [...current.events, GameEvent(EventType.sentToBed, now)],
-    ok: true,
-  );
-}
-
 /// A finished minigame round: more fun, plus coins for each fruit caught.
-/// Chigüi cannot play while asleep.
 Outcome finishRound(PetState state, DateTime now, {required int caught}) {
   final current = advance(state, now);
-  final s = current.state;
-  if (s.asleepAt(now)) return (state: s, events: current.events, ok: false);
+  final s = _together(current.state, now);
   final left = max(0, minigameCoinsLeft(s, now));
   final earned = min(coinsForFruits(caught), left);
   final local = now.toLocal();

@@ -80,10 +80,6 @@
   "@toiletButton": {
     "description": "Button that takes Chigüi to the toilet when they need to go."
   },
-  "bedButton": "Bedtime",
-  "@bedButton": {
-    "description": "Button that sends a sleepy Chigüi to bed."
-  },
   "vetButton": "Vet",
   "@vetButton": {
     "description": "Button that takes a sick Chigüi to the vet."
@@ -94,7 +90,7 @@
   },
   "asleepStatus": "Shh… Chigüi is sleeping",
   "@asleepStatus": {
-    "description": "Shown while Chigüi sleeps."
+    "description": "Shown while Chigüi sleeps at night. Nothing is blocked: tapping or playing wakes Chigüi up."
   },
   "sickStatus": "Chigüi doesn't feel well. Time for the vet!",
   "@sickStatus": {
@@ -106,15 +102,15 @@
   },
   "sleepyStatus": "Chigüi is sleepy",
   "@sleepyStatus": {
-    "description": "Shown at bedtime, until Chigüi is sent to bed."
+    "description": "Shown at night while Chigüi is awake after being woken up, until falling asleep again."
   },
   "mealtimeStatus": "It's mealtime!",
   "@mealtimeStatus": {
     "description": "Shown during a mealtime window before Chigüi has eaten."
   },
-  "grumpyStatus": "Nobody sent Chigüi to bed, so Chigüi is a bit grumpy. A cuddle will help!",
-  "@grumpyStatus": {
-    "description": "Shown after Chigüi went to bed alone, until petted. Light-hearted, not scolding."
+  "yawnStatus": "Yaaawn… Chigüi woke up!",
+  "@yawnStatus": {
+    "description": "Shown when a cuddle wakes a sleeping Chigüi, who yawns. Cheerful, never a reproach for waking them."
   },
   "messStatus": "Something smells… time to clean up!",
   "@messStatus": {

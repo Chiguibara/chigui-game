@@ -51,20 +51,20 @@ class PetController extends ChangeNotifier {
   PetState get state => _state;
 
   Need? get wish => rules.wish(_state);
-  bool get asleep => _state.asleepAt(now);
-  bool get wantsSleep => rules.wantsSleep(_state, now);
+  bool get asleep => rules.asleep(_state, now);
+  bool get sleepy => rules.sleepy(_state, now);
 
   /// Class time: the minigame waits until after school.
   bool get inSchool => routine.inSchool(now);
   routine.TimeWindow? get pendingMeal => rules.pendingMeal(_state, now);
 
   // Each action returns false when it did not apply.
+  bool wake() => _apply(rules.wake(_state, now));
   bool pet() => _apply(rules.pet(_state, now));
   bool feed() => _apply(rules.feed(_state, now));
   bool takeToToilet() => _apply(rules.takeToToilet(_state, now));
   bool cleanUp() => _apply(rules.cleanUp(_state, now));
   bool visitVet() => _apply(rules.visitVet(_state, now));
-  bool sendToBed() => _apply(rules.sendToBed(_state, now));
 
   /// Called by the step counter (Android pedometer, or the dev panel).
   bool addSteps(int steps, {bool tapped = false}) =>
@@ -109,7 +109,7 @@ class PetController extends ChangeNotifier {
     _apply((state: state, events: events, ok: true));
   }
 
-  /// Jumps just past the next mealtime, potty, or bedtime change.
+  /// Jumps just past the next mealtime, potty, bedtime, or wake-up.
   void debugSkipToNextEvent() => debugSkip(
     routine.nextRoutineMoment(now, _state.seed).difference(now) +
         const Duration(seconds: 1),

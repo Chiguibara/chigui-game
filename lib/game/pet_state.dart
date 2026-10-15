@@ -17,8 +17,7 @@ class PetState {
     this.lastMealServed,
     this.missedMealsInARow = 0,
     this.sick = false,
-    this.asleepUntil,
-    this.grumpy = false,
+    this.awakeUntil,
     this.coins = 0,
     this.stepsToday = 0,
     this.tapStepsToday = 0,
@@ -61,10 +60,9 @@ class PetState {
 
   final int missedMealsInARow;
   final bool sick;
-  final DateTime? asleepUntil;
 
-  /// Went to bed alone; a cuddle makes up for it.
-  final bool grumpy;
+  /// At night, Chigüi stays awake until then after being played with.
+  final DateTime? awakeUntil;
 
   final int coins;
 
@@ -91,8 +89,8 @@ class PetState {
 
   double level(Need need) => needs[need] ?? initialLevel;
 
-  bool asleepAt(DateTime time) =>
-      asleepUntil != null && time.isBefore(asleepUntil!);
+  bool keptAwakeAt(DateTime time) =>
+      awakeUntil != null && time.isBefore(awakeUntil!);
 
   bool get needsPotty => pottyUrgeSince != null;
 
@@ -105,8 +103,7 @@ class PetState {
     Object? lastMealServed = _keep,
     int? missedMealsInARow,
     bool? sick,
-    Object? asleepUntil = _keep,
-    bool? grumpy,
+    DateTime? awakeUntil,
     int? coins,
     int? stepsToday,
     int? tapStepsToday,
@@ -130,10 +127,7 @@ class PetState {
         : lastMealServed as DateTime?,
     missedMealsInARow: missedMealsInARow ?? this.missedMealsInARow,
     sick: sick ?? this.sick,
-    asleepUntil: identical(asleepUntil, _keep)
-        ? this.asleepUntil
-        : asleepUntil as DateTime?,
-    grumpy: grumpy ?? this.grumpy,
+    awakeUntil: awakeUntil ?? this.awakeUntil,
     coins: coins ?? this.coins,
     stepsToday: stepsToday ?? this.stepsToday,
     tapStepsToday: tapStepsToday ?? this.tapStepsToday,

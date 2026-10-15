@@ -168,64 +168,73 @@ void main() {
     });
   });
 
-  group('bedtime', () {
-    test('sent to bed: Chigüi sleeps until morning and has more fun', () {
-      final s = pet0(at(21, 5), level: 0.5);
-      expect(wantsSleep(s, at(21, 5)), isTrue);
-      final o = sendToBed(s, at(21, 5));
-      expect(o.ok, isTrue);
-      expect(o.state.asleepAt(at(23)), isTrue);
-      expect(o.state.asleepUntil, at(8, 0, 13));
-      expect(o.state.level(Need.fun), closeTo(0.8, 1e-9));
-      expect(types(o), [EventType.sentToBed]);
-
-      final later = play(o.state, at(22));
-      expect(later.state.grumpy, isFalse);
+  group('night', () {
+    test('Chigüi falls asleep alone at bedtime until morning', () {
+      final s = pet0(at(20, 30));
+      expect(asleep(s, at(20, 59)), isFalse);
+      final o = play(s, at(21, 5));
+      expect(asleep(o.state, at(21, 5)), isTrue);
+      expect(o.state.level(Need.fun), greaterThan(0.7));
+      expect(asleep(o.state, at(7, 59, 13)), isTrue);
+      expect(asleep(o.state, at(8, 0, 13)), isFalse);
     });
 
-    test('not sent: Chigüi goes to bed alone and grumpy', () {
-      final o = play(pet0(at(21, 5), level: 0.5), at(21, 31));
-      expect(o.state.asleepAt(at(23)), isTrue);
-      expect(o.state.grumpy, isTrue);
-      expect(o.state.level(Need.fun), lessThan(0.5));
-      expect(types(o), contains(EventType.wentToBedAlone));
-    });
-
-    test('a new game at night starts with Chigüi asleep until morning', () {
+    test('a new game at night starts with Chigüi asleep', () {
       final o = advance(pet0(at(1, 35, 13)), at(1, 35, 13));
-      expect(o.state.asleepUntil, at(8, 0, 13));
-      expect(o.state.grumpy, isFalse);
+      expect(asleep(o.state, at(1, 35, 13)), isTrue);
       expect(o.events, isEmpty);
-      expect(finishRound(o.state, at(1, 40, 13), caught: 4).ok, isFalse);
     });
 
     test('after the routine paused, Chigüi is asleep at night too', () {
       // Last played on Sunday at 20:00: the routine paused on Monday at 20:00,
       // before Monday's bedtime.
       final o = advance(pet0(at(20, 0, 11)), at(1, 35, 13));
-      expect(o.state.asleepAt(at(1, 35, 13)), isTrue);
-      expect(o.state.asleepUntil, at(8, 0, 13));
-      expect(
-        advance(o.state, at(8, 0, 13)).state.asleepAt(at(8, 0, 13)),
-        isFalse,
-      );
+      expect(asleep(o.state, at(1, 35, 13)), isTrue);
     });
 
-    test('a sleeping Chigüi cannot be petted or fed', () {
-      final asleep = pet0(at(22)).copyWith(asleepUntil: at(8, 0, 13));
-      expect(pet(asleep, at(22)).ok, isFalse);
-      expect(feed(asleep, at(22)).ok, isFalse);
+    test('sleeping never blocks anything, it wakes Chigüi up', () {
+      final s = pet0(at(22), level: 0.5);
+      expect(asleep(s, at(22)), isTrue);
+      for (final o in [
+        pet(s, at(22)),
+        feed(s, at(22)),
+        finishRound(s, at(22), caught: 4),
+        wake(s, at(22)),
+      ]) {
+        expect(o.ok, isTrue);
+        expect(asleep(o.state, at(22)), isFalse);
+        expect(sleepy(o.state, at(22)), isTrue);
+      }
+      expect(finishRound(s, at(22), caught: 4).state.coins, 2);
     });
 
-    test('a cuddle makes up for going to bed alone', () {
-      final grumpy = pet0(at(9, 0, 13)).copyWith(grumpy: true);
-      expect(pet(grumpy, at(9, 0, 13)).state.grumpy, isFalse);
+    test('an hour after the last thing done together, sleep again', () {
+      final woken = pet(pet0(at(22)), at(22)).state;
+      expect(asleep(woken, at(22, 59)), isFalse);
+      final cuddled = pet(woken, at(22, 30)).state;
+      expect(asleep(cuddled, at(23, 29)), isFalse);
+      expect(asleep(cuddled, at(23, 30)), isTrue);
+      expect(sleepy(cuddled, at(23, 30)), isFalse);
+    });
+
+    test('played with just before bedtime, Chigüi stays up a bit', () {
+      final s = pet(pet0(at(20, 45)), at(20, 45)).state;
+      expect(asleep(s, at(21, 10)), isFalse);
+      expect(sleepy(s, at(21, 10)), isTrue);
+      expect(asleep(s, at(21, 45)), isTrue);
+    });
+
+    test('waking an awake Chigüi does nothing', () {
+      expect(wake(pet0(at(12)), at(12)).ok, isFalse);
+      expect(sleepy(pet(pet0(at(12)), at(12)).state, at(12, 5)), isFalse);
     });
 
     test('bedtime is later before a free day', () {
       final friday = pet0(DateTime(2026, 10, 16, 21, 10));
-      expect(wantsSleep(friday, DateTime(2026, 10, 16, 21, 10)), isFalse);
-      expect(wantsSleep(friday, DateTime(2026, 10, 16, 21, 35)), isTrue);
+      expect(asleep(friday, DateTime(2026, 10, 16, 21, 10)), isFalse);
+      expect(asleep(friday, DateTime(2026, 10, 16, 21, 35)), isTrue);
+      expect(asleep(friday, DateTime(2026, 10, 17, 8, 30)), isTrue);
+      expect(asleep(friday, DateTime(2026, 10, 17, 9)), isFalse);
     });
   });
 
@@ -281,11 +290,6 @@ void main() {
       final o = finishRound(pet0(at(12), level: 0.4), at(12), caught: 0);
       expect(o.state.level(Need.fun), greaterThan(0.4));
       expect(o.state.coins, 0);
-    });
-
-    test('a sleeping Chigüi cannot play', () {
-      final asleep = pet0(at(22)).copyWith(asleepUntil: at(8, 0, 13));
-      expect(finishRound(asleep, at(22), caught: 3).ok, isFalse);
     });
   });
 

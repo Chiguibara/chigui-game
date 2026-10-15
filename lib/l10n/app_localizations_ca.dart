@@ -66,9 +66,6 @@ class AppLocalizationsCa extends AppLocalizations {
   String get toiletButton => 'Al lavabo';
 
   @override
-  String get bedButton => 'A dormir';
-
-  @override
   String get vetButton => 'Al veterinari';
 
   @override
@@ -90,8 +87,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get mealtimeStatus => 'És l\'hora de menjar!';
 
   @override
-  String get grumpyStatus =>
-      'Ningú no va acotxar Chigüi i fa morros. Unes moixaines i se li passa!';
+  String get yawnStatus => 'Uaaah… Chigüi s\'ha despertat!';
 
   @override
   String get messStatus => 'Fa una olor estranya… Toca netejar!';
