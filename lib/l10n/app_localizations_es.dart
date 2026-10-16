@@ -508,9 +508,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get remindersButton => 'Avisos';
 
   @override
-  String get remindersTitle => 'Avisos (para adultos)';
-
-  @override
   String get remindersOffInfo =>
       'Chigüi puede mandar un aviso suave a la hora de comer y cuando necesite ir al baño, nunca en horario de clase ni de noche. Ahora están apagados.';
 
@@ -519,7 +516,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Los avisos están encendidos: unos pocos al día, a la hora de comer y del baño. Se paran solos si pasa un día sin jugar.';
 
   @override
-  String get remindersHoldToTurnOn => 'Mantén pulsado para encender';
+  String get remindersTurnOn => 'Encender';
 
   @override
   String get remindersTurnOff => 'Apagar';
@@ -527,6 +524,9 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get remindersDenied =>
       'Las notificaciones de Chigüi están bloqueadas en los ajustes del móvil.';
+
+  @override
+  String get remindersOpenSettings => 'Abrir ajustes';
 
   @override
   String get reminderMeal =>

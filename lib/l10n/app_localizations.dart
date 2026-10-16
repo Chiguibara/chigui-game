@@ -896,19 +896,13 @@ abstract class AppLocalizations {
   /// **'Turn sounds on'**
   String get unmuteSounds;
 
-  /// Tooltip of the home screen bell button that opens the reminder settings (Android app).
+  /// Tooltip of the home screen bell button that opens the reminder settings (Android app), and the title of those settings.
   ///
   /// In en, this message translates to:
   /// **'Reminders'**
   String get remindersButton;
 
-  /// Title of the reminder settings dialog, meant for parents.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminders (for grown-ups)'**
-  String get remindersTitle;
-
-  /// Reminder settings while off: what reminders do. For parents; calm, no pressure.
+  /// Reminder settings while off: what reminders do. Calm, no pressure.
   ///
   /// In en, this message translates to:
   /// **'Chigüi can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.'**
@@ -920,11 +914,11 @@ abstract class AppLocalizations {
   /// **'Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.'**
   String get remindersOnInfo;
 
-  /// Button a grown-up holds (long press) to turn reminders on, so children don't turn them on by accident.
+  /// Button that turns reminders back on (asks the phone for permission if needed).
   ///
   /// In en, this message translates to:
-  /// **'Hold to turn on'**
-  String get remindersHoldToTurnOn;
+  /// **'Turn on'**
+  String get remindersTurnOn;
 
   /// Button that turns reminders off.
   ///
@@ -937,6 +931,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Notifications for Chigüi are blocked in the phone\'s settings.'**
   String get remindersDenied;
+
+  /// Button under the blocked-notifications message that opens the phone's notification settings for the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get remindersOpenSettings;
 
   /// Notification at the start of a mealtime, while the game is closed. Gentle, never guilt-tripping.
   ///

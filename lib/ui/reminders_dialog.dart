@@ -4,8 +4,8 @@ import '../l10n/app_localizations.dart';
 import '../notify/reminders.dart';
 import 'palette.dart';
 
-/// The reminder settings, for grown-ups: turning them on takes a long press,
-/// so children do not switch them on by accident; off is a plain tap.
+/// The reminder settings: what they do, and a button to turn them on or
+/// off. Turning them on asks the system for permission again if needed.
 Future<void> showRemindersDialog(BuildContext context, Reminders reminders) =>
     showDialog<void>(
       context: context,
@@ -36,7 +36,7 @@ class _RemindersDialogState extends State<_RemindersDialog> {
     return ListenableBuilder(
       listenable: reminders,
       builder: (context, _) => AlertDialog(
-        title: Text(l10n.remindersTitle),
+        title: Text(l10n.remindersButton),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,6 +49,17 @@ class _RemindersDialogState extends State<_RemindersDialog> {
               Text(
                 l10n.remindersDenied,
                 style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 4),
+              // Android stops asking after two "no"s: the settings remain.
+              TextButton.icon(
+                onPressed: reminders.openSettings,
+                icon: const Icon(Icons.settings),
+                label: Text(l10n.remindersOpenSettings),
+                style: TextButton.styleFrom(
+                  foregroundColor: Palette.ink,
+                  minimumSize: const Size(64, 48),
+                ),
               ),
             ],
           ],
@@ -73,14 +84,13 @@ class _RemindersDialogState extends State<_RemindersDialog> {
             )
           else
             FilledButton(
-              onPressed: null,
-              onLongPress: _turnOn,
+              onPressed: _turnOn,
               style: FilledButton.styleFrom(
                 backgroundColor: Palette.ink,
                 foregroundColor: Palette.mint,
                 minimumSize: const Size(64, 48),
               ),
-              child: Text(l10n.remindersHoldToTurnOn),
+              child: Text(l10n.remindersTurnOn),
             ),
         ],
       ),

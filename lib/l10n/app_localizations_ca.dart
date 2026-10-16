@@ -508,9 +508,6 @@ class AppLocalizationsCa extends AppLocalizations {
   String get remindersButton => 'Avisos';
 
   @override
-  String get remindersTitle => 'Avisos (per a adults)';
-
-  @override
   String get remindersOffInfo =>
       'Chigüi pot enviar un avís suau a l\'hora de menjar i quan necessiti anar al lavabo, mai en horari de classe ni de nit. Ara estan apagats.';
 
@@ -519,7 +516,7 @@ class AppLocalizationsCa extends AppLocalizations {
       'Els avisos estan encesos: uns quants al dia, a l\'hora de menjar i del lavabo. S\'aturen sols si passa un dia sense jugar.';
 
   @override
-  String get remindersHoldToTurnOn => 'Mantén premut per encendre';
+  String get remindersTurnOn => 'Encendre';
 
   @override
   String get remindersTurnOff => 'Apagar';
@@ -527,6 +524,9 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get remindersDenied =>
       'Les notificacions de Chigüi estan bloquejades a la configuració del mòbil.';
+
+  @override
+  String get remindersOpenSettings => 'Obre la configuració';
 
   @override
   String get reminderMeal =>

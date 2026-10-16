@@ -37,9 +37,10 @@ Future<void> main() async {
   final pedometer = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
       ? Pedometer(controller, await SharedPreferences.getInstance())
       : null;
-  unawaited(pedometer?.start());
-  // The Android app: gentle routine reminders, off until a grown-up turns
-  // them on; scheduled only while the game is in the background.
+  final pedometerStarted = pedometer?.start();
+  unawaited(pedometerStarted);
+  // The Android app: gentle routine reminders, on unless the player says no
+  // when asked; scheduled only while the game is in the background.
   final reminders = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
       ? Reminders(
           SystemNoticeBoard(),
@@ -48,11 +49,15 @@ Future<void> main() async {
         )
       : null;
   if (reminders != null) {
-    unawaited(reminders.clear());
-    AppLifecycleListener(
-      onHide: reminders.scheduleAhead,
-      onShow: reminders.clear,
-    );
+    void opened() {
+      unawaited(reminders.refresh());
+      unawaited(reminders.clear());
+    }
+
+    // After the steps permission, so the two questions do not overlap.
+    final Future<void> asked = pedometerStarted ?? Future.value();
+    unawaited(asked.then((_) => opened()));
+    AppLifecycleListener(onHide: reminders.scheduleAhead, onShow: opened);
   }
   runApp(
     ChiguiApp(

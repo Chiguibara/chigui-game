@@ -508,9 +508,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get remindersButton => 'Rappels';
 
   @override
-  String get remindersTitle => 'Rappels (pour les grands)';
-
-  @override
   String get remindersOffInfo =>
       'Chigüi peut envoyer un petit rappel à l\'heure des repas et quand c\'est l\'heure du petit coin, jamais pendant la classe ni la nuit. Ils sont désactivés pour l\'instant.';
 
@@ -519,7 +516,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les rappels sont activés : quelques-uns par jour, à l\'heure des repas et du petit coin. Ils s\'arrêtent tout seuls après une journée sans jouer.';
 
   @override
-  String get remindersHoldToTurnOn => 'Maintiens pour activer';
+  String get remindersTurnOn => 'Activer';
 
   @override
   String get remindersTurnOff => 'Désactiver';
@@ -527,6 +524,9 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get remindersDenied =>
       'Les notifications de Chigüi sont bloquées dans les réglages du téléphone.';
+
+  @override
+  String get remindersOpenSettings => 'Ouvrir les réglages';
 
   @override
   String get reminderMeal =>

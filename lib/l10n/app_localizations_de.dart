@@ -508,9 +508,6 @@ class AppLocalizationsDe extends AppLocalizations {
   String get remindersButton => 'Erinnerungen';
 
   @override
-  String get remindersTitle => 'Erinnerungen (für Erwachsene)';
-
-  @override
   String get remindersOffInfo =>
       'Chigüi kann zu den Essenszeiten und wenn es aufs Klo muss eine sanfte Erinnerung schicken – nie während des Unterrichts und nie nachts. Gerade sind sie aus.';
 
@@ -519,7 +516,7 @@ class AppLocalizationsDe extends AppLocalizations {
       'Erinnerungen sind an: ein paar am Tag, zu den Essens- und Klozeiten. Nach einem Tag ohne Spielen hören sie von selbst auf.';
 
   @override
-  String get remindersHoldToTurnOn => 'Zum Einschalten gedrückt halten';
+  String get remindersTurnOn => 'Einschalten';
 
   @override
   String get remindersTurnOff => 'Ausschalten';
@@ -527,6 +524,9 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get remindersDenied =>
       'Benachrichtigungen für Chigüi sind in den Handy-Einstellungen blockiert.';
+
+  @override
+  String get remindersOpenSettings => 'Einstellungen öffnen';
 
   @override
   String get reminderMeal => 'Essenszeit! Chigüi hätte gern etwas Leckeres.';

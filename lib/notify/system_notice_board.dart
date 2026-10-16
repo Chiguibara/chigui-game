@@ -26,6 +26,18 @@ class SystemNoticeBoard implements NoticeBoard {
   }
 
   @override
+  Future<bool> allowed() async {
+    await _ready;
+    return await _android?.areNotificationsEnabled() ?? false;
+  }
+
+  @override
+  Future<void> openSettings() async {
+    await _ready;
+    await _android?.openAppNotificationSettings();
+  }
+
+  @override
   Future<void> replace(
     List<ScheduledNotice> notices, {
     required String channel,

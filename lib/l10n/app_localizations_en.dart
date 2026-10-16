@@ -507,9 +507,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersButton => 'Reminders';
 
   @override
-  String get remindersTitle => 'Reminders (for grown-ups)';
-
-  @override
   String get remindersOffInfo =>
       'Chigüi can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.';
 
@@ -518,7 +515,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.';
 
   @override
-  String get remindersHoldToTurnOn => 'Hold to turn on';
+  String get remindersTurnOn => 'Turn on';
 
   @override
   String get remindersTurnOff => 'Turn off';
@@ -526,6 +523,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get remindersDenied =>
       'Notifications for Chigüi are blocked in the phone\'s settings.';
+
+  @override
+  String get remindersOpenSettings => 'Open settings';
 
   @override
   String get reminderMeal =>

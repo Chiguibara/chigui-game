@@ -606,23 +606,19 @@
   },
   "remindersButton": "Reminders",
   "@remindersButton": {
-    "description": "Tooltip of the home screen bell button that opens the reminder settings (Android app)."
-  },
-  "remindersTitle": "Reminders (for grown-ups)",
-  "@remindersTitle": {
-    "description": "Title of the reminder settings dialog, meant for parents."
+    "description": "Tooltip of the home screen bell button that opens the reminder settings (Android app), and the title of those settings."
   },
   "remindersOffInfo": "Chigüi can send a gentle reminder at mealtimes and when it's toilet time, never during class or at night. They are off for now.",
   "@remindersOffInfo": {
-    "description": "Reminder settings while off: what reminders do. For parents; calm, no pressure."
+    "description": "Reminder settings while off: what reminders do. Calm, no pressure."
   },
   "remindersOnInfo": "Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.",
   "@remindersOnInfo": {
     "description": "Reminder settings while on."
   },
-  "remindersHoldToTurnOn": "Hold to turn on",
-  "@remindersHoldToTurnOn": {
-    "description": "Button a grown-up holds (long press) to turn reminders on, so children don't turn them on by accident."
+  "remindersTurnOn": "Turn on",
+  "@remindersTurnOn": {
+    "description": "Button that turns reminders back on (asks the phone for permission if needed)."
   },
   "remindersTurnOff": "Turn off",
   "@remindersTurnOff": {
@@ -631,6 +627,10 @@
   "remindersDenied": "Notifications for Chigüi are blocked in the phone's settings.",
   "@remindersDenied": {
     "description": "Shown when the phone does not allow notifications for the app."
+  },
+  "remindersOpenSettings": "Open settings",
+  "@remindersOpenSettings": {
+    "description": "Button under the blocked-notifications message that opens the phone's notification settings for the app."
   },
   "reminderMeal": "It's mealtime! Chigüi would love something yummy.",
   "@reminderMeal": {
