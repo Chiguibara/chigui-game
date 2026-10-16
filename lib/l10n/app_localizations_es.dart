@@ -231,6 +231,60 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get bathTitle => 'Bañito';
+
+  @override
+  String get bathHint =>
+      '¡Chigüi se ha puesto perdido jugando! Mete a Chigüi en el barreño y elige lo que haga falta para quitar las manchas pringosas.';
+
+  @override
+  String get bathArrive => '¡Ahí viene Chigüi, con pringue hasta las orejas!';
+
+  @override
+  String get bathHopIn => '¡Toca a Chigüi y al barreño!';
+
+  @override
+  String get bathWash => 'Elige algo y limpia las manchas pringosas';
+
+  @override
+  String get bathYuzu => '¡Ni una mancha! Echa unos yuzus al agua';
+
+  @override
+  String get bathSoak => 'Ahhh… baño de yuzu, qué gustito';
+
+  @override
+  String get bathDry => '¡Fuera del agua! Seca a Chigüi con la toalla';
+
+  @override
+  String get bathDone => '¡Qué suavidad y qué brillo!';
+
+  @override
+  String bathSpots(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count manchas pringosas fuera',
+      one: '1 mancha pringosa fuera',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bathToolSoap => 'Jabón';
+
+  @override
+  String get bathToolBrush => 'Cepillo';
+
+  @override
+  String get bathToolLadle => 'Cazo de agua';
+
+  @override
+  String get bathToolYuzu => 'Yuzu';
+
+  @override
+  String get bathToolTowel => 'Toalla';
+
+  @override
   String get chompSound => '¡Ñam!';
 
   @override
@@ -402,7 +456,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get walkIntroTapping =>
-      '¡Pulsa los pies uno detrás de otro para pasear con Chigüi!';
+      '¡Pulsa los pies para pasear con Chigüi, tan rápido como quieras!';
 
   @override
   String get startWalkButton => '¡Vamos!';
@@ -417,9 +471,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tapFeetHint => 'Izquierdo, derecho, izquierdo, derecho…';
-
-  @override
-  String get otherFoot => '¡El otro pie!';
 
   @override
   String get leftFoot => 'pie izquierdo';
@@ -541,7 +592,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get tapsCapped =>
-      '¡A Chigüi le duelen las patitas de tanto pulsar! Mañana más, o sal a caminar de verdad.';
+      '¡Uf, uf! Chigüi se ha quedado sin aliento de tanto pulsar. Mañana más, o sal a caminar de verdad.';
 
   @override
   String get piggyBankFull =>

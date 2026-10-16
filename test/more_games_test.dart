@@ -3,7 +3,10 @@ import 'dart:math';
 import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
+import 'package:chigui_game/game/rules.dart' show coinsForSpots;
 import 'package:chigui_game/l10n/app_localizations.dart';
+import 'package:chigui_game/minigame/bath_game.dart';
+import 'package:chigui_game/minigame/bath_screen.dart';
 import 'package:chigui_game/minigame/games_screen.dart';
 import 'package:chigui_game/minigame/hide_game.dart';
 import 'package:chigui_game/minigame/hide_screen.dart';
@@ -49,6 +52,7 @@ void main() {
       ('Fruit memory', 'Turn over two cards'),
       ('Hide and seek', 'Chigüi hides under a box'),
       ('Fruit catch', 'Drag to move Chigüi'),
+      ('Bath time', 'Pop Chigüi into the tub'),
     ]) {
       await tester.tap(find.text(game));
       await tester.pumpAndSettle();
@@ -59,7 +63,9 @@ void main() {
     expect(find.text('What shall we play?'), findsOneWidget);
   });
 
-  testWidgets('memory: finding every pair pays a coin each', (tester) async {
+  testWidgets('memory: finding every pair pays a coin per two pairs', (
+    tester,
+  ) async {
     final pet = await controller();
     await show(tester, MemoryScreen(controller: pet, random: Random(5)));
     final cards = MemoryGame(pairs: 3, random: Random(5)).cards;
@@ -91,11 +97,11 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
     expect(find.text('Great game!'), findsOneWidget);
     expect(find.text('3 pairs found'), findsOneWidget);
-    expect(pet.state.coins, 3);
+    expect(pet.state.coins, 1, reason: 'one coin per two pairs');
     expect(pet.state.level(Need.fun), greaterThan(PetState.initialLevel));
   });
 
-  testWidgets('hide and seek: five turns, two coins per find', (
+  testWidgets('hide and seek: five turns, a coin per find', (
     tester,
   ) async {
     final pet = await controller();
@@ -125,6 +131,112 @@ void main() {
     }
     expect(find.text('Great game!'), findsOneWidget);
     expect(find.text('You found Chigüi 3 times'), findsOneWidget);
-    expect(pet.state.coins, 6);
+    expect(pet.state.coins, 3);
+  });
+
+  testWidgets('hide and seek: after a long time without a find, '
+      "Chigüi's box trembles", (tester) async {
+    final pet = await controller();
+    await show(tester, HideScreen(controller: pet, random: Random(7)));
+    final game = HideGame(random: Random(7))..startTurn();
+    game.swaps.forEach(game.swap);
+
+    await tester.tap(find.text('Start'));
+    while (find.text('Where is Chigüi?').evaluate().isEmpty) {
+      await frames(tester, const Duration(milliseconds: 100));
+    }
+    double angle(int box) => tester
+        .widget<Transform>(
+          find.descendant(
+            of: find.byKey(ValueKey('box-$box')),
+            matching: find.byType(Transform),
+          ),
+        )
+        .transform
+        .getRotation()
+        .entry(1, 0);
+
+    await frames(tester, const Duration(seconds: 1));
+    expect(angle(game.chiguiBox), 0);
+
+    await tester.pump(hideHintAfter);
+    await frames(tester, const Duration(milliseconds: 150));
+    expect(angle(game.chiguiBox), isNot(0));
+    expect(angle((game.chiguiBox + 1) % hideBoxes), 0);
+
+    // Picking stops the trembling.
+    await tester.tap(find.byKey(ValueKey('box-${game.chiguiBox}')));
+    await frames(tester, const Duration(milliseconds: 100));
+    expect(angle(game.chiguiBox), 0);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('bath time: in the tub, cleaned tool by tool, coins at the end', (
+    tester,
+  ) async {
+    final pet = await controller();
+    await show(tester, BathScreen(controller: pet, random: Random(7)));
+    // The same random spots as the screen's game.
+    final game = BathGame(random: Random(7));
+
+    await tester.tap(find.text('Start'));
+    await frames(tester, const Duration(seconds: 2));
+    expect(find.text('Tap Chigüi to hop into the tub!'), findsOneWidget);
+    await tester.tapAt(
+      tester.getRect(find.byKey(const ValueKey('bath-chigui'))).center,
+    );
+    await frames(tester, const Duration(seconds: 1));
+    expect(find.text('Pick something and clean the sticky spots'), findsOne);
+
+    Future<void> use(BathTool tool, double x, double y) async {
+      await tester.tap(find.byKey(ValueKey('tool-${tool.name}')));
+      final chigui = tester.getRect(find.byKey(const ValueKey('bath-chigui')));
+      await tester.tapAt(chigui.topLeft + Offset(x, y) * chigui.width);
+      await frames(tester, const Duration(milliseconds: 100));
+    }
+
+    game.hopIn();
+    while (game.stage == BathStage.wash) {
+      final spot = game.spots.firstWhere((s) => s.needs != null);
+      final tool = spot.needs!;
+      game.use(tool, spot.x, spot.y);
+      await use(tool, spot.x, spot.y);
+    }
+    expect(
+      find.text('Squeaky clean! Toss some yuzus into the water'),
+      findsOne,
+    );
+    for (var i = 0; i < bathYuzus; i++) {
+      await use(BathTool.yuzu, 0.5, 0.5);
+    }
+    await frames(tester, const Duration(seconds: 4));
+    expect(find.text('Out of the water! Dry Chigüi with the towel'), findsOne);
+    await tester.tap(find.byKey(const ValueKey('tool-towel')));
+    final chigui = tester.getRect(find.byKey(const ValueKey('bath-chigui')));
+    for (var i = 0; i < 10; i++) {
+      await tester.dragFrom(chigui.center, Offset(chigui.width * 0.3, 0));
+      await frames(tester, const Duration(milliseconds: 100));
+    }
+    await frames(tester, const Duration(seconds: 2));
+    expect(find.text('Great game!'), findsOneWidget);
+    expect(pet.state.coins, coinsForSpots(game.spots.length));
+  });
+
+  testWidgets('bath time: a wrong tool does nothing but hint', (tester) async {
+    final pet = await controller();
+    await show(tester, BathScreen(controller: pet, random: Random(7)));
+    await tester.tap(find.text('Start'));
+    await frames(tester, const Duration(seconds: 2));
+    await tester.tapAt(
+      tester.getRect(find.byKey(const ValueKey('bath-chigui'))).center,
+    );
+    await frames(tester, const Duration(seconds: 1));
+    await tester.tap(find.byKey(const ValueKey('tool-towel')));
+    final chigui = tester.getRect(find.byKey(const ValueKey('bath-chigui')));
+    await tester.tapAt(chigui.center);
+    await frames(tester, const Duration(milliseconds: 300));
+    expect(find.text('Pick something and clean the sticky spots'), findsOne);
+    expect(pet.state.coins, 0);
+    await tester.pumpWidget(const SizedBox());
   });
 }

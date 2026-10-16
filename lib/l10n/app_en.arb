@@ -272,6 +272,71 @@
       }
     }
   },
+  "bathTitle": "Bath time",
+  "@bathTitle": {
+    "description": "Title of the bath minigame (a game card and its intro). Short and cute."
+  },
+  "bathHint": "Chigüi got super messy playing! Pop Chigüi into the tub, then pick the right things to clean off the sticky spots.",
+  "@bathHint": {
+    "description": "Bath minigame intro: how to play. Chigüi got dirty having fun, never by neglect."
+  },
+  "bathArrive": "Here comes Chigüi, sticky up to the ears!",
+  "@bathArrive": {
+    "description": "Bath minigame status while Chigüi runs in, covered in sticky tar and gravel. Funny, never a reproach."
+  },
+  "bathHopIn": "Tap Chigüi to hop into the tub!",
+  "@bathHopIn": {
+    "description": "Bath minigame status: tap Chigüi to jump into the wooden tub."
+  },
+  "bathWash": "Pick something and clean the sticky spots",
+  "@bathWash": {
+    "description": "Bath minigame status while cleaning: pick a tool (soap, brush, ladle) and clean the sticky spots. Does not say which tool."
+  },
+  "bathYuzu": "Squeaky clean! Toss some yuzus into the water",
+  "@bathYuzu": {
+    "description": "Bath minigame status: Chigüi is clean, now drop yuzus (Japanese citrus) into the bath."
+  },
+  "bathSoak": "Ahhh… a cozy yuzu soak",
+  "@bathSoak": {
+    "description": "Bath minigame status: Chigüi relaxes in the warm water with yuzus."
+  },
+  "bathDry": "Out of the water! Dry Chigüi with the towel",
+  "@bathDry": {
+    "description": "Bath minigame status: Chigüi hopped out, rub them dry with the towel."
+  },
+  "bathDone": "So fluffy and shiny!",
+  "@bathDone": {
+    "description": "Bath minigame status at the end: Chigüi is clean and dry."
+  },
+  "bathSpots": "{count, plural, =1{1 sticky spot cleaned off} other{{count} sticky spots cleaned off}}",
+  "@bathSpots": {
+    "description": "Bath minigame result: how many sticky spots were cleaned.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "bathToolSoap": "Soap",
+  "@bathToolSoap": {
+    "description": "Bath tool button (screen readers): a bar of soap."
+  },
+  "bathToolBrush": "Brush",
+  "@bathToolBrush": {
+    "description": "Bath tool button (screen readers): a scrubbing brush."
+  },
+  "bathToolLadle": "Water ladle",
+  "@bathToolLadle": {
+    "description": "Bath tool button (screen readers): a wooden water ladle (Japanese hishaku) to rinse."
+  },
+  "bathToolYuzu": "Yuzu",
+  "@bathToolYuzu": {
+    "description": "Bath tool button (screen readers): a yuzu fruit to drop into the bath."
+  },
+  "bathToolTowel": "Towel",
+  "@bathToolTowel": {
+    "description": "Bath tool button (screen readers): a towel to dry Chigüi."
+  },
   "chompSound": "Chomp!",
   "@chompSound": {
     "description": "Big, cute eating sound shown when Chigüi catches fruit in the minigame. Keep very short."
@@ -478,7 +543,7 @@
   "@walkIntro": {
     "description": "Explains the walk scene before starting."
   },
-  "walkIntroTapping": "Tap the feet one after the other to walk with Chigüi!",
+  "walkIntroTapping": "Tap the feet to walk with Chigüi, as fast as you like!",
   "@walkIntroTapping": {
     "description": "Explains the walk scene on PCs, where there is no motion sensor."
   },
@@ -497,10 +562,6 @@
   "tapFeetHint": "Left, right, left, right…",
   "@tapFeetHint": {
     "description": "Shown while the player taps the feet to walk."
-  },
-  "otherFoot": "The other foot!",
-  "@otherFoot": {
-    "description": "Shown when the same foot is tapped twice in a row."
   },
   "leftFoot": "left foot",
   "@leftFoot": {
@@ -655,9 +716,9 @@
   "@itemRetroConsole": {
     "description": "Shop item (coins)."
   },
-  "tapsCapped": "Chigüi's paws are tired of tapping! More tomorrow, or go for a real walk.",
+  "tapsCapped": "Phew, phew! Chigüi is out of breath from so much tapping. More tomorrow, or go for a real walk!",
   "@tapsCapped": {
-    "description": "In the walk, when tapped feet have reached their daily limit of walks. Funny, never scolding; real steps still count."
+    "description": "In the walk, when tapped feet have reached their daily limit of walks: Chigüi pants, out of breath. Funny, never scolding; real steps still count."
   },
   "piggyBankFull": "Chigüi's piggy bank is full for today! Playing is still fun.",
   "@piggyBankFull": {

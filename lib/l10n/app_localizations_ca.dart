@@ -232,6 +232,60 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
+  String get bathTitle => 'Banyet';
+
+  @override
+  String get bathHint =>
+      'Chigüi s\'ha empastifat jugant! Posa Chigüi al cossi i tria les coses adequades per treure les taques enganxoses.';
+
+  @override
+  String get bathArrive => 'Aquí arriba Chigüi, amb quitrà fins a les orelles!';
+
+  @override
+  String get bathHopIn => 'Toca Chigüi i cap al cossi!';
+
+  @override
+  String get bathWash => 'Tria alguna cosa i neteja les taques enganxoses';
+
+  @override
+  String get bathYuzu => 'Ni una taca! Tira uns quants yuzus a l\'aigua';
+
+  @override
+  String get bathSoak => 'Ahhh… un banyet de yuzu, quin gust';
+
+  @override
+  String get bathDry => 'Fora de l\'aigua! Eixuga Chigüi amb la tovallola';
+
+  @override
+  String get bathDone => 'Quina suavitat i quina brillantor!';
+
+  @override
+  String bathSpots(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count taques enganxoses fora',
+      one: '1 taca enganxosa fora',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bathToolSoap => 'Sabó';
+
+  @override
+  String get bathToolBrush => 'Raspall';
+
+  @override
+  String get bathToolLadle => 'Cassó d\'aigua';
+
+  @override
+  String get bathToolYuzu => 'Yuzu';
+
+  @override
+  String get bathToolTowel => 'Tovallola';
+
+  @override
   String get chompSound => 'Nyam!';
 
   @override
@@ -403,7 +457,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get walkIntroTapping =>
-      'Toca els peus l\'un darrere l\'altre per passejar amb Chigüi!';
+      'Toca els peus per passejar amb Chigüi, tan ràpid com vulguis!';
 
   @override
   String get startWalkButton => 'Som-hi!';
@@ -417,9 +471,6 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get tapFeetHint => 'Esquerre, dret, esquerre, dret…';
-
-  @override
-  String get otherFoot => 'L\'altre peu!';
 
   @override
   String get leftFoot => 'peu esquerre';
@@ -541,7 +592,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get tapsCapped =>
-      'A Chigüi li fan mal les potetes de tant tocar! Demà més, o surt a caminar de debò.';
+      'Uf, uf! Chigüi s\'ha quedat sense alè de tant tocar. Demà més, o surt a caminar de debò.';
 
   @override
   String get piggyBankFull =>

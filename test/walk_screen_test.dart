@@ -3,6 +3,7 @@ import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/game/rules.dart';
 import 'package:chigui_game/l10n/app_localizations.dart';
+import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/walk/motion_source.dart';
 import 'package:chigui_game/walk/step_watcher.dart';
 import 'package:chigui_game/walk/walk_screen.dart';
@@ -41,7 +42,7 @@ void main() {
     return controller;
   }
 
-  testWidgets('without a sensor, tapping the feet in turn walks', (
+  testWidgets('without a sensor, tapping the feet walks, in any order', (
     tester,
   ) async {
     final controller = await open(tester, motion: FakeMotion());
@@ -54,13 +55,12 @@ void main() {
     await tester.pump();
     await tester.tap(find.bySemanticsLabel('left foot'));
     await tester.pump();
-    expect(find.text('The other foot!'), findsOneWidget);
-    expect(controller.stepsToday, stepsPerFootTap);
+    expect(controller.stepsToday, 2 * stepsPerFootTap);
 
     final taps = stepsPerWalk ~/ stepsPerFootTap;
-    for (var i = 1; i < taps; i++) {
+    for (var i = 2; i < taps; i++) {
       await tester.tap(
-        find.bySemanticsLabel(i.isOdd ? 'right foot' : 'left foot'),
+        find.bySemanticsLabel(i % 3 == 0 ? 'right foot' : 'left foot'),
       );
       await tester.pump();
     }
@@ -91,7 +91,7 @@ void main() {
       ),
     );
     expect(
-      find.text('Tap the feet one after the other to walk with Chigüi!'),
+      find.text('Tap the feet to walk with Chigüi, as fast as you like!'),
       findsOneWidget,
     );
 
@@ -101,7 +101,9 @@ void main() {
     expect(motion.listener, isNull, reason: 'the sensor is not even tried');
   });
 
-  testWidgets('tapped feet stop counting at the daily limit', (tester) async {
+  testWidgets('at the daily limit tapped feet stop counting; Chigüi pants', (
+    tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     final repo = await JsonGameRepository.open();
     await repo.saveState(
@@ -123,7 +125,11 @@ void main() {
     await tester.pump();
     await tester.tap(find.bySemanticsLabel('left foot'));
     await tester.pump();
-    expect(find.textContaining('paws are tired of tapping'), findsOneWidget);
+    expect(find.textContaining('out of breath'), findsOneWidget);
+    expect(
+      tester.widget<ChiguiView>(find.byType(ChiguiView)).panting,
+      isTrue,
+    );
     expect(controller.stepsToday, maxTapStepsPerDay);
   });
 

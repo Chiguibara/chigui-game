@@ -24,6 +24,16 @@ enum Sfx {
   vet('vet'),
   lullaby('lullaby'),
 
+  /// The bath: a splash into the tub, soap bubbles, scrubbing (two variants
+  /// take turns), and water poured from the ladle.
+  splash('splash'),
+  lather('lather'),
+  scrub('scrub', variants: 2),
+  pour('pour'),
+
+  /// Out of breath after too much tapping on the walk: "huh-huh".
+  pant('pant'),
+
   /// A quiet, cute snore while Chigüi sleeps; two variants take turns.
   snore('snore', variants: 2),
   pop('pop');
@@ -81,14 +91,43 @@ class SoundEffects extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Real playback: a few players take turns, so frantic tapping never
+  /// piles up players. Browsers and Android cap how many may exist at once;
+  /// one short-lived player per effect went over that cap and silenced the
+  /// game for good.
+  static const _channels = 6;
+  static final _players = List<AudioPlayer?>.filled(_channels, null);
+
+  /// Each player's last request, so its stop and play never overlap.
+  static final _queues = List<Future<void>>.filled(_channels, Future.value());
+  static var _next = 0;
+
+  /// The same effect again sooner than this is not heard anyway: skip it.
+  static const _minGap = Duration(milliseconds: 60);
+  static final _clock = Stopwatch()..start();
+  static final _lastPlayed = <Sfx, Duration>{};
+
   static void _playAsset(Sfx sfx, String asset) {
-    // One short-lived player per effect, so effects can overlap.
-    final player = AudioPlayer()..setReleaseMode(ReleaseMode.release);
-    player.onPlayerComplete.first.then((_) => player.dispose());
-    player.play(AssetSource(asset)).catchError((Object e) {
-      // E.g. a browser blocking audio before the first tap: stay silent.
-      debugPrint('Could not play $asset: $e');
-      player.dispose();
+    final now = _clock.elapsed;
+    final last = _lastPlayed[sfx];
+    if (last != null && now - last < _minGap) return;
+    _lastPlayed[sfx] = now;
+
+    final slot = _next;
+    _next = (_next + 1) % _channels;
+    final player = _players[slot] ??= AudioPlayer()
+      ..setReleaseMode(ReleaseMode.stop);
+    _queues[slot] = _queues[slot].then((_) async {
+      try {
+        await player.stop();
+        await player.play(AssetSource(asset));
+      } catch (e) {
+        // E.g. a browser blocking audio before the first tap: stay silent,
+        // and give this turn a fresh player next time.
+        debugPrint('Could not play $asset: $e');
+        if (identical(_players[slot], player)) _players[slot] = null;
+        await player.dispose();
+      }
     });
   }
 }

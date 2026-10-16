@@ -231,6 +231,60 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get bathTitle => 'Bath time';
+
+  @override
+  String get bathHint =>
+      'Chigüi got super messy playing! Pop Chigüi into the tub, then pick the right things to clean off the sticky spots.';
+
+  @override
+  String get bathArrive => 'Here comes Chigüi, sticky up to the ears!';
+
+  @override
+  String get bathHopIn => 'Tap Chigüi to hop into the tub!';
+
+  @override
+  String get bathWash => 'Pick something and clean the sticky spots';
+
+  @override
+  String get bathYuzu => 'Squeaky clean! Toss some yuzus into the water';
+
+  @override
+  String get bathSoak => 'Ahhh… a cozy yuzu soak';
+
+  @override
+  String get bathDry => 'Out of the water! Dry Chigüi with the towel';
+
+  @override
+  String get bathDone => 'So fluffy and shiny!';
+
+  @override
+  String bathSpots(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sticky spots cleaned off',
+      one: '1 sticky spot cleaned off',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get bathToolSoap => 'Soap';
+
+  @override
+  String get bathToolBrush => 'Brush';
+
+  @override
+  String get bathToolLadle => 'Water ladle';
+
+  @override
+  String get bathToolYuzu => 'Yuzu';
+
+  @override
+  String get bathToolTowel => 'Towel';
+
+  @override
   String get chompSound => 'Chomp!';
 
   @override
@@ -401,7 +455,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get walkIntroTapping =>
-      'Tap the feet one after the other to walk with Chigüi!';
+      'Tap the feet to walk with Chigüi, as fast as you like!';
 
   @override
   String get startWalkButton => 'Let\'s go!';
@@ -416,9 +470,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapFeetHint => 'Left, right, left, right…';
-
-  @override
-  String get otherFoot => 'The other foot!';
 
   @override
   String get leftFoot => 'left foot';
@@ -540,7 +591,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tapsCapped =>
-      'Chigüi\'s paws are tired of tapping! More tomorrow, or go for a real walk.';
+      'Phew, phew! Chigüi is out of breath from so much tapping. More tomorrow, or go for a real walk!';
 
   @override
   String get piggyBankFull =>

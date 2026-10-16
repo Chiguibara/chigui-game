@@ -3,7 +3,7 @@ import 'package:chigui_game/data/json_game_repository.dart';
 import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
-import 'package:chigui_game/game/rules.dart' show stepsPerFootTap;
+import 'package:chigui_game/game/rules.dart' show coinsPerWalk, stepsPerFootTap;
 import 'package:chigui_game/sound/sound_effects.dart';
 import 'package:chigui_game/store/pack_store.dart';
 import 'package:chigui_game/store/packs_controller.dart';
@@ -255,7 +255,7 @@ void main() {
     await tester.pump();
     expect(find.text('What a lovely walk!'), findsOneWidget);
     expect(controller.stepsToday, 1000);
-    expect(controller.state.coins, 5);
+    expect(controller.state.coins, coinsPerWalk);
     expect(find.bySemanticsLabel('1000 steps today'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
   });

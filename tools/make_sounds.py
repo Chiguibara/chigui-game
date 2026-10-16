@@ -194,6 +194,36 @@ SOUNDS = {
     # Lullaby for bedtime.
     "lullaby": notes(["G5", "E5", "C5"], 0.22, gap=0.03, shape="sine",
                      vol=0.35, release=0.12),
+    # Bath: hopping into the tub, a big soft splash.
+    "splash": mix(
+        noise(0.5, 0.6, smooth=0.3, smooth_end=0.92, release=0.3, seed=31),
+        tone(320, 0.18, "sine", 0.4, freq_end=90),
+    ),
+    # Soap bubbles: three little rising blips.
+    "lather": seq(
+        tone(900, 0.04, "sine", 0.3, freq_end=1400), silence(0.03),
+        tone(1200, 0.04, "sine", 0.3, freq_end=1800), silence(0.04),
+        tone(1000, 0.05, "sine", 0.3, freq_end=1600),
+    ),
+    # Scrubbing: two short brushy swishes.
+    "scrub_01": seq(noise(0.07, 0.4, smooth=0.45, attack=0.02, seed=33),
+                    silence(0.03),
+                    noise(0.07, 0.35, smooth=0.5, attack=0.02, seed=34)),
+    "scrub_02": seq(noise(0.08, 0.4, smooth=0.5, attack=0.02, seed=35),
+                    silence(0.025),
+                    noise(0.06, 0.35, smooth=0.4, attack=0.02, seed=36)),
+    # Water poured from the ladle, with a little gurgle.
+    "pour": mix(
+        noise(0.6, 0.45, smooth=0.85, smooth_end=0.7, attack=0.05,
+              release=0.25, seed=37),
+        tone(600, 0.6, "sine", 0.1, freq_end=380, vibrato=0.1),
+    ),
+    # Out of breath on the walk: two quick little huffs.
+    "pant": seq(
+        _breath(0.12, 0.5, 0.6, rise=False, seed=41),
+        silence(0.06),
+        _breath(0.12, 0.45, 0.6, rise=False, seed=42),
+    ),
     # Snoring while asleep: soft and quiet (see QUIET), two variants.
     "snore_01": _snore(1500, seed=21),
     "snore_02": _snore(1300, squeak=True, seed=23),

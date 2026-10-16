@@ -17,16 +17,22 @@ void main() {
     expect(g.slotOf.toSet(), {0, 1, 2});
   });
 
-  test('later turns have more and quicker swaps', () {
+  test('later turns have more and quicker swaps, varying at random', () {
     final g = HideGame(random: Random(2))..startTurn();
     final first = (g.swaps.length, g.swapTime);
+    expect(first.$1, inInclusiveRange(hideSwapsFirst, hideSwapsFirst + 2));
     while (g.turn < hideTurns - 1) {
       g.guess(0);
     }
     g.startTurn();
-    expect(first.$1, hideSwapsFirst);
-    expect(g.swaps.length, hideSwapsLast);
+    expect(g.swaps.length, inInclusiveRange(hideSwapsLast, hideSwapsLast + 2));
     expect(g.swapTime, lessThan(first.$2));
+    expect(g.swapTimes, hasLength(g.swaps.length));
+    for (final time in g.swapTimes) {
+      expect(time, greaterThanOrEqualTo(g.swapTime * 0.8));
+      expect(time, lessThanOrEqualTo(g.swapTime * 1.2));
+    }
+    expect(g.swapTimes.toSet().length, greaterThan(1));
   });
 
   test('guessing counts finds, and a wrong guess costs nothing', () {

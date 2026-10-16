@@ -51,6 +51,8 @@ class ChiguiView extends StatefulWidget {
     this.reaction,
     this.reactionId = 0,
     this.onReactionEnd,
+    this.coat,
+    this.panting = false,
   });
 
   final double size;
@@ -66,6 +68,12 @@ class ChiguiView extends StatefulWidget {
   final Reaction? reaction;
   final int reactionId;
   final VoidCallback? onReactionEnd;
+
+  /// Drawn over Chigüi and moving with them, e.g. dirt in the bath.
+  final CustomPainter? coat;
+
+  /// Out of breath: quick breaths, tongue out, and a sweat drop.
+  final bool panting;
 
   @override
   State<ChiguiView> createState() => _ChiguiViewState();
@@ -134,6 +142,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
           final (scaleX, scaleY) = _scales(reaction);
           final (dx, dy) = _offset(reaction);
           final walking = reaction == Reaction.walk && !_reduceMotion;
+          final panting = widget.panting && reaction == null;
           return Stack(
             clipBehavior: Clip.none,
             children: [
@@ -156,8 +165,10 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                           mouthOpen: switch (reaction) {
                             Reaction.chomp => _chompOpen(t),
                             Reaction.yawn => _yawnOpen(t),
+                            _ when panting => 0.3 + 0.1 * _pant(),
                             _ => 0,
                           },
+                          tongue: panting,
                           cheekPuff: reaction == Reaction.chomp
                               ? _chompPuff(t)
                               : 0,
@@ -165,6 +176,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                           wearing: widget.wearing,
                           studying: widget.studying,
                         ),
+                        foregroundPainter: widget.coat,
                       ),
                     ),
                   ),
@@ -226,6 +238,9 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     _ => widget.face,
   };
 
+  /// Quick breaths while panting, from -1 to 1 (0 with reduced motion).
+  double _pant() => _reduceMotion ? 0 : math.sin(_idle.value * 24 * math.pi);
+
   bool _isBlinking() =>
       !_reduceMotion && _idle.value > 0.9 && _idle.value < 0.93;
 
@@ -242,6 +257,10 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       _ => null,
     };
     if (reaction == Reaction.chomp) return _chompScales(_react.value);
+    if (widget.panting && reaction == null) {
+      final pant = _pant();
+      return (1 - 0.02 * pant, 1 + 0.035 * pant);
+    }
     if (reaction == Reaction.ouch) {
       // Squashed by the bonk, then springs back.
       final t = _react.value;
@@ -633,6 +652,62 @@ class _ZPainter extends CustomPainter {
   bool shouldRepaint(_ZPainter old) => false;
 }
 
+RRect _body(double w, double h) => RRect.fromLTRBAndCorners(
+  w * 0.1,
+  h * 0.4,
+  w * 0.72,
+  h * 0.93,
+  topLeft: Radius.elliptical(w * 0.3, h * 0.3),
+  topRight: Radius.elliptical(w * 0.2, h * 0.2),
+  bottomLeft: Radius.elliptical(w * 0.22, h * 0.2),
+  bottomRight: Radius.circular(w * 0.1),
+);
+
+RRect _head(double w, double h) => RRect.fromLTRBAndCorners(
+  w * 0.34,
+  h * 0.2,
+  w * 0.88,
+  h * 0.6,
+  topLeft: Radius.elliptical(w * 0.18, h * 0.18),
+  topRight: Radius.circular(w * 0.12),
+  bottomLeft: Radius.circular(w * 0.14),
+  bottomRight: Radius.circular(w * 0.12),
+);
+
+/// Chigüi's shape sitting still (body, legs, head, and ears), to draw over
+/// Chigüi (e.g. dirt) without spilling out.
+Path chiguiSilhouette(Size size) {
+  final w = size.width;
+  final h = size.height;
+  return Path()
+    ..addRRect(
+      RRect.fromLTRBR(
+        w * 0.6,
+        h * 0.74,
+        w * 0.7,
+        h * 0.93,
+        Radius.circular(w * 0.05),
+      ),
+    )
+    ..addRRect(_body(w, h))
+    ..addRRect(
+      RRect.fromLTRBR(
+        w * 0.48,
+        h * 0.76,
+        w * 0.59,
+        h * 0.95,
+        Radius.circular(w * 0.05),
+      ),
+    )
+    ..addRRect(_head(w, h))
+    ..addOval(
+      Rect.fromCircle(center: Offset(w * 0.56, h * 0.19), radius: w * 0.05),
+    )
+    ..addOval(
+      Rect.fromCircle(center: Offset(w * 0.44, h * 0.22), radius: w * 0.055),
+    );
+}
+
 class _ChiguiPainter extends CustomPainter {
   _ChiguiPainter({
     required this.face,
@@ -642,10 +717,14 @@ class _ChiguiPainter extends CustomPainter {
     this.legLift = 0,
     this.wearing = const {},
     this.studying = false,
+    this.tongue = false,
   });
 
   final Face face;
   final bool blink;
+
+  /// Panting: the tongue hangs out of the open mouth, with a sweat drop.
+  final bool tongue;
 
   /// 0 closed … 1 wide open, for the chomp.
   final double mouthOpen;
@@ -712,19 +791,7 @@ class _ChiguiPainter extends CustomPainter {
     );
 
     // Body: a round, sitting loaf facing right.
-    shape(
-      RRect.fromLTRBAndCorners(
-        w * 0.1,
-        h * 0.4,
-        w * 0.72,
-        h * 0.93,
-        topLeft: Radius.elliptical(w * 0.3, h * 0.3),
-        topRight: Radius.elliptical(w * 0.2, h * 0.2),
-        bottomLeft: Radius.elliptical(w * 0.22, h * 0.2),
-        bottomRight: Radius.circular(w * 0.1),
-      ),
-      fur,
-    );
+    shape(_body(w, h), fur);
 
     // Near front leg.
     shape(
@@ -745,16 +812,7 @@ class _ChiguiPainter extends CustomPainter {
     canvas.drawCircle(Offset(w * 0.56, h * 0.19), w * 0.05, outline);
 
     // Head: long and boxy, ending in a blunt muzzle.
-    final head = RRect.fromLTRBAndCorners(
-      w * 0.34,
-      h * 0.2,
-      w * 0.88,
-      h * 0.6,
-      topLeft: Radius.elliptical(w * 0.18, h * 0.18),
-      topRight: Radius.circular(w * 0.12),
-      bottomLeft: Radius.circular(w * 0.14),
-      bottomRight: Radius.circular(w * 0.12),
-    );
+    final head = _head(w, h);
     canvas.drawRRect(head, fur);
 
     // Muzzle patch, slightly darker, with a nostril.
@@ -845,13 +903,7 @@ class _ChiguiPainter extends CustomPainter {
           eye.translate(w * 0.035, 0),
           stroke,
         );
-        canvas.drawPath(
-          Path()
-            ..moveTo(w * 0.5, h * 0.27)
-            ..quadraticBezierTo(w * 0.47, h * 0.32, w * 0.5, h * 0.33)
-            ..quadraticBezierTo(w * 0.53, h * 0.32, w * 0.5, h * 0.27),
-          Paint()..color = Palette.sweat,
-        );
+        _sweatDrop(canvas, w, h);
       case _:
         canvas.drawCircle(eye, w * 0.028, Paint()..color = Palette.ink);
     }
@@ -882,6 +934,27 @@ class _ChiguiPainter extends CustomPainter {
         Paint()..color = Palette.blush,
       );
       canvas.drawRRect(rounded, outline);
+      if (tongue) {
+        final hanging = RRect.fromLTRBAndCorners(
+          open.left + open.width * 0.3,
+          open.bottom - open.height * 0.45,
+          open.right - open.width * 0.15,
+          open.bottom + h * 0.05,
+          bottomLeft: Radius.circular(w * 0.03),
+          bottomRight: Radius.circular(w * 0.03),
+        );
+        final line = Paint()
+          ..color = Palette.furOutline
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = w * 0.01;
+        canvas.drawRRect(hanging, Paint()..color = Palette.blush);
+        canvas.drawRRect(hanging, line);
+        canvas.drawLine(
+          Offset(hanging.center.dx, hanging.top + h * 0.01),
+          Offset(hanging.center.dx, hanging.bottom - h * 0.02),
+          line,
+        );
+      }
     } else {
       switch (face) {
         case Face.sick:
@@ -897,6 +970,8 @@ class _ChiguiPainter extends CustomPainter {
           canvas.drawArc(mouth, 0.2, math.pi - 0.4, false, stroke);
       }
     }
+
+    if (tongue) _sweatDrop(canvas, w, h);
 
     if (wearing[Slot.body] == 'ghost') {
       paintGhostSheet(canvas, size);
@@ -926,6 +1001,14 @@ class _ChiguiPainter extends CustomPainter {
     _accessories(canvas, size, Layer.front);
     if (studying) paintStudyBook(canvas, size);
   }
+
+  void _sweatDrop(Canvas canvas, double w, double h) => canvas.drawPath(
+    Path()
+      ..moveTo(w * 0.5, h * 0.27)
+      ..quadraticBezierTo(w * 0.47, h * 0.32, w * 0.5, h * 0.33)
+      ..quadraticBezierTo(w * 0.53, h * 0.32, w * 0.5, h * 0.27),
+    Paint()..color = Palette.sweat,
+  );
 
   /// A front-facing ghost face on the sheet that still shows the mood.
   void _ghostFace(Canvas canvas, Size size) {
@@ -1003,6 +1086,7 @@ class _ChiguiPainter extends CustomPainter {
       old.mouthOpen != mouthOpen ||
       old.cheekPuff != cheekPuff ||
       old.legLift != legLift ||
+      old.tongue != tongue ||
       !mapEquals(old.wearing, wearing) ||
       old.studying != studying;
 }

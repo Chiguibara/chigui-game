@@ -22,7 +22,8 @@ enum _Mode { intro, sensor, tapping }
 enum _Foot { left, right }
 
 /// A walk with Chigüi. Phones' browsers count real steps from the motion
-/// sensor; without one (PCs), the player taps the feet in turn. Steps feed
+/// sensor; without one (PCs), the player taps the feet, as fast as they
+/// like, until Chigüi is out of breath for the day. Steps feed
 /// the same daily walks as the Android pedometer will.
 class WalkScreen extends StatefulWidget {
   const WalkScreen({
@@ -71,7 +72,9 @@ class _WalkScreenState extends State<WalkScreen> {
           defaultTargetPlatform == TargetPlatform.iOS);
   Timer? _sensorCheck;
   _Mode _mode = _Mode.intro;
-  _Foot? _lastFoot;
+
+  /// Tapped feet reached today's limit: Chigüi pants.
+  bool _outOfBreath = false;
   int _pendingSteps = 0;
   bool _leftStep = false;
   String? _message;
@@ -148,7 +151,12 @@ class _WalkScreenState extends State<WalkScreen> {
   void _useTapping() {
     _stepsSubscription?.cancel();
     _stepsSubscription = null;
-    if (mounted) setState(() => _mode = _Mode.tapping);
+    if (mounted) {
+      setState(() {
+        _mode = _Mode.tapping;
+        _outOfBreath = _pet.tapStepsLeft <= 0;
+      });
+    }
   }
 
   void _onRealStep() {
@@ -179,25 +187,23 @@ class _WalkScreenState extends State<WalkScreen> {
     });
   }
 
-  void _onFoot(_Foot foot, AppLocalizations l10n) {
-    if (foot == _lastFoot) {
-      sfx.play(Sfx.refuse);
-      setState(() => _message = l10n.otherFoot);
-      return;
-    }
-    // Tapped feet only count for a few walks a day.
+  void _onFoot(AppLocalizations l10n) {
+    // Tapped feet only count for a few walks a day; then Chigüi pants.
     if (_pet.tapStepsLeft <= 0) {
-      sfx.play(Sfx.refuse);
-      setState(() => _message = l10n.tapsCapped);
+      sfx.play(Sfx.pant);
+      setState(() {
+        _outOfBreath = true;
+        _message = l10n.tapsCapped;
+      });
       return;
     }
-    _lastFoot = foot;
     _celebrate(
       stepsPerFootTap,
       walked: _pet.addSteps(stepsPerFootTap, tapped: true),
     );
     // Keep the pedometer's celebration from repeating a walk the feet did.
     _walksBefore = _pet.walksToday;
+    if (_pet.tapStepsLeft <= 0) setState(() => _outOfBreath = true);
   }
 
   void _stepped(int steps, {required bool save}) =>
@@ -256,6 +262,7 @@ class _WalkScreenState extends State<WalkScreen> {
                         child: ChiguiView(
                           size: chiguiSize,
                           wearing: _pet.state.equipped,
+                          panting: _outOfBreath,
                           reaction: _reaction,
                           reactionId: _reactionId,
                         ),
@@ -429,17 +436,18 @@ class _WalkScreenState extends State<WalkScreen> {
   }
 
   Widget _footButton(_Foot foot, String label, AppLocalizations l10n) {
-    final next = _lastFoot != foot;
     return Semantics(
       button: true,
       label: label,
       excludeSemantics: true,
       child: Material(
-        color: next ? Palette.cloud : Palette.cloud.withValues(alpha: 0.5),
+        color: _outOfBreath
+            ? Palette.cloud.withValues(alpha: 0.5)
+            : Palette.cloud,
         shape: const CircleBorder(),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
-          onTap: () => _onFoot(foot, l10n),
+          onTap: () => _onFoot(l10n),
           child: SizedBox.square(
             dimension: 96,
             child: Center(

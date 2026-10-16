@@ -108,7 +108,7 @@ void main() {
         );
       }
 
-      // Hide-and-seek status and the game list's cards: two lines, large.
+      // Hide-and-seek and bath statuses, and the game list's cards: two lines, large.
       for (final (name, text, width) in [
         ('hideWatch', l.hideWatch, frame - 32),
         ('hidePick', l.hidePick, frame - 32),
@@ -117,6 +117,14 @@ void main() {
         ('minigameTitle', l.minigameTitle, 300 - 32 - 64 - 16.0),
         ('memoryTitle', l.memoryTitle, 300 - 32 - 64 - 16.0),
         ('hideTitle', l.hideTitle, 300 - 32 - 64 - 16.0),
+        ('bathTitle', l.bathTitle, 300 - 32 - 64 - 16.0),
+        ('bathArrive', l.bathArrive, frame - 32),
+        ('bathHopIn', l.bathHopIn, frame - 32),
+        ('bathWash', l.bathWash, frame - 32),
+        ('bathYuzu', l.bathYuzu, frame - 32),
+        ('bathSoak', l.bathSoak, frame - 32),
+        ('bathDry', l.bathDry, frame - 32),
+        ('bathDone', l.bathDone, frame - 32),
       ]) {
         check(name, text, width: width, lines: 2, size: 22);
       }

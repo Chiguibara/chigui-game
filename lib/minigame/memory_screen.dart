@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../game/pet_controller.dart';
-import '../game/rules.dart' show coinsPerPair;
+import '../game/rules.dart' show coinsForPairs;
 import '../l10n/app_localizations.dart';
 import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
@@ -79,7 +79,7 @@ class _MemoryScreenState extends State<MemoryScreen> {
     if (!mounted) return;
     sfx.play(Sfx.reward);
     setState(() {
-      _pay = payRound(widget.controller, _game.pairsFound * coinsPerPair);
+      _pay = payRound(widget.controller, coinsForPairs(_game.pairsFound));
       _phase = _Phase.done;
     });
   }

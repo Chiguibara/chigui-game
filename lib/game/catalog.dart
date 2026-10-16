@@ -1,5 +1,5 @@
 // Shop items. Provisional prices; adjust after playtests. A round of the
-// minigame earns roughly 10–20 coins and a walk 5.
+// minigame earns roughly 1–7 coins (20 a day at most) and a walk 5.
 
 /// Where an item goes. One accessory per slot can be worn at a time;
 /// stickers are collected, not worn.

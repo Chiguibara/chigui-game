@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -30,11 +31,15 @@ class HideScreen extends StatefulWidget {
   State<HideScreen> createState() => _HideScreenState();
 }
 
-class _HideScreenState extends State<HideScreen>
-    with SingleTickerProviderStateMixin {
+class _HideScreenState extends State<HideScreen> with TickerProviderStateMixin {
   // Created up front: created lazily, leaving without playing would create it
   // in dispose(), when looking up the TickerMode is no longer allowed.
   late final AnimationController _anim;
+
+  /// Chigüi's box trembling, the hint after [hideHintAfter] without a find.
+  late final AnimationController _tremble;
+  Timer? _hintTimer;
+  bool _hint = false;
   _Phase _phase = _Phase.ready;
   _Step _step = _Step.show;
   late HideGame _game;
@@ -51,10 +56,16 @@ class _HideScreenState extends State<HideScreen>
   void initState() {
     super.initState();
     _anim = AnimationController(vsync: this);
+    _tremble = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    );
   }
 
   @override
   void dispose() {
+    _hintTimer?.cancel();
+    _tremble.dispose();
     _anim.dispose();
     super.dispose();
   }
@@ -81,7 +92,28 @@ class _HideScreenState extends State<HideScreen>
       _game = HideGame(random: widget.random);
       _phase = _Phase.playing;
     });
+    // The clock runs from the first round, across rounds, until a find.
+    if (_hintTimer == null) _restartHintClock();
     _turn();
+  }
+
+  void _restartHintClock() {
+    _hintTimer?.cancel();
+    _hint = false;
+    _hintTimer = Timer(hideHintAfter, () {
+      if (!mounted) return;
+      _hint = true;
+      _updateTremble();
+    });
+  }
+
+  /// Chigüi's box trembles only while the player picks, once the hint is due.
+  void _updateTremble() {
+    if (_hint && _phase == _Phase.playing && _step == _Step.pick) {
+      if (!_tremble.isAnimating) _tremble.repeat();
+    } else {
+      _tremble.reset();
+    }
   }
 
   Future<void> _turn() async {
@@ -90,23 +122,24 @@ class _HideScreenState extends State<HideScreen>
       _step = _Step.show;
       _revealed = [];
     });
-    if (!await _animate(const Duration(milliseconds: 1200))) return;
+    if (!await _animate(const Duration(milliseconds: 900))) return;
     sfx.play(Sfx.pop);
     setState(() => _step = _Step.cover);
-    if (!await _animate(const Duration(milliseconds: 400))) return;
+    if (!await _animate(const Duration(milliseconds: 300))) return;
     for (final (i, swap) in _game.swaps.indexed) {
       sfx.play(i.isEven ? Sfx.stepLeft : Sfx.stepRight);
       setState(() {
         _step = _Step.swap;
         _swap = swap;
       });
-      if (!await _animate(_game.swapTime)) return;
+      if (!await _animate(_game.swapTimes[i])) return;
       _game.swap(swap);
     }
     setState(() {
       _step = _Step.pick;
       _swap = null;
     });
+    _updateTremble();
   }
 
   Future<void> _pick(int box) async {
@@ -118,6 +151,8 @@ class _HideScreenState extends State<HideScreen>
       _revealed = [box];
       _right = right;
     });
+    _updateTremble();
+    if (right) _restartHintClock();
     if (!await _animate(const Duration(milliseconds: 400))) return;
     if (right) {
       sfx.play(Sfx.sparkle);
@@ -157,7 +192,7 @@ class _HideScreenState extends State<HideScreen>
           ],
         ),
         _Phase.playing => AnimatedBuilder(
-          animation: _anim,
+          animation: Listenable.merge([_anim, _tremble]),
           builder: (context, _) => _playArea(l10n),
         ),
         _Phase.done => RoundResult(
@@ -190,6 +225,15 @@ class _HideScreenState extends State<HideScreen>
         if (i < 0) return 0;
         return i == _revealed.length - 1 ? Curves.easeOut.transform(t) : 1;
     }
+  }
+
+  /// A short, tiny wobble now and then, as if Chigüi shifted inside.
+  double _trembleAngle(int box) {
+    if (box != _game.chiguiBox || !_tremble.isAnimating) return 0;
+    const wobble = 0.3; // of each cycle; the rest is still
+    final t = _tremble.value / wobble;
+    if (t >= 1) return 0;
+    return math.sin(t * math.pi * 4) * (1 - t) * 0.03;
   }
 
   Widget _playArea(AppLocalizations l10n) {
@@ -275,7 +319,11 @@ class _HideScreenState extends State<HideScreen>
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: () => _pick(box),
-                  child: HidingBox(size: boxSize),
+                  child: Transform.rotate(
+                    angle: _trembleAngle(box),
+                    alignment: Alignment.bottomCenter,
+                    child: HidingBox(size: boxSize),
+                  ),
                 ),
               ),
             );

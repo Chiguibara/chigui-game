@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 
 import '../game/pet_controller.dart';
 import '../l10n/app_localizations.dart';
+import '../ui/bath_art.dart';
 import '../ui/game_frame.dart';
 import '../ui/palette.dart';
 import '../ui/sprites.dart';
+import 'bath_screen.dart';
 import 'catch_game.dart' show FruitKind;
 import 'game_parts.dart';
 import 'hide_screen.dart';
 import 'memory_screen.dart';
 import 'minigame_screen.dart';
 
-/// Picks a minigame: big cards in a column on phones, a row on wide screens.
+/// Picks a minigame: big cards in a column on phones, in rows on wide
+/// screens.
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key, required this.controller});
 
@@ -41,6 +44,11 @@ class GamesScreen extends StatelessWidget {
         const HidingBox(size: 60),
         () => open(HideScreen(controller: controller)),
       ),
+      (
+        l10n.bathTitle,
+        const _TubIcon(),
+        () => open(BathScreen(controller: controller)),
+      ),
     ];
 
     return MinigameScaffold(
@@ -56,9 +64,10 @@ class GamesScreen extends StatelessWidget {
               Text(l10n.gamesTitle, style: gameTitleStyle(textTheme)),
               const SizedBox(height: 24),
               if (wide)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
+                Wrap(
+                  alignment: WrapAlignment.center,
                   spacing: 16,
+                  runSpacing: 16,
                   children: [
                     for (final card in cards) SizedBox(width: 240, child: card),
                   ],
@@ -121,6 +130,19 @@ class _GameCard extends StatelessWidget {
         ),
       ),
     ),
+  );
+}
+
+/// The bath's hinoki tub with a yuzu floating.
+class _TubIcon extends StatelessWidget {
+  const _TubIcon();
+
+  @override
+  Widget build(BuildContext context) => const Stack(
+    children: [
+      HinokiTub(part: TubPart.back, width: 60),
+      HinokiTub(part: TubPart.front, width: 60, yuzus: 2),
+    ],
   );
 }
 

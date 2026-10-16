@@ -440,6 +440,96 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{Chigüi is great at hiding!} =1{You found Chigüi once} other{You found Chigüi {count} times}}'**
   String timesFound(int count);
 
+  /// Title of the bath minigame (a game card and its intro). Short and cute.
+  ///
+  /// In en, this message translates to:
+  /// **'Bath time'**
+  String get bathTitle;
+
+  /// Bath minigame intro: how to play. Chigüi got dirty having fun, never by neglect.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi got super messy playing! Pop Chigüi into the tub, then pick the right things to clean off the sticky spots.'**
+  String get bathHint;
+
+  /// Bath minigame status while Chigüi runs in, covered in sticky tar and gravel. Funny, never a reproach.
+  ///
+  /// In en, this message translates to:
+  /// **'Here comes Chigüi, sticky up to the ears!'**
+  String get bathArrive;
+
+  /// Bath minigame status: tap Chigüi to jump into the wooden tub.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap Chigüi to hop into the tub!'**
+  String get bathHopIn;
+
+  /// Bath minigame status while cleaning: pick a tool (soap, brush, ladle) and clean the sticky spots. Does not say which tool.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick something and clean the sticky spots'**
+  String get bathWash;
+
+  /// Bath minigame status: Chigüi is clean, now drop yuzus (Japanese citrus) into the bath.
+  ///
+  /// In en, this message translates to:
+  /// **'Squeaky clean! Toss some yuzus into the water'**
+  String get bathYuzu;
+
+  /// Bath minigame status: Chigüi relaxes in the warm water with yuzus.
+  ///
+  /// In en, this message translates to:
+  /// **'Ahhh… a cozy yuzu soak'**
+  String get bathSoak;
+
+  /// Bath minigame status: Chigüi hopped out, rub them dry with the towel.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of the water! Dry Chigüi with the towel'**
+  String get bathDry;
+
+  /// Bath minigame status at the end: Chigüi is clean and dry.
+  ///
+  /// In en, this message translates to:
+  /// **'So fluffy and shiny!'**
+  String get bathDone;
+
+  /// Bath minigame result: how many sticky spots were cleaned.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{1 sticky spot cleaned off} other{{count} sticky spots cleaned off}}'**
+  String bathSpots(int count);
+
+  /// Bath tool button (screen readers): a bar of soap.
+  ///
+  /// In en, this message translates to:
+  /// **'Soap'**
+  String get bathToolSoap;
+
+  /// Bath tool button (screen readers): a scrubbing brush.
+  ///
+  /// In en, this message translates to:
+  /// **'Brush'**
+  String get bathToolBrush;
+
+  /// Bath tool button (screen readers): a wooden water ladle (Japanese hishaku) to rinse.
+  ///
+  /// In en, this message translates to:
+  /// **'Water ladle'**
+  String get bathToolLadle;
+
+  /// Bath tool button (screen readers): a yuzu fruit to drop into the bath.
+  ///
+  /// In en, this message translates to:
+  /// **'Yuzu'**
+  String get bathToolYuzu;
+
+  /// Bath tool button (screen readers): a towel to dry Chigüi.
+  ///
+  /// In en, this message translates to:
+  /// **'Towel'**
+  String get bathToolTowel;
+
   /// Big, cute eating sound shown when Chigüi catches fruit in the minigame. Keep very short.
   ///
   /// In en, this message translates to:
@@ -737,7 +827,7 @@ abstract class AppLocalizations {
   /// Explains the walk scene on PCs, where there is no motion sensor.
   ///
   /// In en, this message translates to:
-  /// **'Tap the feet one after the other to walk with Chigüi!'**
+  /// **'Tap the feet to walk with Chigüi, as fast as you like!'**
   String get walkIntroTapping;
 
   /// Starts the walk.
@@ -763,12 +853,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left, right, left, right…'**
   String get tapFeetHint;
-
-  /// Shown when the same foot is tapped twice in a row.
-  ///
-  /// In en, this message translates to:
-  /// **'The other foot!'**
-  String get otherFoot;
 
   /// Screen reader label for the left foot button.
   ///
@@ -980,10 +1064,10 @@ abstract class AppLocalizations {
   /// **'Retro console'**
   String get itemRetroConsole;
 
-  /// In the walk, when tapped feet have reached their daily limit of walks. Funny, never scolding; real steps still count.
+  /// In the walk, when tapped feet have reached their daily limit of walks: Chigüi pants, out of breath. Funny, never scolding; real steps still count.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi\'s paws are tired of tapping! More tomorrow, or go for a real walk.'**
+  /// **'Phew, phew! Chigüi is out of breath from so much tapping. More tomorrow, or go for a real walk!'**
   String get tapsCapped;
 
   /// Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'.

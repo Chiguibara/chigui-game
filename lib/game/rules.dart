@@ -17,20 +17,25 @@ const petGain = 0.1;
 const feedGain = 0.3;
 const playFunGain = 0.3;
 
-/// The minigame gives one coin for every this many fruits caught.
-const fruitsPerCoin = 2;
+/// Minigames pay a little, so the shop lasts: fruit catch one coin per
+/// [fruitsPerCoin] fruits, memory one per [pairsPerCoin] pairs,
+/// hide-and-seek [coinsPerFind] per find, and the bath one per
+/// [spotsPerCoin] spots cleaned (rounded up).
+const fruitsPerCoin = 5;
+const pairsPerCoin = 2;
+const coinsPerFind = 1;
+const spotsPerCoin = 2;
 
 int coinsForFruits(int caught) => caught ~/ fruitsPerCoin;
 
-/// Memory gives this many coins per pair found, and hide-and-seek per time
-/// Chigüi is found.
-const coinsPerPair = 1;
-const coinsPerFind = 2;
+int coinsForPairs(int pairs) => pairs ~/ pairsPerCoin;
+
+int coinsForSpots(int spots) => (spots + spotsPerCoin - 1) ~/ spotsPerCoin;
 
 /// The minigames stop giving coins after this many in a day (all games
 /// together); playing stays fun (and still raises fun), the piggy bank is
 /// just full until tomorrow.
-const maxMinigameCoinsPerDay = 30;
+const maxMinigameCoinsPerDay = 20;
 
 bool _sameDay(DateTime? a, DateTime b) {
   final day = a?.toLocal();
@@ -52,15 +57,17 @@ const stepsPerWalk = 1000;
 const maxWalksPerDay = 20;
 
 /// Tapped feet count for at most this many walks a day, so they are for
-/// playing while sitting still, not for farming coins.
+/// playing while sitting still, not for farming coins; after that Chigüi
+/// is out of breath until tomorrow.
 const maxTapWalksPerDay = 3;
 const maxTapStepsPerDay = maxTapWalksPerDay * stepsPerWalk;
 const walkFunGain = 0.1;
-const coinsPerWalk = 5;
+const coinsPerWalk = 4;
 
 /// Without a step sensor (PCs), each tap on a foot in the walk scene counts
-/// as this many steps.
-const stepsPerFootTap = 50;
+/// as this many steps: small, so a walk takes lots of happy, frantic taps
+/// (in any order).
+const stepsPerFootTap = 20;
 
 /// Buying a seasonal item is a treat: a one-off boost of fun.
 const seasonalFunGain = 0.3;

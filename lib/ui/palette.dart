@@ -66,5 +66,21 @@ abstract final class Palette {
   static const cardboard = Color(0xFFD9A86C);
   static const cardboardDark = Color(0xFFB9854C);
   static const tape = Color(0xFFF1D9A6);
+  static const tar = Color(0xFF231F24);
+  static const tarShine = Color(0xFFB9B4BE);
+  static const asphalt = Color(0xFF5E5C60);
+  static const asphaltLight = Color(0xFF9A989C);
+  static const foam = Color(0xFFF7FAFC);
+  static const foamDirty = Color(0xFFC6C8CC);
+  static const bathWater = Color(0xFF9ED8E6);
+  static const bathWaterMurky = Color(0xFF8C918E);
+  static const hinoki = Color(0xFFEACB98);
+  static const hinokiDark = Color(0xFFC79F68);
+  static const hinokiBand = Color(0xFF8C5A3C);
+  static const yuzu = Color(0xFFF6CB35);
+  static const yuzuDark = Color(0xFFDDA621);
+  static const soap = Color(0xFFF6B8CF);
+  static const bristle = Color(0xFFEFE2BC);
+  static const towel = Color(0xFF7FC8E8);
   static const outside = Color(0xFF2E4A3F);
 }

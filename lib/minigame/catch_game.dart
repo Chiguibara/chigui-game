@@ -10,8 +10,8 @@ const roundLength = Duration(seconds: 30);
 const spawnEveryStart = 0.85; // seconds
 const spawnEveryEnd = 0.5;
 const spawnJitter = 0.25; // ± this fraction of the interval
-const fallSpeedStart = 0.3; // play-area heights per second
-const fallSpeedEnd = 0.8;
+const fallSpeedStart = 0.5; // play-area heights per second
+const fallSpeedEnd = 1.0;
 
 /// Now and then a stone falls instead of fruit, at random: never in the first
 /// seconds (how many changes every round) and never two in a row, so there
