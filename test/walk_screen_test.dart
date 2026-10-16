@@ -9,6 +9,7 @@ import 'package:chigui_game/walk/pedometer.dart';
 import 'package:chigui_game/walk/step_watcher.dart';
 import 'package:chigui_game/walk/walk_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -188,6 +189,34 @@ void main() {
     pedometer.onTotal(5030);
     await tester.pump();
     expect(panting(), isFalse);
+    await tester.pump(const Duration(seconds: 2));
+  });
+
+  testWidgets('on a computer, each press of an arrow key is a step', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final controller = await PetController.load(
+      await JsonGameRepository.open(),
+      clock: () => now,
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: WalkScreen(controller: controller, onPhone: false),
+      ),
+    );
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    expect(controller.stepsToday, 0, reason: 'not before starting');
+    await tester.tap(find.text("Let's go!"));
+    await tester.pump();
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    expect(controller.stepsToday, 3 * stepsPerFootTap);
     await tester.pump(const Duration(seconds: 2));
   });
 }

@@ -123,6 +123,10 @@ class AppLocalizationsCa extends AppLocalizations {
       'Arrossega per moure Chigüi: atrapa la fruita i esquiva les pedres!';
 
   @override
+  String get arrowKeysHint =>
+      'A l\'ordinador també pots fer servir les fletxes.';
+
+  @override
   String get startButton => 'A jugar!';
 
   @override

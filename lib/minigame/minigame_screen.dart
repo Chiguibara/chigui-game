@@ -2,12 +2,14 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show coinsForFruits;
 import '../l10n/app_localizations.dart';
 import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
+import '../ui/game_frame.dart';
 import '../ui/sprites.dart';
 import 'catch_game.dart';
 import 'game_parts.dart';
@@ -39,6 +41,9 @@ class _MinigameScreenState extends State<MinigameScreen>
   Reaction _reaction = Reaction.chomp;
 
   RoundPay _pay = (earned: 0, piggyBankFull: false);
+
+  /// Arrow keys held down (on a computer), besides dragging.
+  final _held = <LogicalKeyboardKey>{};
 
   @override
   void initState() {
@@ -85,6 +90,21 @@ class _MinigameScreenState extends State<MinigameScreen>
     });
   }
 
+  /// Holding an arrow key moves Chigüi that way; letting go stops them.
+  KeyEventResult _onKey(FocusNode _, KeyEvent event) {
+    final key = event.logicalKey;
+    if (key != LogicalKeyboardKey.arrowLeft &&
+        key != LogicalKeyboardKey.arrowRight) {
+      return KeyEventResult.ignored;
+    }
+    if (event is KeyDownEvent) _held.add(key);
+    if (event is KeyUpEvent) _held.remove(key);
+    final left = _held.contains(LogicalKeyboardKey.arrowLeft);
+    final right = _held.contains(LogicalKeyboardKey.arrowRight);
+    _game.aimAt(left == right ? _game.chiguiX : (left ? 0 : 1));
+    return KeyEventResult.handled;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -92,7 +112,9 @@ class _MinigameScreenState extends State<MinigameScreen>
       child: switch (_phase) {
         _Phase.ready => GameIntro(
           title: l10n.minigameTitle,
-          hint: l10n.minigameHint,
+          hint: onComputerWeb
+              ? '${l10n.minigameHint}\n${l10n.arrowKeysHint}'
+              : l10n.minigameHint,
           start: [
             GameButton(
               icon: Icons.play_arrow,
@@ -124,72 +146,76 @@ class _MinigameScreenState extends State<MinigameScreen>
         _game.reach = chiguiSize * 0.4 / w;
         void aim(Offset p) => _game.aimAt(p.dx / w);
 
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onPanDown: (d) => aim(d.localPosition),
-          onPanUpdate: (d) => aim(d.localPosition),
-          child: Stack(
-            children: [
-              // Keys keep Chigüi's state (and its chomp animation) when
-              // caught fruit leaves the list.
-              for (final fruit in _game.fruits)
+        return Focus(
+          autofocus: true,
+          onKeyEvent: _onKey,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onPanDown: (d) => aim(d.localPosition),
+            onPanUpdate: (d) => aim(d.localPosition),
+            child: Stack(
+              children: [
+                // Keys keep Chigüi's state (and its chomp animation) when
+                // caught fruit leaves the list.
+                for (final fruit in _game.fruits)
+                  Positioned(
+                    key: ObjectKey(fruit),
+                    left: fruit.x * w - fruitSize / 2,
+                    top: fruit.y * h - fruitSize / 2,
+                    child: ExcludeSemantics(
+                      child: FruitSprite(kind: fruit.kind, size: fruitSize),
+                    ),
+                  ),
                 Positioned(
-                  key: ObjectKey(fruit),
-                  left: fruit.x * w - fruitSize / 2,
-                  top: fruit.y * h - fruitSize / 2,
-                  child: ExcludeSemantics(
-                    child: FruitSprite(kind: fruit.kind, size: fruitSize),
+                  key: const ValueKey('chigui'),
+                  left: _game.chiguiX * w - chiguiSize / 2,
+                  top: catchLine * h - chiguiSize * 0.35,
+                  child: IgnorePointer(
+                    child: ChiguiView(
+                      size: chiguiSize,
+                      reaction: _reaction,
+                      reactionId: _reactionId,
+                    ),
                   ),
                 ),
-              Positioned(
-                key: const ValueKey('chigui'),
-                left: _game.chiguiX * w - chiguiSize / 2,
-                top: catchLine * h - chiguiSize * 0.35,
-                child: IgnorePointer(
-                  child: ChiguiView(
-                    size: chiguiSize,
-                    reaction: _reaction,
-                    reactionId: _reactionId,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 16,
-                right: 16,
-                top: 8,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Semantics(
-                      liveRegion: true,
-                      label: l10n.fruitsCaught(_game.caught),
-                      excludeSemantics: true,
-                      child: Row(
-                        children: [
-                          const FruitSprite(
-                            kind: FruitKind.watermelon,
-                            size: 28,
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            '${_game.caught}',
-                            style: textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  top: 8,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Semantics(
+                        liveRegion: true,
+                        label: l10n.fruitsCaught(_game.caught),
+                        excludeSemantics: true,
+                        child: Row(
+                          children: [
+                            const FruitSprite(
+                              kind: FruitKind.watermelon,
+                              size: 28,
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 6),
+                            Text(
+                              '${_game.caught}',
+                              style: textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                      l10n.secondsLeft(_game.timeLeft.ceil()),
-                      style: textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+                      Text(
+                        l10n.secondsLeft(_game.timeLeft.ceil()),
+                        style: textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

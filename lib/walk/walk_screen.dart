@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../game/pet_controller.dart';
 import '../game/rules.dart'
@@ -235,60 +236,79 @@ class _WalkScreenState extends State<WalkScreen> {
     return _pet.addSteps(steps);
   }
 
+  /// On a computer, each press of an arrow key is a step of that foot
+  /// (holding a key down does not keep walking).
+  KeyEventResult _onKey(FocusNode _, KeyEvent event) {
+    final key = event.logicalKey;
+    if (key != LogicalKeyboardKey.arrowLeft &&
+        key != LogicalKeyboardKey.arrowRight) {
+      return KeyEventResult.ignored;
+    }
+    if (event is KeyDownEvent && _mode != _Mode.intro) {
+      _onFoot(AppLocalizations.of(context));
+    }
+    return KeyEventResult.handled;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
 
-    return Scaffold(
-      backgroundColor: Palette.outside,
-      body: GameFrame(
-        child: ColoredBox(
-          color: Palette.mint,
-          child: SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final w = constraints.maxWidth;
-                final h = constraints.maxHeight;
-                final chiguiSize = math.min(w * 0.55, h * 0.3);
-                return Stack(
-                  children: [
-                    Positioned.fill(
-                      child: TweenAnimationBuilder<double>(
-                        tween: Tween(end: _scroll),
-                        duration: const Duration(milliseconds: 400),
-                        builder: (context, scroll, _) =>
-                            CustomPaint(painter: _ScenePainter(scroll: scroll)),
-                      ),
-                    ),
-                    Positioned(
-                      left: (w - chiguiSize) / 2,
-                      top: h * 0.72 - chiguiSize,
-                      child: IgnorePointer(
-                        child: ChiguiView(
-                          size: chiguiSize,
-                          wearing: _pet.state.equipped,
-                          panting: _outOfBreath,
-                          reaction: _reaction,
-                          reactionId: _reactionId,
+    return Focus(
+      autofocus: true,
+      onKeyEvent: _onKey,
+      child: Scaffold(
+        backgroundColor: Palette.outside,
+        body: GameFrame(
+          child: ColoredBox(
+            color: Palette.mint,
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final w = constraints.maxWidth;
+                  final h = constraints.maxHeight;
+                  final chiguiSize = math.min(w * 0.55, h * 0.3);
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: TweenAnimationBuilder<double>(
+                          tween: Tween(end: _scroll),
+                          duration: const Duration(milliseconds: 400),
+                          builder: (context, scroll, _) => CustomPaint(
+                            painter: _ScenePainter(scroll: scroll),
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      top: 0,
-                      child: _header(l10n, textTheme),
-                    ),
-                    Positioned(
-                      left: 16,
-                      right: 16,
-                      bottom: 16,
-                      child: _controls(l10n, textTheme),
-                    ),
-                  ],
-                );
-              },
+                      Positioned(
+                        left: (w - chiguiSize) / 2,
+                        top: h * 0.72 - chiguiSize,
+                        child: IgnorePointer(
+                          child: ChiguiView(
+                            size: chiguiSize,
+                            wearing: _pet.state.equipped,
+                            panting: _outOfBreath,
+                            reaction: _reaction,
+                            reactionId: _reactionId,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        child: _header(l10n, textTheme),
+                      ),
+                      Positioned(
+                        left: 16,
+                        right: 16,
+                        bottom: 16,
+                        child: _controls(l10n, textTheme),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -390,7 +410,12 @@ class _WalkScreenState extends State<WalkScreen> {
 
   Widget _controls(AppLocalizations l10n, TextTheme textTheme) {
     final hint = switch (_mode) {
-      _Mode.intro => _onPhone ? l10n.walkIntro : l10n.walkIntroTapping,
+      _Mode.intro =>
+        _onPhone
+            ? l10n.walkIntro
+            : onComputerWeb
+            ? '${l10n.walkIntroTapping}\n${l10n.arrowKeysHint}'
+            : l10n.walkIntroTapping,
       _Mode.sensor =>
         _message ??
             (_usesPedometer ? l10n.pedometerWalkHint : l10n.sensorWalkHint),

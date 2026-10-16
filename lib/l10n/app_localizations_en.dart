@@ -122,6 +122,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Drag to move Chigüi: catch the fruit and dodge the stones!';
 
   @override
+  String get arrowKeysHint => 'On a computer, the arrow keys work too.';
+
+  @override
   String get startButton => 'Start';
 
   @override

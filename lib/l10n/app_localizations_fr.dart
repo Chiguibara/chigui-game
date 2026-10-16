@@ -122,6 +122,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Fais glisser Chigüi : attrape les fruits et évite les cailloux !';
 
   @override
+  String get arrowKeysHint =>
+      'Sur ordinateur, les flèches du clavier marchent aussi.';
+
+  @override
   String get startButton => 'C\'est parti !';
 
   @override

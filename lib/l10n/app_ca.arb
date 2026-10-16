@@ -34,6 +34,7 @@
   "coinsLabel": "{count, plural, =1{1 moneda} other{{count} monedes}}",
   "minigameTitle": "Atrapa la fruita",
   "minigameHint": "Arrossega per moure Chigüi: atrapa la fruita i esquiva les pedres!",
+  "arrowKeysHint": "A l'ordinador també pots fer servir les fletxes.",
   "startButton": "A jugar!",
   "secondsLeft": "{seconds} s",
   "fruitsCaught": "{count, plural, =0{Aquesta vegada no hi ha hagut fruita} =1{1 fruita atrapada} other{{count} fruites atrapades}}",

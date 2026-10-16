@@ -122,6 +122,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Arrastra para mover a Chigüi: ¡atrapa la fruta y esquiva las piedras!';
 
   @override
+  String get arrowKeysHint =>
+      'En el ordenador también puedes usar las flechas.';
+
+  @override
   String get startButton => '¡A jugar!';
 
   @override

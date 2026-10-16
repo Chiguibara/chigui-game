@@ -1,4 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
+/// The web on a computer, where arrow keys can help (never required).
+bool get onComputerWeb =>
+    kIsWeb &&
+    defaultTargetPlatform != TargetPlatform.android &&
+    defaultTargetPlatform != TargetPlatform.iOS;
 
 /// The single layout breakpoint: wide landscape screens (PCs) get the wide
 /// layout; narrow or portrait ones get the phone layout Android will use.

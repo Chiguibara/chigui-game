@@ -149,6 +149,10 @@
   "@minigameHint": {
     "description": "How to play, shown before starting."
   },
+  "arrowKeysHint": "On a computer, the arrow keys work too.",
+  "@arrowKeysHint": {
+    "description": "Added under how to play fruit catch and the walk, on the web on a computer: the arrow keys move Chigüi or step with each foot."
+  },
   "startButton": "Start",
   "@startButton": {
     "description": "Starts a minigame round."

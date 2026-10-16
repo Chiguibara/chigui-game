@@ -34,6 +34,7 @@
   "coinsLabel": "{count, plural, =1{1 pièce} other{{count} pièces}}",
   "minigameTitle": "Attrape les fruits",
   "minigameHint": "Fais glisser Chigüi : attrape les fruits et évite les cailloux !",
+  "arrowKeysHint": "Sur ordinateur, les flèches du clavier marchent aussi.",
   "startButton": "C'est parti !",
   "secondsLeft": "{seconds} s",
   "fruitsCaught": "{count, plural, =0{Pas de fruit cette fois} =1{1 fruit attrapé} other{{count} fruits attrapés}}",

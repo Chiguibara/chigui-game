@@ -122,6 +122,9 @@ class AppLocalizationsDe extends AppLocalizations {
       'Zieh Chigüi hin und her: Fang das Obst und weich den Steinen aus!';
 
   @override
+  String get arrowKeysHint => 'Am Computer gehen auch die Pfeiltasten.';
+
+  @override
   String get startButton => 'Los geht\'s!';
 
   @override

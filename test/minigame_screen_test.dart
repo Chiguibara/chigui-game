@@ -6,6 +6,7 @@ import 'package:chigui_game/l10n/app_localizations.dart';
 import 'package:chigui_game/minigame/catch_game.dart';
 import 'package:chigui_game/minigame/minigame_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,5 +66,42 @@ void main() {
     }
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text('Ouch!'), findsOneWidget);
+  });
+
+  testWidgets('holding an arrow key moves Chigüi; letting go stops', (
+    tester,
+  ) async {
+    SharedPreferences.setMockInitialValues({});
+    final controller = await PetController.load(
+      await JsonGameRepository.open(),
+      clock: () => DateTime(2026, 10, 12, 12),
+    );
+    final game = CatchGame(random: Random(1));
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: MinigameScreen(controller: controller, game: game),
+      ),
+    );
+    await tester.tap(find.text('Start'));
+    await tester.pump();
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowLeft);
+    for (var i = 0; i < 6; i++) {
+      await tester.pump(const Duration(milliseconds: 16));
+    }
+    expect(game.chiguiX, lessThan(0.5));
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowLeft);
+    await tester.pump(const Duration(milliseconds: 16));
+    final stopped = game.chiguiX;
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(game.chiguiX, closeTo(stopped, 0.05));
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(game.chiguiX, greaterThan(stopped));
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pumpWidget(const SizedBox());
   });
 }

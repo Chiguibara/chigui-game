@@ -308,6 +308,12 @@ abstract class AppLocalizations {
   /// **'Drag to move Chigüi: catch the fruit and dodge the stones!'**
   String get minigameHint;
 
+  /// Added under how to play fruit catch and the walk, on the web on a computer: the arrow keys move Chigüi or step with each foot.
+  ///
+  /// In en, this message translates to:
+  /// **'On a computer, the arrow keys work too.'**
+  String get arrowKeysHint;
+
   /// Starts a minigame round.
   ///
   /// In en, this message translates to:
