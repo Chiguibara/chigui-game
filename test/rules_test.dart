@@ -324,8 +324,25 @@ void main() {
       expect(o.ok, isTrue);
       expect(o.state.stepsToday, 2500);
       expect(o.state.coins, 2 * coinsPerWalk);
-      expect(o.state.level(Need.fun), closeTo(0.4 + 2 * walkFunGain, 1e-9));
+      expect(o.state.level(Need.fun), 1.0);
       expect(types(o), [EventType.walked, EventType.walked]);
+    });
+
+    test('every step raises fun a little', () {
+      final o = addSteps(pet0(at(12), level: 0.4), at(12), 200);
+      expect(o.ok, isFalse, reason: 'not a walk yet');
+      expect(
+        o.state.level(Need.fun),
+        closeTo(0.4 + walkFunGain * 200 / stepsPerWalk, 1e-9),
+      );
+    });
+
+    test('tapping until out of breath fills fun, even from its lowest', () {
+      var s = pet0(at(12), level: needFloor);
+      for (var i = 0; i < 1000 && tapStepsLeft(s, at(12)) > 0; i++) {
+        s = addSteps(s, at(12), stepsPerFootTap, tapped: true).state;
+      }
+      expect(s.level(Need.fun), 1.0);
     });
 
     test('steps add up during the day', () {

@@ -61,7 +61,10 @@ const maxWalksPerDay = 20;
 /// is out of breath until tomorrow.
 const maxTapWalksPerDay = 3;
 const maxTapStepsPerDay = maxTapWalksPerDay * stepsPerWalk;
-const walkFunGain = 0.1;
+
+/// Fun from a walk's worth of steps, raised a little with every step: a
+/// day's tapped walks fill fun up even from its lowest.
+const walkFunGain = 0.35;
 const coinsPerWalk = 4;
 
 /// Without a step sensor (PCs), each tap on a foot in the walk scene counts
@@ -474,7 +477,7 @@ Outcome addSteps(
     coins: s.coins + walks * coinsPerWalk,
   );
   return (
-    state: _raise(next, Need.fun, walks * walkFunGain),
+    state: _raise(next, Need.fun, walkFunGain * counted / stepsPerWalk),
     events: [
       ...current.events,
       for (var i = 0; i < walks; i++) GameEvent(EventType.walked, now),
