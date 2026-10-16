@@ -504,6 +504,40 @@ class AppLocalizationsEn extends AppLocalizations {
   String get unmuteSounds => 'Turn sounds on';
 
   @override
+  String get remindersButton => 'Reminders';
+
+  @override
+  String get remindersTitle => 'Reminders (for grown-ups)';
+
+  @override
+  String get remindersOffInfo =>
+      'Chigüi can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.';
+
+  @override
+  String get remindersOnInfo =>
+      'Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.';
+
+  @override
+  String get remindersHoldToTurnOn => 'Hold to turn on';
+
+  @override
+  String get remindersTurnOff => 'Turn off';
+
+  @override
+  String get remindersDenied =>
+      'Notifications for Chigüi are blocked in the phone\'s settings.';
+
+  @override
+  String get reminderMeal =>
+      'It\'s mealtime! Chigüi would love something yummy.';
+
+  @override
+  String get reminderPotty => 'Chigüi needs the toilet! Can you help?';
+
+  @override
+  String get reminderChannel => 'Chigüi\'s routine';
+
+  @override
   String get packsSection => 'Packs';
 
   @override

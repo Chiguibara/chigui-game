@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Status bar icon for reminders: a capybara paw print, one color. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,12.5c-3.2,0 -5.8,2.8 -5.8,5.3 0,1.8 1.5,2.7 3.1,2.7 1.1,0 1.7,-0.6 2.7,-0.6s1.6,0.6 2.7,0.6c1.6,0 3.1,-0.9 3.1,-2.7 0,-2.5 -2.6,-5.3 -5.8,-5.3z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M5.2,10.2m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M9.4,6.4m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M14.6,6.4m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M18.8,10.2m-2.2,0a2.2,2.2 0,1 1,4.4 0a2.2,2.2 0,1 1,-4.4 0" />
+</vector>

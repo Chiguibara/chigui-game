@@ -505,6 +505,41 @@ class AppLocalizationsCa extends AppLocalizations {
   String get unmuteSounds => 'Activar els sons';
 
   @override
+  String get remindersButton => 'Avisos';
+
+  @override
+  String get remindersTitle => 'Avisos (per a adults)';
+
+  @override
+  String get remindersOffInfo =>
+      'Chigüi pot enviar un avís suau a l\'hora de menjar i quan necessiti anar al lavabo, mai en horari de classe ni de nit. Ara estan apagats.';
+
+  @override
+  String get remindersOnInfo =>
+      'Els avisos estan encesos: uns quants al dia, a l\'hora de menjar i del lavabo. S\'aturen sols si passa un dia sense jugar.';
+
+  @override
+  String get remindersHoldToTurnOn => 'Mantén premut per encendre';
+
+  @override
+  String get remindersTurnOff => 'Apagar';
+
+  @override
+  String get remindersDenied =>
+      'Les notificacions de Chigüi estan bloquejades a la configuració del mòbil.';
+
+  @override
+  String get reminderMeal =>
+      'És l\'hora de menjar! A Chigüi li ve de gust alguna cosa bona.';
+
+  @override
+  String get reminderPotty =>
+      'Chigüi necessita anar al lavabo! Li dones un cop de mà?';
+
+  @override
+  String get reminderChannel => 'La rutina de Chigüi';
+
+  @override
   String get packsSection => 'Paquets';
 
   @override

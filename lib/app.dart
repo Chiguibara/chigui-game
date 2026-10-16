@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'game/pet_controller.dart';
 import 'l10n/app_localizations.dart';
+import 'notify/reminders.dart';
 import 'store/packs_controller.dart';
 import 'walk/pedometer.dart';
 import 'walk/step_watcher.dart';
@@ -15,6 +16,7 @@ class ChiguiApp extends StatelessWidget {
     this.packs,
     this.steps,
     this.pedometer,
+    this.reminders,
     this.locale,
   });
 
@@ -28,6 +30,9 @@ class ChiguiApp extends StatelessWidget {
 
   /// The Android system step counter; null elsewhere.
   final Pedometer? pedometer;
+
+  /// Routine reminders (Android app); null elsewhere.
+  final Reminders? reminders;
 
   /// Forces a language (e.g. from the website's URL); null follows the device.
   final Locale? locale;
@@ -55,6 +60,7 @@ class ChiguiApp extends StatelessWidget {
         packs: packs,
         steps: steps,
         pedometer: pedometer,
+        reminders: reminders,
       ),
     );
   }

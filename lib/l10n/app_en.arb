@@ -604,6 +604,46 @@
   "@unmuteSounds": {
     "description": "Tooltip of the button that turns sound effects back on."
   },
+  "remindersButton": "Reminders",
+  "@remindersButton": {
+    "description": "Tooltip of the home screen bell button that opens the reminder settings (Android app)."
+  },
+  "remindersTitle": "Reminders (for grown-ups)",
+  "@remindersTitle": {
+    "description": "Title of the reminder settings dialog, meant for parents."
+  },
+  "remindersOffInfo": "Chigüi can send a gentle reminder at mealtimes and when it's toilet time, never during class or at night. They are off for now.",
+  "@remindersOffInfo": {
+    "description": "Reminder settings while off: what reminders do. For parents; calm, no pressure."
+  },
+  "remindersOnInfo": "Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.",
+  "@remindersOnInfo": {
+    "description": "Reminder settings while on."
+  },
+  "remindersHoldToTurnOn": "Hold to turn on",
+  "@remindersHoldToTurnOn": {
+    "description": "Button a grown-up holds (long press) to turn reminders on, so children don't turn them on by accident."
+  },
+  "remindersTurnOff": "Turn off",
+  "@remindersTurnOff": {
+    "description": "Button that turns reminders off."
+  },
+  "remindersDenied": "Notifications for Chigüi are blocked in the phone's settings.",
+  "@remindersDenied": {
+    "description": "Shown when the phone does not allow notifications for the app."
+  },
+  "reminderMeal": "It's mealtime! Chigüi would love something yummy.",
+  "@reminderMeal": {
+    "description": "Notification at the start of a mealtime, while the game is closed. Gentle, never guilt-tripping."
+  },
+  "reminderPotty": "Chigüi needs the toilet! Can you help?",
+  "@reminderPotty": {
+    "description": "Notification when Chigüi needs the toilet, while the game is closed. Gentle, never guilt-tripping."
+  },
+  "reminderChannel": "Chigüi's routine",
+  "@reminderChannel": {
+    "description": "Name of the notification channel, shown in the phone's notification settings."
+  },
   "packsSection": "Packs",
   "@packsSection": {
     "description": "Shop section with real-money accessory packs (Android app only)."

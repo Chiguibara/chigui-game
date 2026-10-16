@@ -8,6 +8,7 @@ import '../game/pet_state.dart';
 import '../game/rules.dart' show happyLevel, wishLevel;
 import '../l10n/app_localizations.dart';
 import '../minigame/games_screen.dart';
+import '../notify/reminders.dart';
 import '../shop/shop_screen.dart';
 import '../store/packs_controller.dart';
 import '../walk/walk_screen.dart';
@@ -19,6 +20,7 @@ import 'chigui_view.dart';
 import 'dev_panel.dart';
 import 'need_meter.dart';
 import 'palette.dart';
+import 'reminders_dialog.dart';
 import 'game_frame.dart';
 import 'sprites.dart';
 
@@ -29,6 +31,7 @@ class HomeScreen extends StatefulWidget {
     this.packs,
     this.steps,
     this.pedometer,
+    this.reminders,
   });
 
   final PetController controller;
@@ -41,6 +44,9 @@ class HomeScreen extends StatefulWidget {
 
   /// The Android system step counter; walking about 100 m opens the walk.
   final Pedometer? pedometer;
+
+  /// Routine reminders, for grown-ups to turn on (Android app).
+  final Reminders? reminders;
 
   /// After leaving an automatic walk, wait this long before opening another.
   static const autoWalkCooldown = Duration(minutes: 2);
@@ -497,6 +503,20 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           counter(l10n.stepsLabel(steps), const Footprints(size: 26), steps),
           const Spacer(),
+          if (widget.reminders case final reminders?)
+            ListenableBuilder(
+              listenable: reminders,
+              builder: (context, _) => IconButton(
+                onPressed: () => showRemindersDialog(context, reminders),
+                tooltip: l10n.remindersButton,
+                icon: Icon(
+                  reminders.enabled
+                      ? Icons.notifications_active
+                      : Icons.notifications_none,
+                ),
+                color: Palette.ink,
+              ),
+            ),
           ListenableBuilder(
             listenable: sfx,
             builder: (context, _) => IconButton(

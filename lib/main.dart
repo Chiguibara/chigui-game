@@ -8,6 +8,8 @@ import 'app.dart';
 import 'data/json_game_repository.dart';
 import 'game/pet_controller.dart';
 import 'l10n/app_localizations.dart';
+import 'notify/reminders.dart';
+import 'notify/system_notice_board.dart';
 import 'sound/sound_effects.dart';
 import 'store/create_pack_store.dart';
 import 'store/packs_controller.dart';
@@ -36,12 +38,29 @@ Future<void> main() async {
       ? Pedometer(controller, await SharedPreferences.getInstance())
       : null;
   unawaited(pedometer?.start());
+  // The Android app: gentle routine reminders, off until a grown-up turns
+  // them on; scheduled only while the game is in the background.
+  final reminders = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+      ? Reminders(
+          SystemNoticeBoard(),
+          await SharedPreferences.getInstance(),
+          controller,
+        )
+      : null;
+  if (reminders != null) {
+    unawaited(reminders.clear());
+    AppLifecycleListener(
+      onHide: reminders.scheduleAhead,
+      onShow: reminders.clear,
+    );
+  }
   runApp(
     ChiguiApp(
       controller: controller,
       packs: packs,
       steps: steps,
       pedometer: pedometer,
+      reminders: reminders,
       locale: _localeFromUrl(),
     ),
   );

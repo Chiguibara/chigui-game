@@ -505,6 +505,41 @@ class AppLocalizationsFr extends AppLocalizations {
   String get unmuteSounds => 'Activer le son';
 
   @override
+  String get remindersButton => 'Rappels';
+
+  @override
+  String get remindersTitle => 'Rappels (pour les grands)';
+
+  @override
+  String get remindersOffInfo =>
+      'Chigüi peut envoyer un petit rappel à l\'heure des repas et quand c\'est l\'heure du petit coin, jamais pendant la classe ni la nuit. Ils sont désactivés pour l\'instant.';
+
+  @override
+  String get remindersOnInfo =>
+      'Les rappels sont activés : quelques-uns par jour, à l\'heure des repas et du petit coin. Ils s\'arrêtent tout seuls après une journée sans jouer.';
+
+  @override
+  String get remindersHoldToTurnOn => 'Maintiens pour activer';
+
+  @override
+  String get remindersTurnOff => 'Désactiver';
+
+  @override
+  String get remindersDenied =>
+      'Les notifications de Chigüi sont bloquées dans les réglages du téléphone.';
+
+  @override
+  String get reminderMeal =>
+      'C\'est l\'heure du repas ! Chigüi a envie de quelque chose de bon.';
+
+  @override
+  String get reminderPotty =>
+      'Chigüi doit aller au petit coin ! Tu donnes un coup de main ?';
+
+  @override
+  String get reminderChannel => 'La routine de Chigüi';
+
+  @override
   String get packsSection => 'Packs';
 
   @override

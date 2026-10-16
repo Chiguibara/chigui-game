@@ -896,6 +896,66 @@ abstract class AppLocalizations {
   /// **'Turn sounds on'**
   String get unmuteSounds;
 
+  /// Tooltip of the home screen bell button that opens the reminder settings (Android app).
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders'**
+  String get remindersButton;
+
+  /// Title of the reminder settings dialog, meant for parents.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders (for grown-ups)'**
+  String get remindersTitle;
+
+  /// Reminder settings while off: what reminders do. For parents; calm, no pressure.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.'**
+  String get remindersOffInfo;
+
+  /// Reminder settings while on.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.'**
+  String get remindersOnInfo;
+
+  /// Button a grown-up holds (long press) to turn reminders on, so children don't turn them on by accident.
+  ///
+  /// In en, this message translates to:
+  /// **'Hold to turn on'**
+  String get remindersHoldToTurnOn;
+
+  /// Button that turns reminders off.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn off'**
+  String get remindersTurnOff;
+
+  /// Shown when the phone does not allow notifications for the app.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications for Chigüi are blocked in the phone\'s settings.'**
+  String get remindersDenied;
+
+  /// Notification at the start of a mealtime, while the game is closed. Gentle, never guilt-tripping.
+  ///
+  /// In en, this message translates to:
+  /// **'It\'s mealtime! Chigüi would love something yummy.'**
+  String get reminderMeal;
+
+  /// Notification when Chigüi needs the toilet, while the game is closed. Gentle, never guilt-tripping.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi needs the toilet! Can you help?'**
+  String get reminderPotty;
+
+  /// Name of the notification channel, shown in the phone's notification settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi\'s routine'**
+  String get reminderChannel;
+
   /// Shop section with real-money accessory packs (Android app only).
   ///
   /// In en, this message translates to:
