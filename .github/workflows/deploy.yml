@@ -6,13 +6,19 @@ name: Test and deploy
 # production; v0.2.0-rc.1 sends it only to Play's closed testing, and
 # v0.2.0-beta.1 only to internal testing, with the notes in
 # distribution/whatsnew/ as "What's new". Manual runs from the Actions tab
-# also build the Android app bundle.
+# build the Android app bundle, or, given a version tag (e.g. a release
+# candidate already in testing), check it and publish only its web.
 on:
   push:
     branches: [main]
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+    inputs:
+      web_tag:
+        description: "Publish only the web from this tag (e.g. v1.0.3-rc.3). Empty: just build the Android app bundle."
+        required: false
+        type: string
 
 # Least privilege: the workflow only reads the code. Pull requests from
 # forks never receive secrets, and only main deploys.
@@ -29,14 +35,27 @@ jobs:
     # The same Flutter image as the local Docker toolchain.
     container: ghcr.io/cirruslabs/flutter:3.44.0
     steps:
+      - if: inputs.web_tag
+        name: Check the tag is a version tag
+        shell: bash
+        env:
+          TAG: ${{ inputs.web_tag }}
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9] ]]; then
+            echo "::error::$TAG is not a version tag (v1.0.3, v1.0.3-rc.1…)"; exit 1
+          fi
       - uses: actions/checkout@v5
+        with:
+          # A web-only run checks and builds the chosen tag; the run itself
+          # uses main's workflow, so older tags work too.
+          ref: ${{ inputs.web_tag && format('refs/tags/{0}', inputs.web_tag) || github.ref }}
       - run: flutter pub get
       - run: dart format --output=none --set-exit-if-changed lib test tools
       - run: flutter analyze
       - run: flutter test
       - run: flutter build web --release --no-web-resources-cdn
       - run: find build/web -name '*.symbols' -delete
-      - if: startsWith(github.ref, 'refs/tags/v')
+      - if: startsWith(github.ref, 'refs/tags/v') || inputs.web_tag
         uses: actions/upload-artifact@v5
         with:
           name: web
@@ -44,7 +63,9 @@ jobs:
           include-hidden-files: true
 
   android:
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      (github.event_name == 'workflow_dispatch' && !inputs.web_tag)
     runs-on: ubuntu-latest
     container: ghcr.io/cirruslabs/flutter:3.44.0
     steps:
@@ -105,7 +126,7 @@ jobs:
   # production tag, so test tags of a version share them with its final tag.
   # The release-notes skill writes them.
   release-notes:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -131,7 +152,8 @@ jobs:
   # internal testing only.
   google-play:
     needs: [build, android, release-notes]
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Only pushed tags: manual runs never upload to Google Play.
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment:
       name: google-play
@@ -155,8 +177,11 @@ jobs:
 
   deploy:
     needs: build
-    # Test tags (v0.2.0-rc.1, v0.2.0-beta.1) are only for Android testers.
-    if: startsWith(github.ref, 'refs/tags/v') && !contains(github.ref_name, '-')
+    # Test tags (v0.2.0-rc.1, v0.2.0-beta.1) are only for Android testers,
+    # unless a manual run publishes one's web.
+    if: >-
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') &&
+      !contains(github.ref_name, '-')) || inputs.web_tag
     runs-on: ubuntu-latest
     environment:
       name: production
