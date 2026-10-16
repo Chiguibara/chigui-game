@@ -5,6 +5,7 @@ import 'package:chigui_game/game/rules.dart';
 import 'package:chigui_game/l10n/app_localizations.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
 import 'package:chigui_game/walk/motion_source.dart';
+import 'package:chigui_game/walk/pedometer.dart';
 import 'package:chigui_game/walk/step_watcher.dart';
 import 'package:chigui_game/walk/walk_screen.dart';
 import 'package:flutter/material.dart';
@@ -155,5 +156,38 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 2));
     expect(controller.stepsToday, inInclusiveRange(15, 21));
+  });
+
+  testWidgets('in the Android app, tapped out today, Chigüi pants right away '
+      'and gets their breath back walking for real', (tester) async {
+    SharedPreferences.setMockInitialValues({Pedometer.lastTotalKey: 5000});
+    final repo = await JsonGameRepository.open();
+    await repo.saveState(
+      PetState.fresh(now, seed: 1).copyWith(
+        stepsToday: maxTapStepsPerDay,
+        tapStepsToday: maxTapStepsPerDay,
+        stepsDay: DateTime(now.year, now.month, now.day),
+      ),
+    );
+    final controller = await PetController.load(repo, clock: () => now);
+    final pedometer = Pedometer(
+      controller,
+      await SharedPreferences.getInstance(),
+    )..onTotal(5000);
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: WalkScreen(controller: controller, pedometer: pedometer),
+      ),
+    );
+    bool panting() =>
+        tester.widget<ChiguiView>(find.byType(ChiguiView)).panting;
+    expect(panting(), isTrue);
+
+    pedometer.onTotal(5030);
+    await tester.pump();
+    expect(panting(), isFalse);
+    await tester.pump(const Duration(seconds: 2));
   });
 }

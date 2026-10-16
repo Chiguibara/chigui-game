@@ -96,6 +96,8 @@ class _WalkScreenState extends State<WalkScreen> {
     super.initState();
     if (_usesPedometer) {
       _mode = _Mode.sensor;
+      // The feet are there too: tapped out today, Chigüi pants right away.
+      _outOfBreath = _pet.tapStepsLeft <= 0;
       _walksBefore = _pet.walksToday;
       _pedometerSubscription = widget.pedometer!.liveSteps.listen(
         _onPedometerSteps,
@@ -165,6 +167,8 @@ class _WalkScreenState extends State<WalkScreen> {
       _sensorCheck?.cancel();
       setState(() => _mode = _Mode.sensor);
     }
+    // Walking for real: Chigüi got their breath back.
+    _outOfBreath = false;
     // Save in small batches rather than on every step.
     _pendingSteps++;
     _stepped(1, save: _pendingSteps >= 10);
@@ -180,6 +184,8 @@ class _WalkScreenState extends State<WalkScreen> {
     _leftStep = !_leftStep;
     sfx.play(walked ? Sfx.reward : (_leftStep ? Sfx.stepLeft : Sfx.stepRight));
     setState(() {
+      // Walking for real: Chigüi got their breath back.
+      _outOfBreath = false;
       _scroll += steps / stepsPerWalk;
       _message = walked ? AppLocalizations.of(context).walkedStatus : null;
       _reaction = walked ? Reaction.love : Reaction.walk;
