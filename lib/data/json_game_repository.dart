@@ -108,6 +108,8 @@ class JsonGameRepository implements GameRepository {
     'stepsDay': _encodeTime(s.stepsDay),
     'owned': s.owned.toList(),
     'equipped': {for (final e in s.equipped.entries) e.key.name: e.value},
+    'stuckStickers': s.stuckStickers.toList(),
+    'seenStickers': s.seenStickers.toList(),
     'ownedPacks': s.ownedPacks.toList(),
   };
 
@@ -159,6 +161,18 @@ class JsonGameRepository implements GameRepository {
           if (Slot.values.asNameMap()[key] case final slot?)
             if (value is String && owned.contains(value)) slot: value,
       },
+      stuckStickers: {
+        if (json['stuckStickers'] case final List list)
+          for (final id in list)
+            if (id is String && owned.contains(id)) id,
+      },
+      // Saves from before this field knew all of that day's stickers.
+      seenStickers: json['seenStickers'] is List
+          ? {
+              for (final id in json['seenStickers'] as List)
+                if (id is String) id,
+            }
+          : null,
     );
   }
 

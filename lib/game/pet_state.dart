@@ -7,7 +7,7 @@ enum Need { food, affection, fun }
 const _keep = Object();
 
 class PetState {
-  const PetState({
+  PetState({
     required this.needs,
     required this.updatedAt,
     required this.seed,
@@ -26,8 +26,10 @@ class PetState {
     this.stepsDay,
     this.owned = const {},
     this.equipped = const {},
+    this.stuckStickers = const {},
+    Set<String>? seenStickers,
     this.ownedPacks = const {},
-  });
+  }) : seenStickers = seenStickers ?? {for (final item in stickers) item.id};
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
     needs: {for (final need in Need.values) need: initialLevel},
@@ -83,6 +85,13 @@ class PetState {
   /// The item worn in each slot.
   final Map<Slot, String> equipped;
 
+  /// Owned stickers already stuck in the album; the rest are loose.
+  final Set<String> stuckStickers;
+
+  /// Stickers the player already knows about; any others in the catalog
+  /// came with an update and are announced as new. Defaults to all of today's.
+  final Set<String> seenStickers;
+
   /// Real-money packs owned, as last reported by the store (Google Play is
   /// the source of truth; this is the offline copy).
   final Set<String> ownedPacks;
@@ -112,6 +121,8 @@ class PetState {
     DateTime? stepsDay,
     Set<String>? owned,
     Map<Slot, String>? equipped,
+    Set<String>? stuckStickers,
+    Set<String>? seenStickers,
     Set<String>? ownedPacks,
   }) => PetState(
     needs: needs ?? this.needs,
@@ -136,6 +147,8 @@ class PetState {
     stepsDay: stepsDay ?? this.stepsDay,
     owned: owned ?? this.owned,
     equipped: equipped ?? this.equipped,
+    stuckStickers: stuckStickers ?? this.stuckStickers,
+    seenStickers: seenStickers ?? this.seenStickers,
     ownedPacks: ownedPacks ?? this.ownedPacks,
   );
 }

@@ -339,7 +339,37 @@ class AppLocalizationsFr extends AppLocalizations {
   String get boughtStatus => 'Nouveau look débloqué !';
 
   @override
-  String get stickerBoughtStatus => 'Autocollant ajouté à ton album !';
+  String get stickerBoughtStatus =>
+      'Nouvel autocollant ! Colle-le dans ton album.';
+
+  @override
+  String get albumButton => 'Album d\'autocollants';
+
+  @override
+  String get albumTitle => 'L\'album de Chigüi';
+
+  @override
+  String get albumHint => 'Fais glisser chaque autocollant à sa place';
+
+  @override
+  String get albumEmpty =>
+      'Pas encore d\'autocollants. Achète-les à la boutique avec tes pièces !';
+
+  @override
+  String get albumStuck => 'Collé ! Trop beau.';
+
+  @override
+  String get albumAllStuck =>
+      'Tous collés ! Il y en a d\'autres à la boutique.';
+
+  @override
+  String get albumComplete => 'Album complet ! Succès débloqué à 100 %.';
+
+  @override
+  String get newStickersButton => 'Tu as vu les nouveaux autocollants ?';
+
+  @override
+  String get newStickerLabel => 'Nouveau !';
 
   @override
   String notEnoughCoins(int count) {

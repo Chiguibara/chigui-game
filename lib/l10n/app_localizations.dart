@@ -623,8 +623,62 @@ abstract class AppLocalizations {
   /// After buying a sticker.
   ///
   /// In en, this message translates to:
-  /// **'Sticker added to your album!'**
+  /// **'New sticker! Stick it in your album.'**
   String get stickerBoughtStatus;
+
+  /// Home screen button (tooltip) that opens the sticker album.
+  ///
+  /// In en, this message translates to:
+  /// **'Sticker album'**
+  String get albumButton;
+
+  /// Title of the sticker album screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Chigüi\'s album'**
+  String get albumTitle;
+
+  /// Album status line while there are loose stickers to drag onto their spots.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag each sticker to its spot'**
+  String get albumHint;
+
+  /// Album status line when the player owns no stickers yet. Gentle, never pushy.
+  ///
+  /// In en, this message translates to:
+  /// **'No stickers yet. Buy them in the shop with your coins!'**
+  String get albumEmpty;
+
+  /// Album status line right after sticking a sticker in its spot.
+  ///
+  /// In en, this message translates to:
+  /// **'Stuck! Looks great.'**
+  String get albumStuck;
+
+  /// Album status line when every owned sticker is stuck but the shop has more.
+  ///
+  /// In en, this message translates to:
+  /// **'All stuck! More stickers wait in the shop.'**
+  String get albumAllStuck;
+
+  /// Album status line when every sticker is stuck. A bit geeky.
+  ///
+  /// In en, this message translates to:
+  /// **'Album complete! 100% achievement unlocked.'**
+  String get albumComplete;
+
+  /// Home screen button shown after an update adds stickers; opens the shop. Friendly, never pushy.
+  ///
+  /// In en, this message translates to:
+  /// **'Have you seen the new stickers?'**
+  String get newStickersButton;
+
+  /// Small tag on stickers that came with an update, in the shop.
+  ///
+  /// In en, this message translates to:
+  /// **'New!'**
+  String get newStickerLabel;
 
   /// Shown when trying to buy without enough coins. Half geeky (HTTP 402 Payment Required), half funny; never pushy.
   ///

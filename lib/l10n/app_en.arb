@@ -402,9 +402,45 @@
   "@boughtStatus": {
     "description": "After buying an accessory."
   },
-  "stickerBoughtStatus": "Sticker added to your album!",
+  "stickerBoughtStatus": "New sticker! Stick it in your album.",
   "@stickerBoughtStatus": {
     "description": "After buying a sticker."
+  },
+  "albumButton": "Sticker album",
+  "@albumButton": {
+    "description": "Home screen button (tooltip) that opens the sticker album."
+  },
+  "albumTitle": "Chigüi's album",
+  "@albumTitle": {
+    "description": "Title of the sticker album screen."
+  },
+  "albumHint": "Drag each sticker to its spot",
+  "@albumHint": {
+    "description": "Album status line while there are loose stickers to drag onto their spots."
+  },
+  "albumEmpty": "No stickers yet. Buy them in the shop with your coins!",
+  "@albumEmpty": {
+    "description": "Album status line when the player owns no stickers yet. Gentle, never pushy."
+  },
+  "albumStuck": "Stuck! Looks great.",
+  "@albumStuck": {
+    "description": "Album status line right after sticking a sticker in its spot."
+  },
+  "albumAllStuck": "All stuck! More stickers wait in the shop.",
+  "@albumAllStuck": {
+    "description": "Album status line when every owned sticker is stuck but the shop has more."
+  },
+  "albumComplete": "Album complete! 100% achievement unlocked.",
+  "@albumComplete": {
+    "description": "Album status line when every sticker is stuck. A bit geeky."
+  },
+  "newStickersButton": "Have you seen the new stickers?",
+  "@newStickersButton": {
+    "description": "Home screen button shown after an update adds stickers; opens the shop. Friendly, never pushy."
+  },
+  "newStickerLabel": "New!",
+  "@newStickerLabel": {
+    "description": "Small tag on stickers that came with an update, in the shop."
   },
   "notEnoughCoins": "{count, plural, =1{Error 402: 1 coin missing. One round of Fruit catch will fix it!} other{Error 402: {count} coins missing. A few rounds of Fruit catch will fix it!}}",
   "@notEnoughCoins": {

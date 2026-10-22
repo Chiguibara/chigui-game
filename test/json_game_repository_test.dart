@@ -44,6 +44,8 @@ void main() {
       stepsDay: now,
       owned: {'beanie', 'stickerStar'},
       equipped: {Slot.head: 'beanie'},
+      stuckStickers: {'stickerStar'},
+      seenStickers: {'stickerStar'},
     );
     await repo.saveState(saved);
 
@@ -68,6 +70,8 @@ void main() {
     expect(state.messes, 0);
     expect(state.sick, isFalse);
     expect(state.awakeUntil, isNull);
+    // Saves from before stickers were announced know all of today's.
+    expect(state.seenStickers, {for (final item in stickers) item.id});
   });
 
   test('fills missing or invalid fields with defaults', () async {

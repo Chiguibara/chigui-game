@@ -393,6 +393,32 @@ PetState toggleWorn(PetState state, Item item) {
   );
 }
 
+/// Owned stickers not stuck in the album yet, in catalog order.
+List<Item> looseStickers(PetState state) => [
+  for (final item in catalog)
+    if (item.slot == Slot.sticker &&
+        state.owned.contains(item.id) &&
+        !state.stuckStickers.contains(item.id))
+      item,
+];
+
+/// Sticks an owned sticker in its spot in the album.
+PetState stickSticker(PetState state, Item item) {
+  if (!looseStickers(state).contains(item)) return state;
+  return state.copyWith(stuckStickers: {...state.stuckStickers, item.id});
+}
+
+/// Stickers added to the catalog since the player last looked.
+List<Item> newStickers(PetState state) => [
+  for (final item in stickers)
+    if (!state.seenStickers.contains(item.id)) item,
+];
+
+/// The player has seen every sticker in the catalog.
+PetState sawStickers(PetState state) => state.copyWith(
+  seenStickers: {...state.seenStickers, for (final item in stickers) item.id},
+);
+
 /// Walks completed today (capped at [maxWalksPerDay]).
 int walksToday(PetState state, DateTime now) => walksFor(stepsOn(state, now));
 

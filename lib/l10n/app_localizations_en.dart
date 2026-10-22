@@ -338,7 +338,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boughtStatus => 'New look unlocked!';
 
   @override
-  String get stickerBoughtStatus => 'Sticker added to your album!';
+  String get stickerBoughtStatus => 'New sticker! Stick it in your album.';
+
+  @override
+  String get albumButton => 'Sticker album';
+
+  @override
+  String get albumTitle => 'Chigüi\'s album';
+
+  @override
+  String get albumHint => 'Drag each sticker to its spot';
+
+  @override
+  String get albumEmpty =>
+      'No stickers yet. Buy them in the shop with your coins!';
+
+  @override
+  String get albumStuck => 'Stuck! Looks great.';
+
+  @override
+  String get albumAllStuck => 'All stuck! More stickers wait in the shop.';
+
+  @override
+  String get albumComplete => 'Album complete! 100% achievement unlocked.';
+
+  @override
+  String get newStickersButton => 'Have you seen the new stickers?';
+
+  @override
+  String get newStickerLabel => 'New!';
 
   @override
   String notEnoughCoins(int count) {

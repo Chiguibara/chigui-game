@@ -94,6 +94,11 @@ const catalog = [
 
 final itemsById = {for (final item in catalog) item.id: item};
 
+final stickers = [
+  for (final item in catalog)
+    if (item.slot == Slot.sticker) item,
+];
+
 bool inSeason(Season season, DateTime now) {
   final d = now.toLocal();
   bool from(int month, int day) =>

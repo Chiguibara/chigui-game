@@ -17,9 +17,17 @@ import 'item_display.dart';
 
 /// Buy accessories and stickers with coins, and try accessories on.
 class ShopScreen extends StatefulWidget {
-  const ShopScreen({super.key, required this.controller, this.packs});
+  const ShopScreen({
+    super.key,
+    required this.controller,
+    this.packs,
+    this.newStickers = const {},
+  });
 
   final PetController controller;
+
+  /// Stickers that came with an update, shown first and tagged as new.
+  final Set<String> newStickers;
 
   /// Real-money packs; null (or unavailable) where they are not sold.
   final PacksController? packs;
@@ -163,6 +171,7 @@ class _ShopScreenState extends State<ShopScreen> {
                     SliverToBoxAdapter(
                       child: _header(l10n, textTheme, constraints),
                     ),
+                    if (widget.newStickers.isNotEmpty) ..._stickerSection,
                     if (_packs?.available ?? false)
                       ..._packSection(l10n, textTheme),
                     ..._section(
@@ -185,15 +194,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       l10n,
                       textTheme,
                     ),
-                    ..._section(
-                      l10n.stickersSection,
-                      [
-                        for (final item in catalog)
-                          if (item.slot == Slot.sticker) item,
-                      ],
-                      l10n,
-                      textTheme,
-                    ),
+                    if (widget.newStickers.isEmpty) ..._stickerSection,
                     const SliverToBoxAdapter(child: SizedBox(height: 24)),
                   ],
                 ),
@@ -202,6 +203,16 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  List<Widget> get _stickerSection {
+    final l10n = AppLocalizations.of(context);
+    return _section(
+      l10n.stickersSection,
+      stickers,
+      l10n,
+      Theme.of(context).textTheme,
     );
   }
 
@@ -489,15 +500,23 @@ class _ShopScreenState extends State<ShopScreen> {
               children: [
                 SizedBox(
                   height: 18,
-                  child: season != null && available
-                      ? Text(
-                          l10n.seasonName(season),
-                          style: small?.copyWith(
-                            color: Palette.santaRed,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        )
-                      : null,
+                  child: switch (season) {
+                    final season? when available => Text(
+                      l10n.seasonName(season),
+                      style: small?.copyWith(
+                        color: Palette.santaRed,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    _ when widget.newStickers.contains(item.id) => Text(
+                      l10n.newStickerLabel,
+                      style: small?.copyWith(
+                        color: Palette.headphones,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    _ => null,
+                  },
                 ),
                 SizedBox(height: 84, child: Center(child: preview)),
                 const SizedBox(height: 4),

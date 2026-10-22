@@ -339,7 +339,35 @@ class AppLocalizationsEs extends AppLocalizations {
   String get boughtStatus => '¡Nuevo look desbloqueado!';
 
   @override
-  String get stickerBoughtStatus => '¡Pegatina añadida a tu álbum!';
+  String get stickerBoughtStatus => '¡Pegatina nueva! Pégala en tu álbum.';
+
+  @override
+  String get albumButton => 'Álbum de pegatinas';
+
+  @override
+  String get albumTitle => 'El álbum de Chigüi';
+
+  @override
+  String get albumHint => 'Arrastra cada pegatina a su sitio';
+
+  @override
+  String get albumEmpty =>
+      'Aún no tienes pegatinas. ¡Cómpralas en la tienda con tus monedas!';
+
+  @override
+  String get albumStuck => '¡Pegada! Queda genial.';
+
+  @override
+  String get albumAllStuck => '¡Todas pegadas! En la tienda hay más.';
+
+  @override
+  String get albumComplete => '¡Álbum completo! Logro desbloqueado al 100 %.';
+
+  @override
+  String get newStickersButton => '¿Has visto las pegatinas nuevas?';
+
+  @override
+  String get newStickerLabel => '¡Nueva!';
 
   @override
   String notEnoughCoins(int count) {

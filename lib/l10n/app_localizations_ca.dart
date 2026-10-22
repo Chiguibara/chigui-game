@@ -340,7 +340,35 @@ class AppLocalizationsCa extends AppLocalizations {
   String get boughtStatus => 'Nou look desbloquejat!';
 
   @override
-  String get stickerBoughtStatus => 'Adhesiu afegit al teu àlbum!';
+  String get stickerBoughtStatus => 'Adhesiu nou! Enganxa\'l al teu àlbum.';
+
+  @override
+  String get albumButton => 'Àlbum d\'adhesius';
+
+  @override
+  String get albumTitle => 'L\'àlbum de Chigüi';
+
+  @override
+  String get albumHint => 'Arrossega cada adhesiu al seu lloc';
+
+  @override
+  String get albumEmpty =>
+      'Encara no tens adhesius. Compra\'ls a la botiga amb les teves monedes!';
+
+  @override
+  String get albumStuck => 'Enganxat! Queda genial.';
+
+  @override
+  String get albumAllStuck => 'Tots enganxats! A la botiga n\'hi ha més.';
+
+  @override
+  String get albumComplete => 'Àlbum complet! Assoliment desbloquejat al 100%.';
+
+  @override
+  String get newStickersButton => 'Has vist els adhesius nous?';
+
+  @override
+  String get newStickerLabel => 'Nou!';
 
   @override
   String notEnoughCoins(int count) {

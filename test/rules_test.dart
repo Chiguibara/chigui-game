@@ -411,6 +411,29 @@ void main() {
       expect(o.state.equipped, isEmpty);
     });
 
+    test('bought stickers lie loose until stuck in the album', () {
+      final s = buy(rich(), at(12), star).state;
+      expect(looseStickers(s), [star]);
+      final stuck = stickSticker(s, star);
+      expect(stuck.stuckStickers, {'stickerStar'});
+      expect(looseStickers(stuck), isEmpty);
+      final heart = itemsById['stickerHeart']!;
+      expect(
+        stickSticker(s, heart).stuckStickers,
+        isEmpty,
+        reason: 'not owned',
+      );
+      expect(stickSticker(s, beanie).stuckStickers, isEmpty);
+    });
+
+    test('stickers added by an update are new until seen', () {
+      final s = rich();
+      expect(newStickers(s), isEmpty, reason: 'knows today\'s stickers');
+      final before = s.copyWith(seenStickers: {'stickerStar'});
+      expect(newStickers(before), hasLength(stickers.length - 1));
+      expect(newStickers(sawStickers(before)), isEmpty);
+    });
+
     test('one accessory per slot; owned ones can be swapped and removed', () {
       var s = buy(rich(), at(12), beanie).state;
       s = buy(s, at(12), headphones).state;

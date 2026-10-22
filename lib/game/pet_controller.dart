@@ -79,6 +79,18 @@ class PetController extends ChangeNotifier {
     events: const [],
     ok: true,
   ));
+  List<Item> get looseStickers => rules.looseStickers(_state);
+  void stickSticker(Item item) => _apply((
+    state: rules.stickSticker(_state, item),
+    events: const [],
+    ok: true,
+  ));
+  List<Item> get newStickers => rules.newStickers(_state);
+  void sawStickers() => _apply((
+    state: rules.sawStickers(_state),
+    events: const [],
+    ok: true,
+  ));
   bool grantPack(Pack pack) => _apply(rules.grantPack(_state, now, pack));
   void syncPacks(Set<String> fromStore) =>
       _apply(rules.syncPacks(_state, now, fromStore));

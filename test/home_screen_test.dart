@@ -299,6 +299,83 @@ void main() {
     expect(find.text('Wear'), findsOneWidget);
   });
 
+  testWidgets('bought stickers get stuck in the album by dragging them', (
+    tester,
+  ) async {
+    final controller = await start(
+      tester,
+      (s) => s.copyWith(owned: {'stickerStar', 'stickerHeart'}),
+    );
+    await tester.pump();
+    // The badge counts the loose stickers.
+    expect(find.text('2'), findsOneWidget);
+
+    await tester.tap(find.byTooltip('Sticker album'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text("Chigüi's album"), findsOneWidget);
+    expect(find.text('Drag each sticker to its spot'), findsOneWidget);
+
+    Finder loose(IconData icon) => find.descendant(
+      of: find.byType(Draggable<Item>),
+      matching: find.byIcon(icon),
+    );
+    Finder spot(IconData icon) => find.descendant(
+      of: find.byType(DragTarget<Item>),
+      matching: find.byIcon(icon),
+    );
+
+    // The wrong spot does not take it: it goes back to the pile.
+    await tester.drag(
+      loose(Icons.star),
+      tester.getCenter(spot(Icons.favorite)) -
+          tester.getCenter(loose(Icons.star)),
+    );
+    await tester.pumpAndSettle();
+    expect(controller.state.stuckStickers, isEmpty);
+
+    for (final icon in [Icons.star, Icons.favorite]) {
+      await tester.drag(
+        loose(icon),
+        tester.getCenter(spot(icon)) - tester.getCenter(loose(icon)),
+      );
+      await tester.pumpAndSettle();
+    }
+    expect(controller.state.stuckStickers, {'stickerStar', 'stickerHeart'});
+    expect(find.byType(Draggable<Item>), findsNothing);
+    expect(
+      find.text('All stuck! More stickers wait in the shop.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byTooltip('Back home'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('2'), findsNothing);
+  });
+
+  testWidgets('stickers added by an update are announced once', (
+    tester,
+  ) async {
+    final controller = await start(
+      tester,
+      (s) => s.copyWith(seenStickers: {'stickerStar'}),
+    );
+    await tester.pump();
+    await tester.tap(find.text('Have you seen the new stickers?'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text("Chigüi's shop"), findsOneWidget);
+    // The new stickers come first, tagged; the one already known is not.
+    expect(find.text('New!'), findsNWidgets(stickers.length - 1));
+    expect(controller.newStickers, isEmpty);
+
+    await tester.tap(find.byTooltip('Back home'));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Have you seen the new stickers?'), findsNothing);
+  });
+
   group('wide screens (PC)', () {
     Future<PetController> startWide(WidgetTester tester) async {
       final controller = await start(

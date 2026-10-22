@@ -16,6 +16,7 @@ import '../sound/sound_effects.dart';
 import '../walk/pedometer.dart';
 import '../walk/step_watcher.dart';
 import 'action_tile.dart';
+import 'album_screen.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
 import 'need_meter.dart';
@@ -239,10 +240,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onWalk() => _openWalk();
 
-  void _onShop() => Navigator.of(context).push(
-    MaterialPageRoute<void>(
-      builder: (_) => ShopScreen(controller: _pet, packs: widget.packs),
-    ),
+  /// Opening the shop shows any new stickers, which then count as seen.
+  void _onShop() {
+    final fresh = {for (final item in _pet.newStickers) item.id};
+    if (fresh.isNotEmpty) _pet.sawStickers();
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => ShopScreen(
+          controller: _pet,
+          packs: widget.packs,
+          newStickers: fresh,
+        ),
+      ),
+    );
+  }
+
+  void _onAlbum() => Navigator.of(context).push(
+    MaterialPageRoute<void>(builder: (_) => AlbumScreen(controller: _pet)),
   );
 
   /// True when the last "no" was because it is class time.
@@ -497,12 +511,26 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
     final steps = _pet.stepsToday;
+    final loose = _pet.looseStickers.length;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Row(
         children: [
           counter(l10n.stepsLabel(steps), const Footprints(size: 26), steps),
           const Spacer(),
+          // The badge counts stickers waiting to be stuck in.
+          IconButton(
+            onPressed: _onAlbum,
+            tooltip: l10n.albumButton,
+            icon: Badge(
+              isLabelVisible: loose > 0,
+              label: Text('$loose'),
+              backgroundColor: Palette.headphones,
+              textColor: Palette.cloud,
+              child: const Icon(Icons.auto_stories),
+            ),
+            color: Palette.ink,
+          ),
           if (widget.reminders case final reminders?)
             ListenableBuilder(
               listenable: reminders,
@@ -564,6 +592,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (state.needsPotty)
                   urgent(Icons.wc, l10n.toiletButton, _onToilet),
                 if (state.sick) urgent(Icons.vaccines, l10n.vetButton, _onVet),
+                // Good news, not urgent: only when nothing else is waiting.
+                if (!state.needsPotty &&
+                    !state.sick &&
+                    _pet.newStickers.isNotEmpty)
+                  Flexible(
+                    child: FilledButton.icon(
+                      onPressed: _onShop,
+                      icon: const Icon(Icons.auto_awesome),
+                      label: Text(
+                        l10n.newStickersButton,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Palette.cloud,
+                        foregroundColor: Palette.ink,
+                        minimumSize: const Size(120, 48),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),
