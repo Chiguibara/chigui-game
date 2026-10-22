@@ -674,6 +674,24 @@ abstract class AppLocalizations {
   /// **'Have you seen the new stickers?'**
   String get newStickersButton;
 
+  /// Web only: home screen button shown when a newer version of the game has been published while the page stayed open; reloads the page. One short line, gentle, never urgent.
+  ///
+  /// In en, this message translates to:
+  /// **'New version! Update'**
+  String get updateButton;
+
+  /// Accessibility label of the dialog shown once after an update with the version's notes (the notes themselves come from distribution/whatsnew/).
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get whatsNewLabel;
+
+  /// Button that closes the "What's new" dialog after an update. Short and cheerful.
+  ///
+  /// In en, this message translates to:
+  /// **'Cool!'**
+  String get whatsNewOk;
+
   /// Small tag on stickers that came with an update, in the shop.
   ///
   /// In en, this message translates to:

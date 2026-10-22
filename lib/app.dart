@@ -4,10 +4,12 @@ import 'game/pet_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'notify/reminders.dart';
 import 'store/packs_controller.dart';
+import 'update/update_watcher.dart';
 import 'walk/pedometer.dart';
 import 'walk/step_watcher.dart';
 import 'ui/home_screen.dart';
 import 'ui/palette.dart';
+import 'ui/whats_new.dart';
 
 class ChiguiApp extends StatelessWidget {
   const ChiguiApp({
@@ -17,6 +19,8 @@ class ChiguiApp extends StatelessWidget {
     this.steps,
     this.pedometer,
     this.reminders,
+    this.updates,
+    this.whatsNew,
     this.locale,
   });
 
@@ -33,6 +37,12 @@ class ChiguiApp extends StatelessWidget {
 
   /// Routine reminders (Android app); null elsewhere.
   final Reminders? reminders;
+
+  /// Notices newer deployed versions (web); null elsewhere.
+  final UpdateWatcher? updates;
+
+  /// This version's notes, shown once after an update; null to never show.
+  final WhatsNew? whatsNew;
 
   /// Forces a language (e.g. from the website's URL); null follows the device.
   final Locale? locale;
@@ -61,6 +71,8 @@ class ChiguiApp extends StatelessWidget {
         steps: steps,
         pedometer: pedometer,
         reminders: reminders,
+        updates: updates,
+        whatsNew: whatsNew,
       ),
     );
   }

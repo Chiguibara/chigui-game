@@ -46,6 +46,7 @@ void main() {
       equipped: {Slot.head: 'beanie'},
       stuckStickers: {'stickerStar'},
       seenStickers: {'stickerStar'},
+      seenNotes: '1a2b3c4d',
     );
     await repo.saveState(saved);
 
@@ -72,6 +73,8 @@ void main() {
     expect(state.awakeUntil, isNull);
     // Saves from before stickers were announced know all of today's.
     expect(state.seenStickers, {for (final item in stickers) item.id});
+    // Saves from before the notes were shown see them once.
+    expect(state.seenNotes, isNull);
   });
 
   test('fills missing or invalid fields with defaults', () async {

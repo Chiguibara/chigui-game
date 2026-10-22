@@ -11,6 +11,7 @@ import '../minigame/games_screen.dart';
 import '../notify/reminders.dart';
 import '../shop/shop_screen.dart';
 import '../store/packs_controller.dart';
+import '../update/update_watcher.dart';
 import '../walk/walk_screen.dart';
 import '../sound/sound_effects.dart';
 import '../walk/pedometer.dart';
@@ -22,6 +23,7 @@ import 'dev_panel.dart';
 import 'need_meter.dart';
 import 'palette.dart';
 import 'reminders_dialog.dart';
+import 'whats_new.dart';
 import 'game_frame.dart';
 import 'sprites.dart';
 
@@ -33,6 +35,8 @@ class HomeScreen extends StatefulWidget {
     this.steps,
     this.pedometer,
     this.reminders,
+    this.updates,
+    this.whatsNew,
   });
 
   final PetController controller;
@@ -48,6 +52,12 @@ class HomeScreen extends StatefulWidget {
 
   /// Routine reminders, for grown-ups to turn on (Android app).
   final Reminders? reminders;
+
+  /// Offers to reload when a newer version is deployed (web).
+  final UpdateWatcher? updates;
+
+  /// This version's notes, shown once after an update (not to new players).
+  final WhatsNew? whatsNew;
 
   /// After leaving an automatic walk, wait this long before opening another.
   static const autoWalkCooldown = Duration(minutes: 2);
@@ -88,6 +98,22 @@ class _HomeScreenState extends State<HomeScreen> {
     _pet.addListener(_soundRoutine);
     _stepsSubscription = widget.steps?.steps.listen((_) => _onRealStep());
     _pedometerSubscription = widget.pedometer?.liveSteps.listen(_onRealStep);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showWhatsNew());
+  }
+
+  /// Once after an update, this version's notes. New players skip them:
+  /// everything is new to them.
+  Future<void> _showWhatsNew() async {
+    final whatsNew = widget.whatsNew;
+    if (!mounted || whatsNew == null) return;
+    final fingerprint = whatsNew.fingerprint;
+    if (_pet.state.seenNotes == fingerprint) return;
+    if (!_pet.newPlayer) {
+      // Never over another screen; they will show next time.
+      if (!(ModalRoute.of(context)?.isCurrent ?? true)) return;
+      await showWhatsNewDialog(context, whatsNew);
+    }
+    _pet.sawNotes(fingerprint);
   }
 
   /// Snores only while Chigüi sleeps on this screen and the game is
@@ -341,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Palette.outside,
       body: GameFrame(
         child: ListenableBuilder(
-          listenable: _pet,
+          listenable: Listenable.merge([_pet, ?widget.updates]),
           builder: (context, _) {
             final state = _pet.state;
             final asleep = _pet.asleep;
@@ -578,6 +604,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
 
+    Widget goodNews(IconData icon, String label, VoidCallback onPressed) =>
+        Flexible(
+          child: FilledButton.icon(
+            onPressed: onPressed,
+            icon: Icon(icon),
+            label: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+            style: FilledButton.styleFrom(
+              backgroundColor: Palette.cloud,
+              foregroundColor: Palette.ink,
+              minimumSize: const Size(120, 48),
+            ),
+          ),
+        );
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
@@ -593,25 +633,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   urgent(Icons.wc, l10n.toiletButton, _onToilet),
                 if (state.sick) urgent(Icons.vaccines, l10n.vetButton, _onVet),
                 // Good news, not urgent: only when nothing else is waiting.
-                if (!state.needsPotty &&
-                    !state.sick &&
-                    _pet.newStickers.isNotEmpty)
-                  Flexible(
-                    child: FilledButton.icon(
-                      onPressed: _onShop,
-                      icon: const Icon(Icons.auto_awesome),
-                      label: Text(
-                        l10n.newStickersButton,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Palette.cloud,
-                        foregroundColor: Palette.ink,
-                        minimumSize: const Size(120, 48),
-                      ),
+                if (!state.needsPotty && !state.sick)
+                  if (widget.updates?.updateReady ?? false)
+                    goodNews(
+                      Icons.refresh,
+                      l10n.updateButton,
+                      widget.updates!.update,
+                    )
+                  else if (_pet.newStickers.isNotEmpty)
+                    goodNews(
+                      Icons.auto_awesome,
+                      l10n.newStickersButton,
+                      _onShop,
                     ),
-                  ),
               ],
             ),
           ),

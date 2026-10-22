@@ -67,6 +67,11 @@ flutter:
 
   assets:
     - assets/sounds/
+    # "What's new", shown once after an update (see lib/ui/whats_new.dart):
+    # the Google Play notes, plus the Catalan ones only shown in the game.
+    - distribution/whatsnew/whatsnew-en-US
+    - distribution/whatsnew/whatsnew-es-ES
+    - distribution/whatsnew-game/whatsnew-ca-ES
 
   # Bundled so the web build never fetches fonts from Google (Apache 2.0,
   # copied from the Flutter SDK; see assets/fonts/Roboto_LICENSE.txt).

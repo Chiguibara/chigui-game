@@ -366,6 +366,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get newStickersButton => 'Schon die neuen Sticker gesehen?';
 
   @override
+  String get updateButton => 'Neue Version! Aktualisieren';
+
+  @override
+  String get whatsNewLabel => 'Neuigkeiten';
+
+  @override
+  String get whatsNewOk => 'Cool!';
+
+  @override
   String get newStickerLabel => 'Neu!';
 
   @override

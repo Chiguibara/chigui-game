@@ -17,6 +17,7 @@ class PetController extends ChangeNotifier {
     this._clock,
     PetState loaded, {
     this._debugOffset = Duration.zero,
+    this.newPlayer = false,
   }) {
     _apply(rules.advance(loaded, now));
   }
@@ -36,6 +37,7 @@ class PetController extends ChangeNotifier {
       clock ?? DateTime.now,
       saved ?? _freshPet(now),
       debugOffset: ahead,
+      newPlayer: saved == null,
     );
   }
 
@@ -46,6 +48,10 @@ class PetController extends ChangeNotifier {
   final DateTime Function() _clock;
   late PetState _state;
   Duration _debugOffset;
+
+  /// There was no save: this is the player's first launch (or the save was
+  /// unreadable), so there is nothing to tell about an update.
+  final bool newPlayer;
 
   DateTime get now => _clock().add(_debugOffset);
   PetState get state => _state;
@@ -88,6 +94,13 @@ class PetController extends ChangeNotifier {
   List<Item> get newStickers => rules.newStickers(_state);
   void sawStickers() => _apply((
     state: rules.sawStickers(_state),
+    events: const [],
+    ok: true,
+  ));
+
+  /// The "What's new" notes with this fingerprint were shown (or skipped).
+  void sawNotes(String fingerprint) => _apply((
+    state: _state.copyWith(seenNotes: fingerprint),
     events: const [],
     ok: true,
   ));

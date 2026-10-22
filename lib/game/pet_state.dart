@@ -29,6 +29,7 @@ class PetState {
     this.stuckStickers = const {},
     Set<String>? seenStickers,
     this.ownedPacks = const {},
+    this.seenNotes,
   }) : seenStickers = seenStickers ?? {for (final item in stickers) item.id};
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
@@ -96,6 +97,10 @@ class PetState {
   /// the source of truth; this is the offline copy).
   final Set<String> ownedPacks;
 
+  /// Fingerprint of the last "What's new" notes shown (see `whats_new.dart`);
+  /// null in saves from before the game showed them.
+  final String? seenNotes;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool keptAwakeAt(DateTime time) =>
@@ -124,6 +129,7 @@ class PetState {
     Set<String>? stuckStickers,
     Set<String>? seenStickers,
     Set<String>? ownedPacks,
+    String? seenNotes,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -150,5 +156,6 @@ class PetState {
     stuckStickers: stuckStickers ?? this.stuckStickers,
     seenStickers: seenStickers ?? this.seenStickers,
     ownedPacks: ownedPacks ?? this.ownedPacks,
+    seenNotes: seenNotes ?? this.seenNotes,
   );
 }

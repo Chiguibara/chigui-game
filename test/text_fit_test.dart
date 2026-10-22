@@ -163,15 +163,21 @@ void main() {
         );
       }
 
-      // Home button announcing new stickers: one line, with an icon.
-      check(
-        'newStickersButton',
-        l.newStickersButton,
-        width: frame - 24 - 40 - 18 - 8,
-        lines: 1,
-        size: 14,
-        weight: FontWeight.w500,
-      );
+      // Home buttons with good news (new stickers, a new version on the
+      // web): one line, with an icon.
+      for (final (name, text) in [
+        ('newStickersButton', l.newStickersButton),
+        ('updateButton', l.updateButton),
+      ]) {
+        check(
+          name,
+          text,
+          width: frame - 24 - 40 - 18 - 8,
+          lines: 1,
+          size: 14,
+          weight: FontWeight.w500,
+        );
+      }
 
       // Home action tiles: four in a row, label up to two lines.
       final tile = (frame - 24 - 3 * 8) / 4 - 12;

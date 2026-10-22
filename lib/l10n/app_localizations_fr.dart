@@ -369,6 +369,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get newStickersButton => 'Tu as vu les nouveaux autocollants ?';
 
   @override
+  String get updateButton => 'Nouvelle version ! Mettre à jour';
+
+  @override
+  String get whatsNewLabel => 'Nouveautés';
+
+  @override
+  String get whatsNewOk => 'Super !';
+
+  @override
   String get newStickerLabel => 'Nouveau !';
 
   @override

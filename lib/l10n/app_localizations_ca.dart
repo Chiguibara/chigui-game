@@ -368,6 +368,15 @@ class AppLocalizationsCa extends AppLocalizations {
   String get newStickersButton => 'Has vist els adhesius nous?';
 
   @override
+  String get updateButton => 'Versió nova! Actualitza';
+
+  @override
+  String get whatsNewLabel => 'Novetats';
+
+  @override
+  String get whatsNewOk => 'Genial!';
+
+  @override
   String get newStickerLabel => 'Nou!';
 
   @override

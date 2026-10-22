@@ -366,6 +366,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newStickersButton => 'Have you seen the new stickers?';
 
   @override
+  String get updateButton => 'New version! Update';
+
+  @override
+  String get whatsNewLabel => 'What\'s new';
+
+  @override
+  String get whatsNewOk => 'Cool!';
+
+  @override
   String get newStickerLabel => 'New!';
 
   @override

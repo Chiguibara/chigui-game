@@ -13,6 +13,9 @@ import 'notify/system_notice_board.dart';
 import 'sound/sound_effects.dart';
 import 'store/create_pack_store.dart';
 import 'store/packs_controller.dart';
+import 'ui/whats_new.dart';
+import 'update/update_watcher.dart';
+import 'update/version_source.dart';
 import 'walk/motion_source.dart';
 import 'walk/pedometer.dart';
 import 'walk/step_watcher.dart';
@@ -59,6 +62,14 @@ Future<void> main() async {
     unawaited(asked.then((_) => opened()));
     AppLifecycleListener(onHide: reminders.scheduleAhead, onShow: opened);
   }
+  // The web: tabs left open for days notice when a new version is deployed.
+  final versions = createVersionSource();
+  final updates = versions != null ? UpdateWatcher(versions) : null;
+  if (updates != null) {
+    unawaited(updates.start());
+    AppLifecycleListener(onShow: updates.check);
+  }
+  final whatsNew = await WhatsNew.load();
   runApp(
     ChiguiApp(
       controller: controller,
@@ -66,6 +77,8 @@ Future<void> main() async {
       steps: steps,
       pedometer: pedometer,
       reminders: reminders,
+      updates: updates,
+      whatsNew: whatsNew,
       locale: _localeFromUrl(),
     ),
   );

@@ -111,6 +111,7 @@ class JsonGameRepository implements GameRepository {
     'stuckStickers': s.stuckStickers.toList(),
     'seenStickers': s.seenStickers.toList(),
     'ownedPacks': s.ownedPacks.toList(),
+    'seenNotes': s.seenNotes,
   };
 
   /// Reads any schema version so far; version 1 only had needs and
@@ -172,6 +173,9 @@ class JsonGameRepository implements GameRepository {
               for (final id in json['seenStickers'] as List)
                 if (id is String) id,
             }
+          : null,
+      seenNotes: json['seenNotes'] is String
+          ? json['seenNotes'] as String
           : null,
     );
   }

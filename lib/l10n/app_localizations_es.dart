@@ -367,6 +367,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get newStickersButton => '¿Has visto las pegatinas nuevas?';
 
   @override
+  String get updateButton => '¡Versión nueva! Actualizar';
+
+  @override
+  String get whatsNewLabel => 'Novedades';
+
+  @override
+  String get whatsNewOk => '¡Guay!';
+
+  @override
   String get newStickerLabel => '¡Nueva!';
 
   @override

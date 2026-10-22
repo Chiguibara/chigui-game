@@ -438,6 +438,18 @@
   "@newStickersButton": {
     "description": "Home screen button shown after an update adds stickers; opens the shop. Friendly, never pushy."
   },
+  "updateButton": "New version! Update",
+  "@updateButton": {
+    "description": "Web only: home screen button shown when a newer version of the game has been published while the page stayed open; reloads the page. One short line, gentle, never urgent."
+  },
+  "whatsNewLabel": "What's new",
+  "@whatsNewLabel": {
+    "description": "Accessibility label of the dialog shown once after an update with the version's notes (the notes themselves come from distribution/whatsnew/)."
+  },
+  "whatsNewOk": "Cool!",
+  "@whatsNewOk": {
+    "description": "Button that closes the \"What's new\" dialog after an update. Short and cheerful."
+  },
   "newStickerLabel": "New!",
   "@newStickerLabel": {
     "description": "Small tag on stickers that came with an update, in the shop."
