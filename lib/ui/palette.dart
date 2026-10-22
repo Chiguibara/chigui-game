@@ -68,10 +68,13 @@ abstract final class Palette {
   static const tape = Color(0xFFF1D9A6);
   static const tar = Color(0xFF231F24);
   static const tarShine = Color(0xFFB9B4BE);
+  static const tarSheen = Color(0xFF4A4350);
+  static const tarRim = Color(0xFF0F0C10);
   static const asphalt = Color(0xFF5E5C60);
   static const asphaltLight = Color(0xFF9A989C);
   static const foam = Color(0xFFF7FAFC);
   static const foamDirty = Color(0xFFC6C8CC);
+  static const foamEdge = Color(0xFFAAB6C4);
   static const bathWater = Color(0xFF9ED8E6);
   static const bathWaterMurky = Color(0xFF8C918E);
   static const hinoki = Color(0xFFEACB98);
