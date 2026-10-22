@@ -674,7 +674,7 @@ abstract class AppLocalizations {
   /// **'Have you seen the new stickers?'**
   String get newStickersButton;
 
-  /// Web only: home screen button shown when a newer version of the game has been published while the page stayed open; reloads the page. One short line, gentle, never urgent.
+  /// Home screen button shown when a newer version of the game is ready: on the web, published while the page stayed open (reloads the page); in the Android app, downloaded from Google Play (restarts into it). One short line, gentle, never urgent.
   ///
   /// In en, this message translates to:
   /// **'New version! Update'**

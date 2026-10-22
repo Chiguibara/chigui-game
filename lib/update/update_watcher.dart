@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import 'update_notice.dart';
 import 'version_source.dart';
 
 /// Notices when a newer version of the web game has been deployed while
 /// its tab stays open (sometimes for days), so the home screen can offer
 /// to reload. Checks at start, every [checkEvery], and on [check] (when
 /// the tab is shown again). Failures are ignored.
-class UpdateWatcher extends ChangeNotifier {
+class UpdateWatcher extends ChangeNotifier implements UpdateNotice {
   UpdateWatcher(this._source);
 
   static const checkEvery = Duration(minutes: 20);
@@ -21,6 +22,7 @@ class UpdateWatcher extends ChangeNotifier {
   bool _disposed = false;
 
   /// A version other than the running one has been deployed.
+  @override
   bool get updateReady => _updateReady;
 
   /// Learns the running version and starts checking periodically.
@@ -44,6 +46,7 @@ class UpdateWatcher extends ChangeNotifier {
   }
 
   /// Reloads the page into the new version.
+  @override
   void update() => _source.reload();
 
   @override

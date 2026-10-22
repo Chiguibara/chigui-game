@@ -4,7 +4,7 @@ import 'game/pet_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'notify/reminders.dart';
 import 'store/packs_controller.dart';
-import 'update/update_watcher.dart';
+import 'update/update_notice.dart';
 import 'walk/pedometer.dart';
 import 'walk/step_watcher.dart';
 import 'ui/home_screen.dart';
@@ -38,8 +38,8 @@ class ChiguiApp extends StatelessWidget {
   /// Routine reminders (Android app); null elsewhere.
   final Reminders? reminders;
 
-  /// Notices newer deployed versions (web); null elsewhere.
-  final UpdateWatcher? updates;
+  /// Notices newer versions (web and Android app); null elsewhere.
+  final UpdateNotice? updates;
 
   /// This version's notes, shown once after an update; null to never show.
   final WhatsNew? whatsNew;

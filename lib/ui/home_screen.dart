@@ -11,7 +11,7 @@ import '../minigame/games_screen.dart';
 import '../notify/reminders.dart';
 import '../shop/shop_screen.dart';
 import '../store/packs_controller.dart';
-import '../update/update_watcher.dart';
+import '../update/update_notice.dart';
 import '../walk/walk_screen.dart';
 import '../sound/sound_effects.dart';
 import '../walk/pedometer.dart';
@@ -53,8 +53,9 @@ class HomeScreen extends StatefulWidget {
   /// Routine reminders, for grown-ups to turn on (Android app).
   final Reminders? reminders;
 
-  /// Offers to reload when a newer version is deployed (web).
-  final UpdateWatcher? updates;
+  /// Offers to reload when a newer version is deployed (web), or to restart
+  /// into one downloaded from Google Play (Android app).
+  final UpdateNotice? updates;
 
   /// This version's notes, shown once after an update (not to new players).
   final WhatsNew? whatsNew;

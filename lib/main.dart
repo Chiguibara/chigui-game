@@ -14,6 +14,8 @@ import 'sound/sound_effects.dart';
 import 'store/create_pack_store.dart';
 import 'store/packs_controller.dart';
 import 'ui/whats_new.dart';
+import 'update/play_updater.dart';
+import 'update/update_notice.dart';
 import 'update/update_watcher.dart';
 import 'update/version_source.dart';
 import 'walk/motion_source.dart';
@@ -64,11 +66,23 @@ Future<void> main() async {
   }
   // The web: tabs left open for days notice when a new version is deployed.
   final versions = createVersionSource();
-  final updates = versions != null ? UpdateWatcher(versions) : null;
-  if (updates != null) {
-    unawaited(updates.start());
-    AppLifecycleListener(onShow: updates.check);
+  final webUpdates = versions != null ? UpdateWatcher(versions) : null;
+  if (webUpdates != null) {
+    unawaited(webUpdates.start());
+    AppLifecycleListener(onShow: webUpdates.check);
   }
+  // The Android app: Google Play downloads newer versions in the background
+  // (asking at most once a day), then home offers to restart into them.
+  final playUpdates = !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+      ? PlayUpdater(PlayUpdateChannel(), await SharedPreferences.getInstance())
+      : null;
+  if (playUpdates != null) {
+    // After the steps permission, so Play's prompt does not overlap it.
+    final Future<void> asked = pedometerStarted ?? Future.value();
+    unawaited(asked.then((_) => playUpdates.start()));
+    AppLifecycleListener(onShow: playUpdates.check);
+  }
+  final UpdateNotice? updates = webUpdates ?? playUpdates;
   final whatsNew = await WhatsNew.load();
   runApp(
     ChiguiApp(

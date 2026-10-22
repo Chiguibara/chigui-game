@@ -65,4 +65,6 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // Flexible in-app updates from Google Play (see MainActivity.kt).
+    implementation("com.google.android.play:app-update:2.1.0")
 }
