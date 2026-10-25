@@ -304,11 +304,13 @@ void main() {
   ) async {
     final controller = await start(
       tester,
-      (s) => s.copyWith(owned: {'stickerStar', 'stickerHeart'}),
+      (s) => s.copyWith(
+        owned: {'stickerStar', 'stickerRocket', 'stickerIceCream'},
+      ),
     );
     await tester.pump();
     // The badge counts the loose stickers.
-    expect(find.text('2'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
 
     await tester.tap(find.byTooltip('Sticker album'));
     await tester.pump();
@@ -325,23 +327,46 @@ void main() {
       matching: find.byIcon(icon),
     );
 
+    // The album opens on the first page with loose stickers: the snacks.
+    expect(find.text('Snacks · 0/8'), findsOneWidget);
+    expect(loose(Icons.star), findsNothing);
+    await tester.drag(
+      loose(Icons.icecream),
+      tester.getCenter(spot(Icons.icecream)) -
+          tester.getCenter(loose(Icons.icecream)),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.text('More loose stickers wait on other pages.'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.byTooltip('Next page'));
+    await tester.pump();
+    expect(find.text('Space · 0/8'), findsOneWidget);
+
     // The wrong spot does not take it: it goes back to the pile.
     await tester.drag(
       loose(Icons.star),
-      tester.getCenter(spot(Icons.favorite)) -
+      tester.getCenter(spot(Icons.rocket_launch)) -
           tester.getCenter(loose(Icons.star)),
     );
     await tester.pumpAndSettle();
-    expect(controller.state.stuckStickers, isEmpty);
+    expect(controller.state.stuckStickers, {'stickerIceCream'});
 
-    for (final icon in [Icons.star, Icons.favorite]) {
+    for (final icon in [Icons.star, Icons.rocket_launch]) {
       await tester.drag(
         loose(icon),
         tester.getCenter(spot(icon)) - tester.getCenter(loose(icon)),
       );
       await tester.pumpAndSettle();
     }
-    expect(controller.state.stuckStickers, {'stickerStar', 'stickerHeart'});
+    expect(controller.state.stuckStickers, {
+      'stickerStar',
+      'stickerRocket',
+      'stickerIceCream',
+    });
+    expect(find.text('Space · 2/8'), findsOneWidget);
     expect(find.byType(Draggable<Item>), findsNothing);
     expect(
       find.text('All stuck! More stickers wait in the shop.'),
@@ -351,7 +376,7 @@ void main() {
     await tester.tap(find.byTooltip('Back home'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
-    expect(find.text('2'), findsNothing);
+    expect(find.text('3'), findsNothing);
   });
 
   testWidgets('stickers added by an update are announced once', (
@@ -366,8 +391,8 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
     expect(find.text("Chigüi's shop"), findsOneWidget);
-    // The new stickers come first, tagged; the one already known is not.
-    expect(find.text('New!'), findsNWidgets(stickers.length - 1));
+    // The new stickers come first, tagged.
+    expect(find.text('New!'), findsWidgets);
     expect(controller.newStickers, isEmpty);
 
     await tester.tap(find.byTooltip('Back home'));
@@ -663,32 +688,70 @@ void main() {
   group('class time', () {
     final inClass = DateTime(2026, 10, 12, 10); // Monday 10:00.
 
-    testWidgets('Chigüi studies and Play waits until after school', (
+    testWidgets('Chigüi studies, and petting turns the pages faster', (
       tester,
     ) async {
       final controller = await start(tester, same, now: inClass);
       expect(controller.inSchool, isTrue);
       expect(
-        find.text("I'm in class right now! See you after school."),
+        find.text(
+          "Class time! I'm studying hard, but a little game sounds fun too.",
+        ),
         findsOneWidget,
       );
 
-      await tester.tap(find.text('Play'));
+      await tester.tap(find.byType(ChiguiView));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 500));
-      expect(find.text('Fruit catch'), findsNothing);
       expect(
-        find.text("I'm in class right now! See you after school."),
+        find.text('Page after page! Studying is faster with you.'),
         findsOneWidget,
       );
       await tester.pump(const Duration(seconds: 2));
-
-      // Feeding still works.
-      await tester.tap(find.text('Feed'));
-      await tester.pump();
-      expect(find.text('Yum! Thank you!'), findsOneWidget);
-      await tester.pump(const Duration(seconds: 3));
     });
+
+    // Children home sick can play too.
+    testWidgets('Play opens the minigames', (tester) async {
+      await start(tester, same, now: inClass);
+
+      await tester.tap(find.text('Play'));
+      await tester.pumpAndSettle();
+      expect(find.text('Fruit catch'), findsOneWidget);
+    });
+  });
+
+  testWidgets('Chigüi can be renamed, and likes the new name', (
+    tester,
+  ) async {
+    final controller = await start(tester, same);
+    await tester.tap(find.byTooltip('Change name'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('What shall we call Chigüi?'), findsOneWidget);
+    expect(find.text('You can change the name once a month.'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextField), 'Pelusa');
+    await tester.pump();
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(controller.state.name, 'Pelusa');
+    expect(find.text('Pelusa'), findsOneWidget);
+    expect(
+      find.text('Hmmm… Pelusa. I think I could get used to this new name.'),
+      findsOneWidget,
+    );
+    await tester.pump(const Duration(seconds: 2));
+
+    // This month's change is used.
+    await tester.tap(find.byTooltip('Change name'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(
+      find.text('You can choose a new name again next month.'),
+      findsOneWidget,
+    );
+    expect(find.byType(TextField), findsNothing);
   });
 
   testWidgets('the dev panel skips time', (tester) async {

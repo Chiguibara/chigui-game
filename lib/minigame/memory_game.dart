@@ -36,6 +36,11 @@ class MemoryGame {
   final List<FruitKind> cards;
   final _matched = <int>{};
   final _shown = <int>[];
+  final _seen = <int>{};
+
+  /// Misses that memory could have avoided: the first card's twin had
+  /// already been seen. Pure bad luck does not count.
+  int slips = 0;
 
   int get pairs => cards.length ~/ 2;
   int get pairsFound => _matched.length ~/ 2;
@@ -50,12 +55,19 @@ class MemoryGame {
   Flip flip(int card) {
     if (showingMiss || isFaceUp(card)) return Flip.ignored;
     _shown.add(card);
-    if (_shown.length == 1) return Flip.first;
-    if (cards[_shown[0]] == cards[_shown[1]]) {
+    if (_shown.length == 1) {
+      _seen.add(card);
+      return Flip.first;
+    }
+    final first = _shown[0];
+    final twinSeen = _seen.any((c) => c != first && cards[c] == cards[first]);
+    _seen.add(card);
+    if (cards[first] == cards[card]) {
       _matched.addAll(_shown);
       _shown.clear();
       return Flip.match;
     }
+    if (twinSeen) slips++;
     return Flip.miss;
   }
 

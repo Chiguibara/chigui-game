@@ -55,4 +55,27 @@ void main() {
     expect(g.over, isTrue);
     expect(g.pairsFound, 3);
   });
+
+  test('only misses memory could have avoided are slips', () {
+    final g = game();
+    // Two unknown cards that do not match: bad luck, not a slip.
+    final a = 0;
+    final b = [
+      for (var i = 1; i < g.cards.length; i++)
+        if (g.cards[i] != g.cards[a]) i,
+    ].first;
+    g.flip(a);
+    g.flip(b);
+    g.hideMiss();
+    expect(g.slips, 0);
+    // Now b's twin is turned first, while b is known: missing it slips.
+    final bTwin = twin(g, b);
+    final other = [
+      for (var i = 0; i < g.cards.length; i++)
+        if (i != b && i != bTwin && g.cards[i] != g.cards[b]) i,
+    ].first;
+    g.flip(bTwin);
+    expect(g.flip(other), Flip.miss);
+    expect(g.slips, 1);
+  });
 }

@@ -8,21 +8,45 @@
   "@chiguiName": {
     "description": "The pet's name. Chigüi is gender-neutral."
   },
-  "tapHint": "Tap Chigüi to say hi",
+  "tapHint": "Tap {name} to say hi",
   "@tapHint": {
-    "description": "Idle prompt under the pet inviting the player to tap it."
+    "description": "Idle prompt under the pet inviting the player to tap it.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "petAction": "pet Chigüi",
+  "petAction": "pet {name}",
   "@petAction": {
-    "description": "Screen reader hint for the tap action on the pet."
+    "description": "Screen reader hint for the tap action on the pet.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "lovedStatus": "Chigüi is happy!",
+  "lovedStatus": "{name} is happy!",
   "@lovedStatus": {
-    "description": "After petting once affection is high."
+    "description": "After petting once affection is high.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "pettedLowStatus": "Chigüi liked that! More cuddles, please?",
+  "pettedLowStatus": "{name} liked that! More cuddles, please?",
   "@pettedLowStatus": {
-    "description": "After petting while affection is still low: invites more petting, never sad."
+    "description": "After petting while affection is still low: invites more petting, never sad.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "pettedMidStatus": "That feels nice! A little more?",
   "@pettedMidStatus": {
@@ -32,21 +56,45 @@
   "@ateStatus": {
     "description": "Shown briefly after Chigüi eats."
   },
-  "fullStatus": "Chigüi has had enough for now",
+  "fullStatus": "{name} has had enough for now",
   "@fullStatus": {
-    "description": "Shown when the player feeds Chigüi while full. Friendly, never scolding."
+    "description": "Shown when the player feeds Chigüi while full. Friendly, never scolding.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "wantsFood": "Chigüi could go for a snack",
+  "wantsFood": "{name} could go for a snack",
   "@wantsFood": {
-    "description": "Gentle hint when food is low. Must not sound urgent or guilt-inducing."
+    "description": "Gentle hint when food is low. Must not sound urgent or guilt-inducing.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "wantsAffection": "Chigüi would love some cuddles",
+  "wantsAffection": "{name} would love some cuddles",
   "@wantsAffection": {
-    "description": "Gentle hint when affection is low."
+    "description": "Gentle hint when affection is low.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "wantsFun": "Chigüi feels like playing",
+  "wantsFun": "{name} feels like playing",
   "@wantsFun": {
-    "description": "Gentle hint when fun is low."
+    "description": "Gentle hint when fun is low.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "feedButton": "Feed",
   "@feedButton": {
@@ -88,29 +136,59 @@
   "@cleanAction": {
     "description": "Screen reader label for tapping a mess to clean it."
   },
-  "asleepStatus": "Shh… Chigüi is sleeping",
+  "asleepStatus": "Shh… {name} is sleeping",
   "@asleepStatus": {
-    "description": "Shown while Chigüi sleeps at night. Nothing is blocked: tapping or playing wakes Chigüi up."
+    "description": "Shown while Chigüi sleeps at night. Nothing is blocked: tapping or playing wakes Chigüi up.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "sickStatus": "Chigüi doesn't feel well. Time for the vet!",
+  "sickStatus": "{name} doesn't feel well. Time for the vet!",
   "@sickStatus": {
-    "description": "Shown while Chigüi is sick. Calm, never scary or guilt-inducing."
+    "description": "Shown while Chigüi is sick. Calm, never scary or guilt-inducing.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "pottyStatus": "Chigüi needs the toilet!",
+  "pottyStatus": "{name} needs the toilet!",
   "@pottyStatus": {
-    "description": "Shown while Chigüi needs to poop."
+    "description": "Shown while Chigüi needs to poop.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "sleepyStatus": "Chigüi is sleepy",
+  "sleepyStatus": "{name} is sleepy",
   "@sleepyStatus": {
-    "description": "Shown at night while Chigüi is awake after being woken up, until falling asleep again."
+    "description": "Shown at night while Chigüi is awake after being woken up, until falling asleep again.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "mealtimeStatus": "It's mealtime!",
   "@mealtimeStatus": {
     "description": "Shown during a mealtime window before Chigüi has eaten."
   },
-  "yawnStatus": "Yaaawn… Chigüi woke up!",
+  "yawnStatus": "Yaaawn… {name} woke up!",
   "@yawnStatus": {
-    "description": "Shown when a cuddle wakes a sleeping Chigüi, who yawns. Cheerful, never a reproach for waking them."
+    "description": "Shown when a cuddle wakes a sleeping Chigüi, who yawns. Cheerful, never a reproach for waking them.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "messStatus": "Something smells… time to clean up!",
   "@messStatus": {
@@ -145,9 +223,15 @@
   "@minigameTitle": {
     "description": "Name of the minigame."
   },
-  "minigameHint": "Drag to move Chigüi: catch the fruit and dodge the stones!",
+  "minigameHint": "Drag to move {name}: catch the fruit and dodge the stones!",
   "@minigameHint": {
-    "description": "How to play, shown before starting."
+    "description": "How to play, shown before starting.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "arrowKeysHint": "On a computer, the arrow keys work too.",
   "@arrowKeysHint": {
@@ -175,12 +259,16 @@
       }
     }
   },
-  "coinsEarned": "{count, plural, =0{Chigüi had fun anyway!} =1{+1 coin} other{+{count} coins}}",
+  "coinsEarned": "{count, plural, =0{{name} had fun anyway!} =1{+1 coin} other{+{count} coins}}",
   "@coinsEarned": {
     "description": "Coins earned in the round.",
     "placeholders": {
       "count": {
         "type": "int"
+      },
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
       }
     }
   },
@@ -238,17 +326,35 @@
   "@hideTitle": {
     "description": "Name of the hide-and-seek game: Chigüi hides under one of three boxes that swap places."
   },
-  "hideHint": "Chigüi hides under a box, then the boxes move. Keep your eyes on it!",
+  "hideHint": "{name} hides under a box, then the boxes move. Keep your eyes on it!",
   "@hideHint": {
-    "description": "How to play hide-and-seek, shown before starting."
+    "description": "How to play hide-and-seek, shown before starting.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "hideWatch": "Keep your eyes on Chigüi's box…",
+  "hideWatch": "Keep your eyes on {name}'s box…",
   "@hideWatch": {
-    "description": "Hide-and-seek, while the boxes move."
+    "description": "Hide-and-seek, while the boxes move.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "hidePick": "Where is Chigüi?",
+  "hidePick": "Where is {name}?",
   "@hidePick": {
-    "description": "Hide-and-seek, when the player picks a box."
+    "description": "Hide-and-seek, when the player picks a box.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "hideFound": "You found me!",
   "@hideFound": {
@@ -267,12 +373,16 @@
       }
     }
   },
-  "timesFound": "{count, plural, =0{Chigüi is great at hiding!} =1{You found Chigüi once} other{You found Chigüi {count} times}}",
+  "timesFound": "{count, plural, =0{{name} is great at hiding!} =1{You found {name} once} other{You found {name} {count} times}}",
   "@timesFound": {
     "description": "Hide-and-seek result. Never discouraging.",
     "placeholders": {
       "count": {
         "type": "int"
+      },
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
       }
     }
   },
@@ -280,17 +390,35 @@
   "@bathTitle": {
     "description": "Title of the bath minigame (a game card and its intro). Short and cute."
   },
-  "bathHint": "Chigüi got super messy playing! Pop Chigüi into the tub, then pick the right things to clean off the sticky spots.",
+  "bathHint": "{name} got super messy playing! Pop {name} into the tub, then pick the right things to clean off the sticky spots.",
   "@bathHint": {
-    "description": "Bath minigame intro: how to play. Chigüi got dirty having fun, never by neglect."
+    "description": "Bath minigame intro: how to play. Chigüi got dirty having fun, never by neglect.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "bathArrive": "Here comes Chigüi, sticky up to the ears!",
+  "bathArrive": "Here comes {name}, sticky up to the ears!",
   "@bathArrive": {
-    "description": "Bath minigame status while Chigüi runs in, covered in sticky tar and gravel. Funny, never a reproach."
+    "description": "Bath minigame status while Chigüi runs in, covered in sticky tar and gravel. Funny, never a reproach.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "bathHopIn": "Tap Chigüi to hop into the tub!",
+  "bathHopIn": "Tap {name} to hop into the tub!",
   "@bathHopIn": {
-    "description": "Bath minigame status: tap Chigüi to jump into the wooden tub."
+    "description": "Bath minigame status: tap Chigüi to jump into the wooden tub.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "bathWash": "Pick something and clean the sticky spots",
   "@bathWash": {
@@ -304,9 +432,15 @@
   "@bathSoak": {
     "description": "Bath minigame status: Chigüi relaxes in the warm water with yuzus."
   },
-  "bathDry": "Out of the water! Dry Chigüi with the towel",
+  "bathDry": "Out of the water! Dry {name} with the towel",
   "@bathDry": {
-    "description": "Bath minigame status: Chigüi hopped out, rub them dry with the towel."
+    "description": "Bath minigame status: Chigüi hopped out, rub them dry with the towel.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "bathDone": "So fluffy and shiny!",
   "@bathDone": {
@@ -366,9 +500,15 @@
   "@shopButton": {
     "description": "Button that opens the shop."
   },
-  "shopTitle": "Chigüi's shop",
+  "shopTitle": "{name}'s shop",
   "@shopTitle": {
-    "description": "Shop screen title."
+    "description": "Shop screen title.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "shopHint": "What shall we get today?",
   "@shopHint": {
@@ -410,9 +550,15 @@
   "@albumButton": {
     "description": "Home screen button (tooltip) that opens the sticker album."
   },
-  "albumTitle": "Chigüi's album",
+  "albumTitle": "{name}'s album",
   "@albumTitle": {
-    "description": "Title of the sticker album screen."
+    "description": "Title of the sticker album screen.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "albumHint": "Drag each sticker to its spot",
   "@albumHint": {
@@ -587,17 +733,29 @@
   "@walkButton": {
     "description": "Opens the walk scene."
   },
-  "walkTitle": "Walk with Chigüi",
+  "walkTitle": "Walk with {name}",
   "@walkTitle": {
-    "description": "Walk scene title."
+    "description": "Walk scene title.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "walkIntro": "Walk with your phone in your hand, or tap the feet one after the other!",
   "@walkIntro": {
     "description": "Explains the walk scene before starting."
   },
-  "walkIntroTapping": "Tap the feet to walk with Chigüi, as fast as you like!",
+  "walkIntroTapping": "Tap the feet to walk with {name}, as fast as you like!",
   "@walkIntroTapping": {
-    "description": "Explains the walk scene on PCs, where there is no motion sensor."
+    "description": "Explains the walk scene on PCs, where there is no motion sensor.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "startWalkButton": "Let's go!",
   "@startWalkButton": {
@@ -644,9 +802,15 @@
       }
     }
   },
-  "walksCapped": "So many walks! Chigüi's batteries are flat. More tomorrow!",
+  "walksCapped": "So many walks! {name}'s batteries are flat. More tomorrow!",
   "@walksCapped": {
-    "description": "When the daily walk rewards are used up. Half geeky, half funny; steps still count."
+    "description": "When the daily walk rewards are used up. Half geeky, half funny; steps still count.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "muteSounds": "Mute sounds",
   "@muteSounds": {
@@ -660,9 +824,15 @@
   "@remindersButton": {
     "description": "Tooltip of the home screen bell button that opens the reminder settings (Android app), and the title of those settings."
   },
-  "remindersOffInfo": "Chigüi can send a gentle reminder at mealtimes and when it's toilet time, never during class or at night. They are off for now.",
+  "remindersOffInfo": "{name} can send a gentle reminder at mealtimes and when it's toilet time, never during class or at night. They are off for now.",
   "@remindersOffInfo": {
-    "description": "Reminder settings while off: what reminders do. Calm, no pressure."
+    "description": "Reminder settings while off: what reminders do. Calm, no pressure.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "remindersOnInfo": "Reminders are on: a few a day, at mealtimes and toilet time. They stop by themselves after a day without playing.",
   "@remindersOnInfo": {
@@ -676,21 +846,39 @@
   "@remindersTurnOff": {
     "description": "Button that turns reminders off."
   },
-  "remindersDenied": "Notifications for Chigüi are blocked in the phone's settings.",
+  "remindersDenied": "Notifications for {name} are blocked in the phone's settings.",
   "@remindersDenied": {
-    "description": "Shown when the phone does not allow notifications for the app."
+    "description": "Shown when the phone does not allow notifications for the app.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "remindersOpenSettings": "Open settings",
   "@remindersOpenSettings": {
     "description": "Button under the blocked-notifications message that opens the phone's notification settings for the app."
   },
-  "reminderMeal": "It's mealtime! Chigüi would love something yummy.",
+  "reminderMeal": "It's mealtime! {name} would love something yummy.",
   "@reminderMeal": {
-    "description": "Notification at the start of a mealtime, while the game is closed. Gentle, never guilt-tripping."
+    "description": "Notification at the start of a mealtime, while the game is closed. Gentle, never guilt-tripping.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "reminderPotty": "Chigüi needs the toilet! Can you help?",
+  "reminderPotty": "{name} needs the toilet! Can you help?",
   "@reminderPotty": {
-    "description": "Notification when Chigüi needs the toilet, while the game is closed. Gentle, never guilt-tripping."
+    "description": "Notification when Chigüi needs the toilet, while the game is closed. Gentle, never guilt-tripping.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "reminderChannel": "Chigüi's routine",
   "@reminderChannel": {
@@ -808,16 +996,500 @@
   "@itemRetroConsole": {
     "description": "Shop item (coins)."
   },
-  "tapsCapped": "Phew, phew! Chigüi is out of breath from so much tapping. More tomorrow, or go for a real walk!",
+  "tapsCapped": "Phew, phew! {name} is out of breath from so much tapping. More tomorrow, or go for a real walk!",
   "@tapsCapped": {
-    "description": "In the walk, when tapped feet have reached their daily limit of walks: Chigüi pants, out of breath. Funny, never scolding; real steps still count."
+    "description": "In the walk, when tapped feet have reached their daily limit of walks: Chigüi pants, out of breath. Funny, never scolding; real steps still count.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "piggyBankFull": "Chigüi's piggy bank is full for today! Playing is still fun.",
+  "piggyBankFull": "{name}'s piggy bank is full for today! Playing is still fun.",
   "@piggyBankFull": {
-    "description": "Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'."
+    "description": "Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
-  "schoolStatus": "I'm in class right now! See you after school.",
+  "studyStatus": "Page after page! Studying is faster with you.",
+  "@studyStatus": {
+    "description": "Chigüi speaking after being petted during class time, while happily turning the pages of the book faster."
+  },
+  "mathTitle": "Maths class",
+  "@mathTitle": {
+    "description": "Title of the maths minigame (a game card and its intro). Short."
+  },
+  "mathHint": "{name} brought maths homework! Pick a level and tap the right answer. No rush, and mistakes don't matter.",
+  "@mathHint": {
+    "description": "Maths minigame intro: how to play. Calm, no pressure; mistakes cost nothing.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "mathLevelSums": "Sums to 10",
+  "@mathLevelSums": {
+    "description": "Maths level button: first sums, results up to 10."
+  },
+  "mathLevelUpTo20": "Up to 20",
+  "@mathLevelUpTo20": {
+    "description": "Maths level button: sums and subtractions up to 20."
+  },
+  "mathLevelUpTo100": "Up to 100",
+  "@mathLevelUpTo100": {
+    "description": "Maths level button: sums and subtractions up to 100, with carrying."
+  },
+  "mathLevelTables": "Times tables",
+  "@mathLevelTables": {
+    "description": "Maths level button: the times tables and dividing by them."
+  },
+  "mathLevelMultiplyDivide": "Multiply and divide",
+  "@mathLevelMultiplyDivide": {
+    "description": "Maths level button: two-digit multiplications and long divisions."
+  },
+  "mathLevelFractions": "Fractions and decimals",
+  "@mathLevelFractions": {
+    "description": "Maths level button: simple fractions and decimals."
+  },
+  "mathLevelIntegers": "Negatives and powers",
+  "@mathLevelIntegers": {
+    "description": "Maths level button: negative numbers, powers, square roots, order of operations (first year of secondary school)."
+  },
+  "mathLevelEquations": "Equations and %",
+  "@mathLevelEquations": {
+    "description": "Maths level button: first-degree equations, percentages, brackets (second year of secondary school)."
+  },
+  "mathTryAgain": "Almost! Try another one.",
+  "@mathTryAgain": {
+    "description": "Maths minigame, after a wrong answer: gentle, the player just picks again."
+  },
+  "mathRightFirstTime": "{count} of {total} right first time!",
+  "@mathRightFirstTime": {
+    "description": "Maths result: answers right on the first try.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "mathOf": "of",
+  "@mathOf": {
+    "description": "Maths notation: 'of' in '3/4 of 20' and '25% of 80'. Lowercase, one word."
+  },
+  "mathTimes": "×",
+  "@mathTimes": {
+    "description": "Maths notation: the multiplication sign used at school in this language."
+  },
+  "mathDivide": "÷",
+  "@mathDivide": {
+    "description": "Maths notation: the division sign used at school in this language."
+  },
+  "mathDecimalPoint": ".",
+  "@mathDecimalPoint": {
+    "description": "Maths notation: the decimal separator, e.g. 2.5."
+  },
+  "mathPercent": "{percent}%",
+  "@mathPercent": {
+    "description": "Maths notation: a percentage, with this language's spacing.",
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "itemStickerPizza": "Pizza sticker",
+  "@itemStickerPizza": {
+    "description": "Shop item."
+  },
+  "itemStickerBurger": "Burger sticker",
+  "@itemStickerBurger": {
+    "description": "Shop item."
+  },
+  "itemStickerRamen": "Ramen sticker",
+  "@itemStickerRamen": {
+    "description": "Shop item."
+  },
+  "itemStickerCroissant": "Croissant sticker",
+  "@itemStickerCroissant": {
+    "description": "Shop item."
+  },
+  "itemStickerCake": "Cake sticker",
+  "@itemStickerCake": {
+    "description": "Shop item."
+  },
+  "itemStickerCookie": "Cookie sticker",
+  "@itemStickerCookie": {
+    "description": "Shop item."
+  },
+  "itemStickerCocoa": "Hot chocolate sticker",
+  "@itemStickerCocoa": {
+    "description": "Shop item."
+  },
+  "itemStickerMoon": "Moon sticker",
+  "@itemStickerMoon": {
+    "description": "Shop item."
+  },
+  "itemStickerSun": "Sun sticker",
+  "@itemStickerSun": {
+    "description": "Shop item."
+  },
+  "itemStickerEarth": "Earth sticker",
+  "@itemStickerEarth": {
+    "description": "Shop item."
+  },
+  "itemStickerSatellite": "Satellite sticker",
+  "@itemStickerSatellite": {
+    "description": "Shop item."
+  },
+  "itemStickerGalaxy": "Galaxy sticker",
+  "@itemStickerGalaxy": {
+    "description": "Shop item."
+  },
+  "itemStickerSparkles": "Sparkles sticker",
+  "@itemStickerSparkles": {
+    "description": "Shop item."
+  },
+  "itemStickerDpad": "D-pad sticker",
+  "@itemStickerDpad": {
+    "description": "Shop item."
+  },
+  "itemStickerRobot": "Robot sticker",
+  "@itemStickerRobot": {
+    "description": "Shop item."
+  },
+  "itemStickerPuzzle": "Puzzle piece sticker",
+  "@itemStickerPuzzle": {
+    "description": "Shop item."
+  },
+  "itemStickerDice": "Dice sticker",
+  "@itemStickerDice": {
+    "description": "Shop item."
+  },
+  "itemStickerChip": "Chip sticker",
+  "@itemStickerChip": {
+    "description": "Shop item."
+  },
+  "itemStickerKeyboard": "Keyboard sticker",
+  "@itemStickerKeyboard": {
+    "description": "Shop item."
+  },
+  "itemStickerTrophy": "Trophy sticker",
+  "@itemStickerTrophy": {
+    "description": "Shop item."
+  },
+  "itemStickerLeaf": "Leaf sticker",
+  "@itemStickerLeaf": {
+    "description": "Shop item."
+  },
+  "itemStickerFlower": "Flower sticker",
+  "@itemStickerFlower": {
+    "description": "Shop item."
+  },
+  "itemStickerLotus": "Lotus sticker",
+  "@itemStickerLotus": {
+    "description": "Shop item."
+  },
+  "itemStickerDrop": "Water drop sticker",
+  "@itemStickerDrop": {
+    "description": "Shop item."
+  },
+  "itemStickerWaves": "Waves sticker",
+  "@itemStickerWaves": {
+    "description": "Shop item."
+  },
+  "itemStickerForest": "Forest sticker",
+  "@itemStickerForest": {
+    "description": "Shop item."
+  },
+  "itemStickerPaw": "Paw print sticker",
+  "@itemStickerPaw": {
+    "description": "Shop item."
+  },
+  "itemStickerBee": "Bee sticker",
+  "@itemStickerBee": {
+    "description": "Shop item."
+  },
+  "itemStickerPiano": "Piano sticker",
+  "@itemStickerPiano": {
+    "description": "Shop item."
+  },
+  "itemStickerHeadphones": "Headphones sticker",
+  "@itemStickerHeadphones": {
+    "description": "Shop item."
+  },
+  "itemStickerMic": "Microphone sticker",
+  "@itemStickerMic": {
+    "description": "Shop item."
+  },
+  "itemStickerVinyl": "Record sticker",
+  "@itemStickerVinyl": {
+    "description": "Shop item."
+  },
+  "itemStickerPalette": "Paint palette sticker",
+  "@itemStickerPalette": {
+    "description": "Shop item."
+  },
+  "itemStickerBrush": "Paintbrush sticker",
+  "@itemStickerBrush": {
+    "description": "Shop item."
+  },
+  "itemStickerMasks": "Theatre masks sticker",
+  "@itemStickerMasks": {
+    "description": "Shop item."
+  },
+  "itemStickerBook": "Book sticker",
+  "@itemStickerBook": {
+    "description": "Shop item."
+  },
+  "itemStickerPencil": "Pencil sticker",
+  "@itemStickerPencil": {
+    "description": "Shop item."
+  },
+  "itemStickerCalculator": "Calculator sticker",
+  "@itemStickerCalculator": {
+    "description": "Shop item."
+  },
+  "itemStickerFlask": "Science sticker",
+  "@itemStickerFlask": {
+    "description": "Shop item."
+  },
+  "itemStickerIdea": "Bright idea sticker",
+  "@itemStickerIdea": {
+    "description": "Shop item."
+  },
+  "itemStickerBackpack": "School bag sticker",
+  "@itemStickerBackpack": {
+    "description": "Shop item."
+  },
+  "itemStickerGradCap": "Graduation cap sticker",
+  "@itemStickerGradCap": {
+    "description": "Shop item."
+  },
+  "itemStickerRuler": "Set square sticker",
+  "@itemStickerRuler": {
+    "description": "Shop item."
+  },
+  "itemStickerRainbow": "Rainbow sticker",
+  "@itemStickerRainbow": {
+    "description": "Shop item."
+  },
+  "itemStickerCloud": "Cloud sticker",
+  "@itemStickerCloud": {
+    "description": "Shop item."
+  },
+  "itemStickerSmiley": "Smiley sticker",
+  "@itemStickerSmiley": {
+    "description": "Shop item."
+  },
+  "itemStickerGift": "Present sticker",
+  "@itemStickerGift": {
+    "description": "Shop item."
+  },
+  "itemStickerParty": "Confetti sticker",
+  "@itemStickerParty": {
+    "description": "Shop item."
+  },
+  "itemStickerUmbrella": "Umbrella sticker",
+  "@itemStickerUmbrella": {
+    "description": "Shop item."
+  },
+  "itemStickerDiamond": "Gem sticker",
+  "@itemStickerDiamond": {
+    "description": "Shop item."
+  },
+  "albumPageFood": "Snacks",
+  "@albumPageFood": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: Food: snacks and treats. Short."
+  },
+  "albumPageSpace": "Space",
+  "@albumPageSpace": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: Space. Short."
+  },
+  "albumPageGames": "Games",
+  "@albumPageGames": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: Video games and geeky things. Short."
+  },
+  "albumPageNature": "Nature",
+  "@albumPageNature": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: Nature and the pond. Short."
+  },
+  "albumPageMusic": "Music and art",
+  "@albumPageMusic": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: Music and art. Short."
+  },
+  "albumPageSchool": "School",
+  "@albumPageSchool": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: School and maths. Short."
+  },
+  "albumPageCute": "Cute things",
+  "@albumPageCute": {
+    "description": "Title of a themed page of the sticker album, and of its shop section: Cute, happy things. Short."
+  },
+  "achievementsTitle": "Achievements",
+  "@achievementsTitle": {
+    "description": "Title of the achievements screen, and the album's button (tooltip) that opens it."
+  },
+  "achievementUnlocked": "New achievement!",
+  "@achievementUnlocked": {
+    "description": "Shown with the medal when an achievement is earned. Cheerful."
+  },
+  "achievementWhere": "You'll find it in the album.",
+  "@achievementWhere": {
+    "description": "After earning an achievement: where to see it (the trophy button in the sticker album)."
+  },
+  "achievementOk": "Yay!",
+  "@achievementOk": {
+    "description": "Button that closes the new achievement message."
+  },
+  "achievementsCount": "{count} of {total}",
+  "@achievementsCount": {
+    "description": "Achievements screen: how many are earned.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementCollector": "The collector",
+  "@achievementCollector": {
+    "description": "Achievement name."
+  },
+  "achievementCollectorHow": "Buy every sticker in the shop.",
+  "@achievementCollectorHow": {
+    "description": "How to earn the collector achievement."
+  },
+  "achievementFruitMuncher": "Fruit muncher",
+  "@achievementFruitMuncher": {
+    "description": "Achievement name, for the fruit catch minigame."
+  },
+  "achievementFruitMuncherHow": "Catch {count} or more fruits in a round without a single stone.",
+  "@achievementFruitMuncherHow": {
+    "description": "How to earn the fruit muncher achievement.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "achievementCleanestInPond": "Cleanest in the pond",
+  "@achievementCleanestInPond": {
+    "description": "Achievement name, for the bath minigame."
+  },
+  "achievementCleanestInPondHow": "Give {name} a whole bath without picking a wrong thing even once.",
+  "@achievementCleanestInPondHow": {
+    "description": "How to earn the cleanest in the pond achievement.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "achievementCapybaraEye": "Capybara eye",
+  "@achievementCapybaraEye": {
+    "description": "Achievement name, for hide and seek."
+  },
+  "achievementCapybaraEyeHow": "Find {name} in every turn of hide and seek.",
+  "@achievementCapybaraEyeHow": {
+    "description": "How to earn the capybara eye achievement.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "achievementCapybaraMemory": "Capybara memory",
+  "@achievementCapybaraMemory": {
+    "description": "Achievement name, for the memory minigame."
+  },
+  "achievementCapybaraMemoryHow": "Finish a memory game without missing a pair you had already seen.",
+  "@achievementCapybaraMemoryHow": {
+    "description": "How to earn the capybara memory achievement: no avoidable misses."
+  },
+  "achievementMathWhiz": "Maths whiz",
+  "@achievementMathWhiz": {
+    "description": "Achievement name, for the maths minigame."
+  },
+  "achievementMathWhizHow": "Get all ten right the first time in maths class.",
+  "@achievementMathWhizHow": {
+    "description": "How to earn the maths whiz achievement."
+  },
+  "albumPreviousPage": "Previous page",
+  "@albumPreviousPage": {
+    "description": "Album button (tooltip) to turn back a page."
+  },
+  "albumNextPage": "Next page",
+  "@albumNextPage": {
+    "description": "Album button (tooltip) to turn to the next page."
+  },
+  "albumOtherPages": "More loose stickers wait on other pages.",
+  "@albumOtherPages": {
+    "description": "Album status line when this page's loose stickers are all stuck but other pages still have loose ones."
+  },
+  "renameButton": "Change name",
+  "@renameButton": {
+    "description": "Home screen button (tooltip) next to the pet's name that opens the rename dialog."
+  },
+  "renameTitle": "What shall we call {name}?",
+  "@renameTitle": {
+    "description": "Title of the rename dialog; name is the current name.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "renameField": "Name",
+  "@renameField": {
+    "description": "Label of the text field for the new name."
+  },
+  "renameFirstFree": "This first name is free; after that you can change it once a month.",
+  "@renameFirstFree": {
+    "description": "Rename dialog in a new game: the first name does not use the monthly change."
+  },
+  "renameMonthly": "You can change the name once a month.",
+  "@renameMonthly": {
+    "description": "Rename dialog: the rule."
+  },
+  "renameWait": "You can choose a new name again next month.",
+  "@renameWait": {
+    "description": "Rename dialog when this month's change is used. Gentle."
+  },
+  "renameSave": "Save",
+  "@renameSave": {
+    "description": "Rename dialog button that saves the new name."
+  },
+  "renameCancel": "Cancel",
+  "@renameCancel": {
+    "description": "Rename dialog button that closes it without changes."
+  },
+  "renamedStatus": "Hmmm… {name}. I think I could get used to this new name.",
+  "@renamedStatus": {
+    "description": "Chigüi speaking right after being given a new name: thoughtful, then happy.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Pelusa"
+      }
+    }
+  },
+  "schoolStatus": "Class time! I'm studying hard, but a little game sounds fun too.",
   "@schoolStatus": {
-    "description": "Chigüi speaking, during class time (weekday mornings outside school holidays), when the minigame waits until after school."
+    "description": "Chigüi speaking, during class time (weekday mornings outside school holidays), while studying with a book. Playing is still allowed (e.g. children home sick), so never say to come back later."
   }
 }

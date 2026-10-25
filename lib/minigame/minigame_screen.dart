@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
+import '../game/achievements.dart';
 import '../game/pet_controller.dart';
-import '../game/rules.dart' show coinsForFruits;
+import '../game/rules.dart' show coinsForFruits, fruitMuncherFruits;
 import '../l10n/app_localizations.dart';
 import '../sound/sound_effects.dart';
 import '../ui/chigui_view.dart';
@@ -13,6 +14,7 @@ import '../ui/game_frame.dart';
 import '../ui/sprites.dart';
 import 'catch_game.dart';
 import 'game_parts.dart';
+import '../ui/pet_name.dart';
 
 enum _Phase { ready, playing, done }
 
@@ -40,7 +42,7 @@ class _MinigameScreenState extends State<MinigameScreen>
   int _reactionId = 0;
   Reaction _reaction = Reaction.chomp;
 
-  RoundPay _pay = (earned: 0, piggyBankFull: false);
+  RoundPay _pay = noPay;
 
   /// Arrow keys held down (on a computer), besides dragging.
   final _held = <LogicalKeyboardKey>{};
@@ -84,7 +86,13 @@ class _MinigameScreenState extends State<MinigameScreen>
       if (_game.over) {
         _ticker.stop();
         _phase = _Phase.done;
-        _pay = payRound(widget.controller, coinsForFruits(_game.caught));
+        _pay = payRound(
+          widget.controller,
+          coinsForFruits(_game.caught),
+          achievement: _game.bonks == 0 && _game.caught >= fruitMuncherFruits
+              ? Achievement.fruitMuncher
+              : null,
+        );
         sfx.play(_game.caught > 0 ? Sfx.reward : Sfx.pop);
       }
     });
@@ -113,8 +121,8 @@ class _MinigameScreenState extends State<MinigameScreen>
         _Phase.ready => GameIntro(
           title: l10n.minigameTitle,
           hint: onComputerWeb
-              ? '${l10n.minigameHint}\n${l10n.arrowKeysHint}'
-              : l10n.minigameHint,
+              ? '${l10n.minigameHint(l10n.petName(widget.controller.state))}\n${l10n.arrowKeysHint}'
+              : l10n.minigameHint(l10n.petName(widget.controller.state)),
           start: [
             GameButton(
               icon: Icons.play_arrow,
@@ -125,6 +133,7 @@ class _MinigameScreenState extends State<MinigameScreen>
         ),
         _Phase.playing => _playArea(l10n, Theme.of(context).textTheme),
         _Phase.done => RoundResult(
+          name: l10n.petName(widget.controller.state),
           summary: l10n.fruitsCaught(_game.caught),
           pay: _pay,
           onPlayAgain: _start,

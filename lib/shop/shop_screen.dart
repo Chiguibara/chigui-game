@@ -2,11 +2,13 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../game/achievements.dart';
 import '../game/catalog.dart';
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show BuyResult;
 import '../l10n/app_localizations.dart';
 import '../sound/sound_effects.dart';
+import '../ui/achievements_screen.dart';
 import '../ui/chigui_view.dart';
 import '../ui/palette.dart';
 import '../ui/game_frame.dart';
@@ -14,6 +16,7 @@ import '../ui/sprites.dart';
 import '../store/pack_store.dart';
 import '../store/packs_controller.dart';
 import 'item_display.dart';
+import '../ui/pet_name.dart';
 
 /// Buy accessories and stickers with coins, and try accessories on.
 class ShopScreen extends StatefulWidget {
@@ -128,8 +131,15 @@ class _ShopScreenState extends State<ShopScreen> {
           Reaction.refuse,
         );
       case BuyResult.bought:
+        final collector = _pet.state.achievements.contains(
+          Achievement.collector,
+        );
         _pet.buy(item);
         sfx.play(Sfx.buy);
+        if (!collector &&
+            _pet.state.achievements.contains(Achievement.collector)) {
+          showAchievementDialog(context, Achievement.collector);
+        }
         _say(
           item.slot == Slot.sticker
               ? l10n.stickerBoughtStatus
@@ -206,14 +216,21 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
+  /// The stickers, a section per album page.
   List<Widget> get _stickerSection {
     final l10n = AppLocalizations.of(context);
-    return _section(
-      l10n.stickersSection,
-      stickers,
-      l10n,
-      Theme.of(context).textTheme,
-    );
+    return [
+      for (final page in AlbumPage.values)
+        ..._section(
+          '${l10n.stickersSection}: ${l10n.albumPageName(page)}',
+          [
+            for (final item in stickers)
+              if (item.page == page) item,
+          ],
+          l10n,
+          Theme.of(context).textTheme,
+        ),
+    ];
   }
 
   List<Widget> _packSection(AppLocalizations l10n, TextTheme textTheme) => [
@@ -353,7 +370,7 @@ class _ShopScreenState extends State<ShopScreen> {
               ),
               Expanded(
                 child: Text(
-                  l10n.shopTitle,
+                  l10n.shopTitle(l10n.petName(_pet.state)),
                   style: textTheme.titleLarge?.copyWith(
                     color: Palette.ink,
                     fontWeight: FontWeight.w700,

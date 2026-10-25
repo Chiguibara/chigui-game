@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 
 import '../data/game_repository.dart';
+import 'achievements.dart';
 import 'game_event.dart';
 import 'catalog.dart';
 import 'pet_state.dart';
@@ -60,7 +61,7 @@ class PetController extends ChangeNotifier {
   bool get asleep => rules.asleep(_state, now);
   bool get sleepy => rules.sleepy(_state, now);
 
-  /// Class time: the minigame waits until after school.
+  /// Class time: Chigüi studies, and petting turns the pages faster.
   bool get inSchool => routine.inSchool(now);
   routine.TimeWindow? get pendingMeal => rules.pendingMeal(_state, now);
 
@@ -108,8 +109,12 @@ class PetController extends ChangeNotifier {
   void syncPacks(Set<String> fromStore) =>
       _apply(rules.syncPacks(_state, now, fromStore));
   int get minigameCoinsLeft => rules.minigameCoinsLeft(_state, now);
-  bool finishRound(int coins) =>
-      _apply(rules.finishRound(_state, now, coins: coins));
+  bool get canRename => rules.canRename(_state, now);
+  DateTime get nextRename => rules.nextRename(_state, now);
+  bool rename(String name) => _apply(rules.rename(_state, now, name));
+  bool finishRound(int coins, {Achievement? achievement}) => _apply(
+    rules.finishRound(_state, now, coins: coins, achievement: achievement),
+  );
 
   /// Catches up with the clock: call periodically and when the app resumes.
   void refresh() => _apply(rules.advance(_state, now));

@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../game/achievements.dart';
 import '../game/catalog.dart';
 import '../game/game_event.dart';
 import '../game/pet_state.dart';
+import '../game/rules.dart' show cleanPetName;
 import 'game_repository.dart';
 
 /// Stores the pet and the history log as two versioned JSON documents in
@@ -112,6 +114,10 @@ class JsonGameRepository implements GameRepository {
     'seenStickers': s.seenStickers.toList(),
     'ownedPacks': s.ownedPacks.toList(),
     'seenNotes': s.seenNotes,
+    'achievements': [for (final a in s.achievements) a.name],
+    'name': s.name,
+    'renamedAt': _encodeTime(s.renamedAt),
+    'freeRename': s.freeRename,
   };
 
   /// Reads any schema version so far; version 1 only had needs and
@@ -177,6 +183,16 @@ class JsonGameRepository implements GameRepository {
       seenNotes: json['seenNotes'] is String
           ? json['seenNotes'] as String
           : null,
+      achievements: {
+        if (json['achievements'] case final List list)
+          for (final name in list) ?Achievement.values.asNameMap()[name],
+      },
+      name: json['name'] is String
+          ? cleanPetName(json['name'] as String)
+          : null,
+      renamedAt: _decodeTime(json['renamedAt']),
+      // Saves from before names: their free naming is long gone.
+      freeRename: json['freeRename'] == true,
     );
   }
 

@@ -27,9 +27,10 @@ const freeDayWakeUp = (9, 0);
 /// last thing done together, then falls asleep again.
 const stayAwakeFor = Duration(hours: 1);
 
-/// Class time, when playing the minigame waits until after school: weekdays
-/// in these hours (end excluded), outside the school holidays. The core
-/// hours shared by continuous and split school days in Spain.
+/// Class time, when Chigüi studies and the routine waits until after school
+/// (playing never does): weekdays in these hours (end excluded), outside the
+/// school holidays. The core hours shared by continuous and split school
+/// days in Spain.
 const schoolHours = ((9, 0), (14, 0));
 
 /// School holidays as inclusive (month, day) ranges; a range may wrap past

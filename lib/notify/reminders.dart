@@ -8,6 +8,7 @@ import '../game/pet_state.dart';
 import '../game/routine.dart';
 import '../game/rules.dart' show routinePause;
 import '../l10n/app_localizations.dart';
+import '../ui/pet_name.dart';
 
 enum ReminderKind {
   meal,
@@ -84,6 +85,8 @@ class Reminders extends ChangeNotifier {
   final NoticeBoard _board;
   final SharedPreferences _prefs;
   final PetController _pet;
+
+  PetState get petState => _pet.state;
   final Locale? _locale;
 
   /// On unless turned off, from the bell or by saying no to the system.
@@ -133,8 +136,10 @@ class Reminders extends ChangeNotifier {
             at: r.at,
             title: l10n.appTitle,
             body: switch (r.kind) {
-              ReminderKind.meal => l10n.reminderMeal,
-              ReminderKind.potty => l10n.reminderPotty,
+              ReminderKind.meal => l10n.reminderMeal(l10n.petName(_pet.state)),
+              ReminderKind.potty => l10n.reminderPotty(
+                l10n.petName(_pet.state),
+              ),
             },
           ),
       ],

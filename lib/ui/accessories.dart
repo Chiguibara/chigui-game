@@ -762,6 +762,32 @@ void paintStudyBook(Canvas canvas, Size size) {
   }
 }
 
+/// A page of the study book halfway through turning: 0 lies on the right
+/// page, 1 on the left one, lifting towards the viewer in between.
+void paintTurningPage(Canvas canvas, Size size, double t) {
+  final w = size.width;
+  final h = size.height;
+  final reach = math.cos(t * math.pi);
+  final lift = 0.05 * math.sin(t * math.pi);
+  final edge = 0.53 + 0.17 * reach;
+  final rise = 0.04 * reach.abs() + lift;
+  final page = Path()
+    ..moveTo(w * 0.53, h * 0.73)
+    ..lineTo(w * edge, h * (0.73 - rise))
+    ..lineTo(w * edge, h * (0.86 - rise))
+    ..lineTo(w * 0.53, h * 0.86)
+    ..close();
+  canvas.drawPath(page, Paint()..color = Palette.cloud);
+  canvas.drawPath(
+    page,
+    Paint()
+      ..color = Palette.furOutline
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = w * 0.012
+      ..strokeJoin = StrokeJoin.round,
+  );
+}
+
 void _star(Canvas canvas, Offset c, double r, Paint paint) {
   final path = Path();
   for (var i = 0; i < 10; i++) {

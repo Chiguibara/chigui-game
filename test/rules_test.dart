@@ -1,3 +1,4 @@
+import 'package:chigui_game/game/achievements.dart';
 import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/game_event.dart';
 import 'package:chigui_game/game/pet_state.dart';
@@ -303,6 +304,20 @@ void main() {
       expect(o.state.level(Need.fun), greaterThan(0.4));
       expect(o.state.coins, 0);
     });
+
+    test('a flawless round earns its achievement, for good', () {
+      final s = finishRound(
+        pet0(at(16)),
+        at(16),
+        coins: 2,
+        achievement: Achievement.mathWhiz,
+      ).state;
+      expect(s.achievements, {Achievement.mathWhiz});
+      expect(
+        finishRound(s, at(17), coins: 1).state.achievements,
+        {Achievement.mathWhiz},
+      );
+    });
   });
 
   group('walks', () {
@@ -434,6 +449,28 @@ void main() {
       expect(newStickers(sawStickers(before)), isEmpty);
     });
 
+    test('every sticker sits on an album page', () {
+      expect(stickers.length, greaterThanOrEqualTo(56));
+      for (final item in catalog) {
+        expect(item.page != null, item.slot == Slot.sticker, reason: item.id);
+      }
+    });
+
+    test('buying the last sticker earns the collector achievement', () {
+      final last = stickers.last;
+      final almost = rich().copyWith(
+        owned: {
+          for (final item in stickers)
+            if (item != last) item.id,
+        },
+      );
+      expect(almost.achievements, isEmpty);
+      final s = buy(almost, at(12), last).state;
+      expect(s.achievements, {Achievement.collector});
+      // Accessories do not count.
+      expect(buy(rich(), at(12), glasses).state.achievements, isEmpty);
+    });
+
     test('one accessory per slot; owned ones can be swapped and removed', () {
       var s = buy(rich(), at(12), beanie).state;
       s = buy(s, at(12), headphones).state;
@@ -443,6 +480,37 @@ void main() {
       s = toggleWorn(s, beanie);
       expect(s.equipped, isEmpty);
       expect(toggleWorn(s, glasses).equipped, isEmpty, reason: 'not owned');
+    });
+  });
+
+  group('name', () {
+    test('a new game names Chigüi once for free, then once a month', () {
+      var s = PetState.fresh(at(12), seed: 1);
+      expect(canRename(s, at(12)), isTrue);
+      s = rename(s, at(12), '  Pelusa  ').state;
+      expect(s.name, 'Pelusa');
+      expect(s.freeRename, isFalse);
+      // The month's change is still there.
+      s = rename(s, at(13), 'Bolita').state;
+      expect(s.name, 'Bolita');
+      expect(canRename(s, at(20)), isFalse);
+      expect(rename(s, at(20), 'Otra').ok, isFalse);
+      expect(nextRename(s, at(20)), DateTime(2026, 11));
+      expect(canRename(s, DateTime(2026, 11, 1, 9)), isTrue);
+    });
+
+    test('saves from before names get the monthly change only', () {
+      final s = pet0(at(12));
+      expect(s.freeRename, isFalse);
+      final renamed = rename(s, at(12), 'Pelusa').state;
+      expect(canRename(renamed, at(13)), isFalse);
+    });
+
+    test('names are tidied and kept short; empty ones are refused', () {
+      expect(cleanPetName('  Super   Chigüi '), 'Super Chigüi');
+      expect(cleanPetName('A' * 30), 'A' * maxPetNameLength);
+      expect(cleanPetName('   '), isNull);
+      expect(rename(pet0(at(12)), at(12), ' ').ok, isFalse);
     });
   });
 

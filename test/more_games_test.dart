@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chigui_game/data/json_game_repository.dart';
+import 'package:chigui_game/game/achievements.dart';
 import 'package:chigui_game/game/pet_controller.dart';
 import 'package:chigui_game/game/pet_state.dart';
 import 'package:chigui_game/game/rules.dart' show coinsForSpots;
@@ -10,6 +11,8 @@ import 'package:chigui_game/minigame/bath_screen.dart';
 import 'package:chigui_game/minigame/games_screen.dart';
 import 'package:chigui_game/minigame/hide_game.dart';
 import 'package:chigui_game/minigame/hide_screen.dart';
+import 'package:chigui_game/minigame/math_game.dart';
+import 'package:chigui_game/minigame/math_screen.dart';
 import 'package:chigui_game/minigame/memory_game.dart';
 import 'package:chigui_game/minigame/memory_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +27,8 @@ void main() {
       clock: () => DateTime(2026, 10, 12, 16),
     );
   }
+
+  final lookupEn = lookupAppLocalizations(const Locale('en'));
 
   Future<void> show(WidgetTester tester, Widget screen) async {
     tester.view.physicalSize = const Size(1080, 2340);
@@ -53,10 +58,12 @@ void main() {
       ('Hide and seek', 'Chigüi hides under a box'),
       ('Fruit catch', 'Drag to move Chigüi'),
       ('Bath time', 'Pop Chigüi into the tub'),
+      ('Maths class', 'Chigüi brought maths homework'),
     ]) {
       await tester.tap(find.text(game));
       await tester.pumpAndSettle();
       expect(find.textContaining(hint), findsOneWidget);
+      await tester.ensureVisible(find.text('Other games'));
       await tester.tap(find.text('Other games'));
       await tester.pumpAndSettle();
     }
@@ -99,6 +106,67 @@ void main() {
     expect(find.text('3 pairs found'), findsOneWidget);
     expect(pet.state.coins, 1, reason: 'one coin per two pairs');
     expect(pet.state.level(Need.fun), greaterThan(PetState.initialLevel));
+  });
+
+  testWidgets('maths: ten questions, coins by level and first tries', (
+    tester,
+  ) async {
+    final pet = await controller();
+    await show(tester, MathScreen(controller: pet, random: Random(4)));
+    // The same random questions as the screen's round.
+    final round = MathRound(MathLevel.equations, random: Random(4));
+
+    await tester.tap(find.text('Equations and %'));
+    await tester.pump();
+    for (var q = 0; q < mathQuestions; q++) {
+      final problem = round.problem;
+      expect(find.textContaining(mathText(problem, lookupEn)), findsOneWidget);
+      // Wrong first on the first five questions: it costs nothing.
+      if (q < 5) {
+        final wrong = problem.options.firstWhere((o) => o != problem.answer);
+        await tester.tap(find.byKey(ValueKey('answer-$wrong')));
+        await tester.pump();
+        expect(find.text('Almost! Try another one.'), findsOneWidget);
+        round.pick(wrong);
+      }
+      await tester.tap(find.byKey(ValueKey('answer-${problem.answer}')));
+      round.pick(problem.answer);
+      round.next();
+      await frames(tester, const Duration(seconds: 1));
+    }
+    expect(find.text('Great game!'), findsOneWidget);
+    expect(find.text('5 of 10 right first time!'), findsOneWidget);
+    expect(pet.state.coins, 2, reason: 'half the top level\'s 4 coins');
+  });
+
+  testWidgets('maths: a flawless round earns the maths whiz, once', (
+    tester,
+  ) async {
+    final pet = await controller();
+    Future<void> perfectRound(int seed) async {
+      await show(tester, MathScreen(controller: pet, random: Random(seed)));
+      final round = MathRound(MathLevel.sums, random: Random(seed));
+      await tester.tap(find.text('Sums to 10'));
+      await tester.pump();
+      for (var q = 0; q < mathQuestions; q++) {
+        final answer = round.problem.answer;
+        await tester.tap(find.byKey(ValueKey('answer-$answer')));
+        round.pick(answer);
+        round.next();
+        await frames(tester, const Duration(seconds: 1));
+      }
+    }
+
+    await perfectRound(1);
+    expect(find.text('10 of 10 right first time!'), findsOneWidget);
+    expect(find.text('New achievement! Maths whiz'), findsOneWidget);
+    expect(pet.state.achievements, {Achievement.mathWhiz});
+
+    // Already earned: no announcement the second time.
+    await tester.pumpWidget(const SizedBox());
+    await perfectRound(2);
+    expect(find.text('10 of 10 right first time!'), findsOneWidget);
+    expect(find.textContaining('New achievement!'), findsNothing);
   });
 
   testWidgets('hide and seek: five turns, a coin per find', (

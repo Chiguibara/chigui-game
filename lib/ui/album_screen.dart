@@ -7,12 +7,15 @@ import '../game/pet_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../shop/item_display.dart';
 import '../sound/sound_effects.dart';
+import 'achievements_screen.dart';
 import 'game_frame.dart';
 import 'palette.dart';
 import 'sprites.dart';
+import 'pet_name.dart';
 
-/// The sticker album: one spot per sticker in the catalog, and the bought
-/// ones lying loose below until the player drags each onto its spot.
+/// The sticker album: themed pages with one spot per sticker in the
+/// catalog, and the bought ones for the open page lying loose below until
+/// the player drags each onto its spot.
 class AlbumScreen extends StatefulWidget {
   const AlbumScreen({super.key, required this.controller});
 
@@ -31,7 +34,28 @@ class _AlbumScreenState extends State<AlbumScreen> {
   /// A loose sticker that was tapped: its spot lights up.
   Item? _hinted;
 
+  /// The open page: the first with loose stickers, if any.
+  late AlbumPage _albumPage = AlbumPage.values.firstWhere(
+    (page) => _looseOn(page).isNotEmpty,
+    orElse: () => AlbumPage.values.first,
+  );
+
   PetController get _pet => widget.controller;
+
+  List<Item> _looseOn(AlbumPage page) => [
+    for (final item in _pet.looseStickers)
+      if (item.page == page) item,
+  ];
+
+  void _turn(int by) {
+    sfx.play(Sfx.pop);
+    const pages = AlbumPage.values;
+    setState(() {
+      _albumPage = pages[(_albumPage.index + by) % pages.length];
+      _hinted = null;
+      _message = null;
+    });
+  }
 
   void _stick(Item item, AppLocalizations l10n) {
     _pet.stickSticker(item);
@@ -45,6 +69,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
           ? l10n.albumComplete
           : _pet.looseStickers.isEmpty
           ? l10n.albumAllStuck
+          : _looseOn(_albumPage).isEmpty
+          ? l10n.albumOtherPages
           : l10n.albumStuck;
     });
   }
@@ -57,7 +83,8 @@ class _AlbumScreenState extends State<AlbumScreen> {
   String _status(AppLocalizations l10n) {
     if (_message case final message?) return message;
     final state = _pet.state;
-    if (_pet.looseStickers.isNotEmpty) return l10n.albumHint;
+    if (_looseOn(_albumPage).isNotEmpty) return l10n.albumHint;
+    if (_pet.looseStickers.isNotEmpty) return l10n.albumOtherPages;
     if (state.stuckStickers.isEmpty) return l10n.albumEmpty;
     return state.stuckStickers.length == stickers.length
         ? l10n.albumComplete
@@ -122,12 +149,23 @@ class _AlbumScreenState extends State<AlbumScreen> {
         ),
         Expanded(
           child: Text(
-            l10n.albumTitle,
+            l10n.albumTitle(l10n.petName(_pet.state)),
             style: textTheme.titleLarge?.copyWith(
               color: Palette.ink,
               fontWeight: FontWeight.w700,
             ),
           ),
+        ),
+        IconButton(
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (_) => AchievementsScreen(controller: _pet),
+            ),
+          ),
+          icon: const Icon(Icons.emoji_events),
+          tooltip: l10n.achievementsTitle,
+          color: Palette.ink,
+          iconSize: 28,
         ),
       ],
     ),
@@ -160,35 +198,83 @@ class _AlbumScreenState extends State<AlbumScreen> {
     );
   }
 
-  /// The album page, with a spot for every sticker. Shrinks to fit short
-  /// screens rather than scrolling, so dragging never fights a scroll.
-  Widget _page(AppLocalizations l10n, TextTheme textTheme) => Padding(
-    padding: const EdgeInsets.all(16),
-    child: FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Container(
-        // Three spots a row, plus padding and border.
-        width: 3 * 96 + 2 * 8 + 2 * 16 + 2 * 2,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Palette.cloud,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: Palette.ink.withValues(alpha: 0.15),
-            width: 2,
+  /// The open album page, with a spot for each of its stickers, and arrows
+  /// to turn the pages. Shrinks to fit short screens rather than scrolling,
+  /// so dragging never fights a scroll.
+  Widget _page(AppLocalizations l10n, TextTheme textTheme) {
+    final onPage = [
+      for (final item in stickers)
+        if (item.page == _albumPage) item,
+    ];
+    final stuck = onPage
+        .where((item) => _pet.state.stuckStickers.contains(item.id))
+        .length;
+    // A dot on an arrow tells that loose stickers wait on other pages.
+    Widget arrow(int by, IconData icon, String tooltip) => IconButton(
+      onPressed: () => _turn(by),
+      tooltip: tooltip,
+      color: Palette.ink,
+      iconSize: 32,
+      icon: Badge(
+        isLabelVisible:
+            _pet.looseStickers.isNotEmpty && _looseOn(_albumPage).isEmpty,
+        smallSize: 10,
+        backgroundColor: Palette.headphones,
+        child: Icon(icon),
+      ),
+    );
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Container(
+          // Three spots a row, plus padding and border.
+          width: 3 * 96 + 2 * 8 + 2 * 16 + 2 * 2,
+          padding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+          decoration: BoxDecoration(
+            color: Palette.cloud,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Palette.ink.withValues(alpha: 0.15),
+              width: 2,
+            ),
+          ),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  arrow(-1, Icons.chevron_left, l10n.albumPreviousPage),
+                  Expanded(
+                    child: Text(
+                      '${l10n.albumPageName(_albumPage)} · '
+                      '$stuck/${onPage.length}',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: Palette.ink,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  arrow(1, Icons.chevron_right, l10n.albumNextPage),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 8,
+                runSpacing: 12,
+                children: [
+                  for (final item in onPage) _spot(item, l10n, textTheme),
+                ],
+              ),
+            ],
           ),
         ),
-        child: Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 8,
-          runSpacing: 12,
-          children: [
-            for (final item in stickers) _spot(item, l10n, textTheme),
-          ],
-        ),
       ),
-    ),
-  );
+    );
+  }
 
   Widget _spot(Item item, AppLocalizations l10n, TextTheme textTheme) {
     final (icon, color) = stickerLook(item);
@@ -259,7 +345,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
       spacing: 20,
       runSpacing: 12,
       children: [
-        for (final item in _pet.looseStickers) _looseSticker(item, l10n),
+        for (final item in _looseOn(_albumPage)) _looseSticker(item, l10n),
       ],
     ),
   );

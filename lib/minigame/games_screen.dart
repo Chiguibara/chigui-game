@@ -10,6 +10,7 @@ import 'bath_screen.dart';
 import 'catch_game.dart' show FruitKind;
 import 'game_parts.dart';
 import 'hide_screen.dart';
+import 'math_screen.dart';
 import 'memory_screen.dart';
 import 'minigame_screen.dart';
 
@@ -48,6 +49,11 @@ class GamesScreen extends StatelessWidget {
         l10n.bathTitle,
         const _TubIcon(),
         () => open(BathScreen(controller: controller)),
+      ),
+      (
+        l10n.mathTitle,
+        const _SlateIcon(),
+        () => open(MathScreen(controller: controller)),
       ),
     ];
 
@@ -143,6 +149,31 @@ class _TubIcon extends StatelessWidget {
       HinokiTub(part: TubPart.back, width: 60),
       HinokiTub(part: TubPart.front, width: 60, yuzus: 2),
     ],
+  );
+}
+
+/// A little school slate with a sum in chalk.
+class _SlateIcon extends StatelessWidget {
+  const _SlateIcon();
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: 58,
+    height: 44,
+    decoration: BoxDecoration(
+      color: Palette.leaf,
+      borderRadius: BorderRadius.circular(6),
+      border: Border.all(color: Palette.furOutline, width: 4),
+    ),
+    alignment: Alignment.center,
+    child: const Text(
+      '1+2',
+      style: TextStyle(
+        color: Palette.cloud,
+        fontSize: 18,
+        fontWeight: FontWeight.w700,
+      ),
+    ),
   );
 }
 

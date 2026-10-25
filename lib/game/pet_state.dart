@@ -1,3 +1,4 @@
+import 'achievements.dart';
 import 'catalog.dart';
 
 /// The three needs. Each level goes from 0 to 1, where 1 means fully
@@ -30,12 +31,17 @@ class PetState {
     Set<String>? seenStickers,
     this.ownedPacks = const {},
     this.seenNotes,
+    this.achievements = const {},
+    this.name,
+    this.renamedAt,
+    this.freeRename = false,
   }) : seenStickers = seenStickers ?? {for (final item in stickers) item.id};
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
     needs: {for (final need in Need.values) need: initialLevel},
     updatedAt: now,
     seed: seed,
+    freeRename: true,
   );
 
   static const initialLevel = 0.8;
@@ -101,6 +107,18 @@ class PetState {
   /// null in saves from before the game showed them.
   final String? seenNotes;
 
+  /// Achievements earned, for good.
+  final Set<Achievement> achievements;
+
+  /// The name the player gave Chigüi; null keeps "Chigüi".
+  final String? name;
+
+  /// When the name was last changed with the monthly change.
+  final DateTime? renamedAt;
+
+  /// A new game may name Chigüi once without using the month's change.
+  final bool freeRename;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool keptAwakeAt(DateTime time) =>
@@ -130,6 +148,10 @@ class PetState {
     Set<String>? seenStickers,
     Set<String>? ownedPacks,
     String? seenNotes,
+    Set<Achievement>? achievements,
+    String? name,
+    DateTime? renamedAt,
+    bool? freeRename,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -157,5 +179,9 @@ class PetState {
     seenStickers: seenStickers ?? this.seenStickers,
     ownedPacks: ownedPacks ?? this.ownedPacks,
     seenNotes: seenNotes ?? this.seenNotes,
+    achievements: achievements ?? this.achievements,
+    name: name ?? this.name,
+    renamedAt: renamedAt ?? this.renamedAt,
+    freeRename: freeRename ?? this.freeRename,
   );
 }

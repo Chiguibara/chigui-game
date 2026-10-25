@@ -17,6 +17,7 @@ import '../ui/sprites.dart';
 import 'motion_source.dart';
 import 'pedometer.dart';
 import 'step_watcher.dart';
+import '../ui/pet_name.dart';
 
 enum _Mode { intro, sensor, tapping }
 
@@ -200,7 +201,7 @@ class _WalkScreenState extends State<WalkScreen> {
       sfx.play(Sfx.pant);
       setState(() {
         _outOfBreath = true;
-        _message = l10n.tapsCapped;
+        _message = l10n.tapsCapped(l10n.petName(_pet.state));
       });
       return;
     }
@@ -340,7 +341,7 @@ class _WalkScreenState extends State<WalkScreen> {
               ),
               Expanded(
                 child: Text(
-                  l10n.walkTitle,
+                  l10n.walkTitle(l10n.petName(_pet.state)),
                   style: textTheme.titleLarge?.copyWith(
                     color: Palette.ink,
                     fontWeight: FontWeight.w700,
@@ -368,7 +369,7 @@ class _WalkScreenState extends State<WalkScreen> {
               children: [
                 Text(
                   capped
-                      ? l10n.walksCapped
+                      ? l10n.walksCapped(l10n.petName(_pet.state))
                       : l10n.nextWalkProgress(
                           steps % stepsPerWalk,
                           stepsPerWalk,
@@ -414,8 +415,8 @@ class _WalkScreenState extends State<WalkScreen> {
         _onPhone
             ? l10n.walkIntro
             : onComputerWeb
-            ? '${l10n.walkIntroTapping}\n${l10n.arrowKeysHint}'
-            : l10n.walkIntroTapping,
+            ? '${l10n.walkIntroTapping(l10n.petName(_pet.state))}\n${l10n.arrowKeysHint}'
+            : l10n.walkIntroTapping(l10n.petName(_pet.state)),
       _Mode.sensor =>
         _message ??
             (_usesPedometer ? l10n.pedometerWalkHint : l10n.sensorWalkHint),

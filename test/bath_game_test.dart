@@ -92,4 +92,13 @@ void main() {
     expect(coinsForSpots(5), 3);
     expect(coinsForSpots(7), 4);
   });
+
+  test('wrong tools are counted while washing, not while waiting', () {
+    final game = BathGame(random: Random(3));
+    game.use(BathTool.towel, 0.5, 0.5); // Before hopping in.
+    expect(game.wrongTools, 0);
+    game.hopIn();
+    game.use(BathTool.towel, 0.5, 0.5);
+    expect(game.wrongTools, 1);
+  });
 }

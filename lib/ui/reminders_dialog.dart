@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../notify/reminders.dart';
 import 'palette.dart';
+import 'pet_name.dart';
 
 /// The reminder settings: what they do, and a button to turn them on or
 /// off. Turning them on asks the system for permission again if needed.
@@ -42,12 +43,14 @@ class _RemindersDialogState extends State<_RemindersDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              reminders.enabled ? l10n.remindersOnInfo : l10n.remindersOffInfo,
+              reminders.enabled
+                  ? l10n.remindersOnInfo
+                  : l10n.remindersOffInfo(l10n.petName(reminders.petState)),
             ),
             if (_denied && !reminders.enabled) ...[
               const SizedBox(height: 12),
               Text(
-                l10n.remindersDenied,
+                l10n.remindersDenied(l10n.petName(reminders.petState)),
                 style: const TextStyle(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 4),

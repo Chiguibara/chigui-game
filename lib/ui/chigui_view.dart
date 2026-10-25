@@ -26,6 +26,9 @@ enum Reaction {
 
   /// Woken up: a slow stretch with a big, sleepy yawn.
   yawn,
+
+  /// Petted in class: Chigüi happily turns the book's pages faster.
+  study,
 }
 
 enum Face { normal, happy, asleep, sick }
@@ -53,9 +56,13 @@ class ChiguiView extends StatefulWidget {
     this.onReactionEnd,
     this.coat,
     this.panting = false,
+    this.name,
   });
 
   final double size;
+
+  /// The name the player gave Chigüi, for screen readers.
+  final String? name;
   final Face face;
   final Map<Slot, String> wearing;
 
@@ -149,8 +156,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
               Positioned.fill(
                 child: Semantics(
                   button: true,
-                  label: l10n.chiguiName,
-                  onTapHint: l10n.petAction,
+                  label: widget.name ?? l10n.chiguiName,
+                  onTapHint: l10n.petAction(widget.name ?? l10n.chiguiName),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: widget.onTap,
@@ -175,6 +182,9 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                           legLift: walking ? math.sin(t * 4 * math.pi) : 0,
                           wearing: widget.wearing,
                           studying: widget.studying,
+                          pageTurn: reaction == Reaction.study && !_reduceMotion
+                              ? t * _pagesTurned % 1
+                              : null,
                         ),
                         foregroundPainter: widget.coat,
                       ),
@@ -225,8 +235,14 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
     );
   }
 
+  /// Pages flipped by one [Reaction.study].
+  static const _pagesTurned = 3;
+
   Face _face(Reaction? reaction) => switch (reaction) {
-    Reaction.love || Reaction.relief || Reaction.cleaned => Face.happy,
+    Reaction.love ||
+    Reaction.relief ||
+    Reaction.cleaned ||
+    Reaction.study => Face.happy,
     Reaction.cured => _react.value > 0.5 ? Face.happy : Face.sick,
     // Wide-eyed while opening wide, blissful while chewing.
     Reaction.chomp => _react.value < 0.3 ? Face.normal : Face.happy,
@@ -717,6 +733,7 @@ class _ChiguiPainter extends CustomPainter {
     this.legLift = 0,
     this.wearing = const {},
     this.studying = false,
+    this.pageTurn,
     this.tongue = false,
   });
 
@@ -739,6 +756,15 @@ class _ChiguiPainter extends CustomPainter {
   final Map<Slot, String> wearing;
 
   final bool studying;
+
+  /// 0 … 1 while a page of the book turns from right to left.
+  final double? pageTurn;
+
+  void _book(Canvas canvas, Size size) {
+    if (!studying) return;
+    paintStudyBook(canvas, size);
+    if (pageTurn != null) paintTurningPage(canvas, size, pageTurn!);
+  }
 
   void _accessories(Canvas canvas, Size size, Layer layer) {
     for (final id in wearing.values) {
@@ -982,7 +1008,7 @@ class _ChiguiPainter extends CustomPainter {
     // Chigüi's signature bow tie at the neck, unless covered.
     if (wearing.containsKey(Slot.neck) || wearing.containsKey(Slot.body)) {
       _accessories(canvas, size, Layer.front);
-      if (studying) paintStudyBook(canvas, size);
+      _book(canvas, size);
       return;
     }
     final ink = Paint()..color = Palette.ink;
@@ -999,7 +1025,7 @@ class _ChiguiPainter extends CustomPainter {
     canvas.drawPath(bow, ink);
     canvas.drawCircle(knot, w * 0.022, ink);
     _accessories(canvas, size, Layer.front);
-    if (studying) paintStudyBook(canvas, size);
+    _book(canvas, size);
   }
 
   void _sweatDrop(Canvas canvas, double w, double h) => canvas.drawPath(
@@ -1088,5 +1114,6 @@ class _ChiguiPainter extends CustomPainter {
       old.legLift != legLift ||
       old.tongue != tongue ||
       !mapEquals(old.wearing, wearing) ||
-      old.studying != studying;
+      old.studying != studying ||
+      old.pageTurn != pageTurn;
 }

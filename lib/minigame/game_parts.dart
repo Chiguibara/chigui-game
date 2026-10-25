@@ -2,22 +2,33 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../game/achievements.dart';
 import '../game/pet_controller.dart';
 import '../l10n/app_localizations.dart';
+import '../ui/achievements_screen.dart';
 import '../ui/game_frame.dart';
 import '../ui/palette.dart';
 import '../ui/sprites.dart';
 
 /// What a finished round gave: coins can be fewer than it was worth when the
-/// daily limit is reached.
-typedef RoundPay = ({int earned, bool piggyBankFull});
+/// daily limit is reached, and a flawless round may unlock an achievement.
+typedef RoundPay = ({int earned, bool piggyBankFull, Achievement? unlocked});
+
+const noPay = (earned: 0, piggyBankFull: false, unlocked: null);
 
 /// Ends a round worth [coins]: Chigüi has more fun and gets the coins the
-/// daily limit (shared by all minigames) still allows.
-RoundPay payRound(PetController pet, int coins) {
+/// daily limit (shared by all minigames) still allows. A flawless round
+/// earns its [achievement], announced only the first time.
+RoundPay payRound(PetController pet, int coins, {Achievement? achievement}) {
   final earned = math.min(coins, math.max(0, pet.minigameCoinsLeft));
-  pet.finishRound(coins);
-  return (earned: earned, piggyBankFull: earned < coins);
+  final isNew =
+      achievement != null && !pet.state.achievements.contains(achievement);
+  pet.finishRound(coins, achievement: achievement);
+  return (
+    earned: earned,
+    piggyBankFull: earned < coins,
+    unlocked: isNew ? achievement : null,
+  );
 }
 
 /// The mint play area every minigame screen sits on.
@@ -143,9 +154,13 @@ class RoundResult extends StatelessWidget {
     required this.summary,
     required this.pay,
     required this.onPlayAgain,
+    required this.name,
   });
 
   final String summary;
+
+  /// The pet's name, for the texts.
+  final String name;
   final RoundPay pay;
   final VoidCallback onPlayAgain;
 
@@ -171,15 +186,32 @@ class RoundResult extends StatelessWidget {
               const Coin(size: 28),
               const SizedBox(width: 8),
             ],
-            Text(l10n.coinsEarned(pay.earned), style: textTheme.titleMedium),
+            Text(
+              l10n.coinsEarned(pay.earned, name),
+              style: textTheme.titleMedium,
+            ),
           ],
         ),
         if (pay.piggyBankFull) ...[
           const SizedBox(height: 12),
           Text(
-            l10n.piggyBankFull,
+            l10n.piggyBankFull(name),
             textAlign: TextAlign.center,
             style: textTheme.bodyLarge,
+          ),
+        ],
+        if (pay.unlocked case final achievement?) ...[
+          const SizedBox(height: 16),
+          AchievementMedal(achievement: achievement, size: 88),
+          Text(
+            '${l10n.achievementUnlocked} ${l10n.achievementName(achievement)}',
+            textAlign: TextAlign.center,
+            style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+          ),
+          Text(
+            l10n.achievementWhere,
+            textAlign: TextAlign.center,
+            style: textTheme.bodyMedium,
           ),
         ],
         const SizedBox(height: 32),

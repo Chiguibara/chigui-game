@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:chigui_game/data/json_game_repository.dart';
+import 'package:chigui_game/game/achievements.dart';
 import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/game/game_event.dart';
 import 'package:chigui_game/game/pet_state.dart';
@@ -47,6 +48,7 @@ void main() {
       stuckStickers: {'stickerStar'},
       seenStickers: {'stickerStar'},
       seenNotes: '1a2b3c4d',
+      achievements: {Achievement.collector, Achievement.mathWhiz},
     );
     await repo.saveState(saved);
 

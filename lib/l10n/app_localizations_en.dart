@@ -15,16 +15,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chiguiName => 'Chigüi';
 
   @override
-  String get tapHint => 'Tap Chigüi to say hi';
+  String tapHint(String name) {
+    return 'Tap $name to say hi';
+  }
 
   @override
-  String get petAction => 'pet Chigüi';
+  String petAction(String name) {
+    return 'pet $name';
+  }
 
   @override
-  String get lovedStatus => 'Chigüi is happy!';
+  String lovedStatus(String name) {
+    return '$name is happy!';
+  }
 
   @override
-  String get pettedLowStatus => 'Chigüi liked that! More cuddles, please?';
+  String pettedLowStatus(String name) {
+    return '$name liked that! More cuddles, please?';
+  }
 
   @override
   String get pettedMidStatus => 'That feels nice! A little more?';
@@ -33,16 +41,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ateStatus => 'Yum! Thank you!';
 
   @override
-  String get fullStatus => 'Chigüi has had enough for now';
+  String fullStatus(String name) {
+    return '$name has had enough for now';
+  }
 
   @override
-  String get wantsFood => 'Chigüi could go for a snack';
+  String wantsFood(String name) {
+    return '$name could go for a snack';
+  }
 
   @override
-  String get wantsAffection => 'Chigüi would love some cuddles';
+  String wantsAffection(String name) {
+    return '$name would love some cuddles';
+  }
 
   @override
-  String get wantsFun => 'Chigüi feels like playing';
+  String wantsFun(String name) {
+    return '$name feels like playing';
+  }
 
   @override
   String get feedButton => 'Feed';
@@ -71,22 +87,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cleanAction => 'clean up';
 
   @override
-  String get asleepStatus => 'Shh… Chigüi is sleeping';
+  String asleepStatus(String name) {
+    return 'Shh… $name is sleeping';
+  }
 
   @override
-  String get sickStatus => 'Chigüi doesn\'t feel well. Time for the vet!';
+  String sickStatus(String name) {
+    return '$name doesn\'t feel well. Time for the vet!';
+  }
 
   @override
-  String get pottyStatus => 'Chigüi needs the toilet!';
+  String pottyStatus(String name) {
+    return '$name needs the toilet!';
+  }
 
   @override
-  String get sleepyStatus => 'Chigüi is sleepy';
+  String sleepyStatus(String name) {
+    return '$name is sleepy';
+  }
 
   @override
   String get mealtimeStatus => 'It\'s mealtime!';
 
   @override
-  String get yawnStatus => 'Yaaawn… Chigüi woke up!';
+  String yawnStatus(String name) {
+    return 'Yaaawn… $name woke up!';
+  }
 
   @override
   String get messStatus => 'Something smells… time to clean up!';
@@ -118,8 +144,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get minigameTitle => 'Fruit catch';
 
   @override
-  String get minigameHint =>
-      'Drag to move Chigüi: catch the fruit and dodge the stones!';
+  String minigameHint(String name) {
+    return 'Drag to move $name: catch the fruit and dodge the stones!';
+  }
 
   @override
   String get arrowKeysHint => 'On a computer, the arrow keys work too.';
@@ -145,13 +172,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String coinsEarned(int count) {
+  String coinsEarned(int count, String name) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
       other: '+$count coins',
       one: '+1 coin',
-      zero: 'Chigüi had fun anyway!',
+      zero: '$name had fun anyway!',
     );
     return '$_temp0';
   }
@@ -201,14 +228,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hideTitle => 'Hide and seek';
 
   @override
-  String get hideHint =>
-      'Chigüi hides under a box, then the boxes move. Keep your eyes on it!';
+  String hideHint(String name) {
+    return '$name hides under a box, then the boxes move. Keep your eyes on it!';
+  }
 
   @override
-  String get hideWatch => 'Keep your eyes on Chigüi\'s box…';
+  String hideWatch(String name) {
+    return 'Keep your eyes on $name\'s box…';
+  }
 
   @override
-  String get hidePick => 'Where is Chigüi?';
+  String hidePick(String name) {
+    return 'Where is $name?';
+  }
 
   @override
   String get hideFound => 'You found me!';
@@ -222,13 +254,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String timesFound(int count) {
+  String timesFound(int count, String name) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: 'You found Chigüi $count times',
-      one: 'You found Chigüi once',
-      zero: 'Chigüi is great at hiding!',
+      other: 'You found $name $count times',
+      one: 'You found $name once',
+      zero: '$name is great at hiding!',
     );
     return '$_temp0';
   }
@@ -237,14 +269,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bathTitle => 'Bath time';
 
   @override
-  String get bathHint =>
-      'Chigüi got super messy playing! Pop Chigüi into the tub, then pick the right things to clean off the sticky spots.';
+  String bathHint(String name) {
+    return '$name got super messy playing! Pop $name into the tub, then pick the right things to clean off the sticky spots.';
+  }
 
   @override
-  String get bathArrive => 'Here comes Chigüi, sticky up to the ears!';
+  String bathArrive(String name) {
+    return 'Here comes $name, sticky up to the ears!';
+  }
 
   @override
-  String get bathHopIn => 'Tap Chigüi to hop into the tub!';
+  String bathHopIn(String name) {
+    return 'Tap $name to hop into the tub!';
+  }
 
   @override
   String get bathWash => 'Pick something and clean the sticky spots';
@@ -256,7 +293,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bathSoak => 'Ahhh… a cozy yuzu soak';
 
   @override
-  String get bathDry => 'Out of the water! Dry Chigüi with the towel';
+  String bathDry(String name) {
+    return 'Out of the water! Dry $name with the towel';
+  }
 
   @override
   String get bathDone => 'So fluffy and shiny!';
@@ -311,7 +350,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shopButton => 'Shop';
 
   @override
-  String get shopTitle => 'Chigüi\'s shop';
+  String shopTitle(String name) {
+    return '$name\'s shop';
+  }
 
   @override
   String get shopHint => 'What shall we get today?';
@@ -344,7 +385,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get albumButton => 'Sticker album';
 
   @override
-  String get albumTitle => 'Chigüi\'s album';
+  String albumTitle(String name) {
+    return '$name\'s album';
+  }
 
   @override
   String get albumHint => 'Drag each sticker to its spot';
@@ -487,15 +530,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get walkButton => 'Walk';
 
   @override
-  String get walkTitle => 'Walk with Chigüi';
+  String walkTitle(String name) {
+    return 'Walk with $name';
+  }
 
   @override
   String get walkIntro =>
       'Walk with your phone in your hand, or tap the feet one after the other!';
 
   @override
-  String get walkIntroTapping =>
-      'Tap the feet to walk with Chigüi, as fast as you like!';
+  String walkIntroTapping(String name) {
+    return 'Tap the feet to walk with $name, as fast as you like!';
+  }
 
   @override
   String get startWalkButton => 'Let\'s go!';
@@ -534,8 +580,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get walksCapped =>
-      'So many walks! Chigüi\'s batteries are flat. More tomorrow!';
+  String walksCapped(String name) {
+    return 'So many walks! $name\'s batteries are flat. More tomorrow!';
+  }
 
   @override
   String get muteSounds => 'Mute sounds';
@@ -547,8 +594,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersButton => 'Reminders';
 
   @override
-  String get remindersOffInfo =>
-      'Chigüi can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.';
+  String remindersOffInfo(String name) {
+    return '$name can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.';
+  }
 
   @override
   String get remindersOnInfo =>
@@ -561,18 +609,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get remindersTurnOff => 'Turn off';
 
   @override
-  String get remindersDenied =>
-      'Notifications for Chigüi are blocked in the phone\'s settings.';
+  String remindersDenied(String name) {
+    return 'Notifications for $name are blocked in the phone\'s settings.';
+  }
 
   @override
   String get remindersOpenSettings => 'Open settings';
 
   @override
-  String get reminderMeal =>
-      'It\'s mealtime! Chigüi would love something yummy.';
+  String reminderMeal(String name) {
+    return 'It\'s mealtime! $name would love something yummy.';
+  }
 
   @override
-  String get reminderPotty => 'Chigüi needs the toilet! Can you help?';
+  String reminderPotty(String name) {
+    return '$name needs the toilet! Can you help?';
+  }
 
   @override
   String get reminderChannel => 'Chigüi\'s routine';
@@ -664,13 +716,349 @@ class AppLocalizationsEn extends AppLocalizations {
   String get itemRetroConsole => 'Retro console';
 
   @override
-  String get tapsCapped =>
-      'Phew, phew! Chigüi is out of breath from so much tapping. More tomorrow, or go for a real walk!';
+  String tapsCapped(String name) {
+    return 'Phew, phew! $name is out of breath from so much tapping. More tomorrow, or go for a real walk!';
+  }
 
   @override
-  String get piggyBankFull =>
-      'Chigüi\'s piggy bank is full for today! Playing is still fun.';
+  String piggyBankFull(String name) {
+    return '$name\'s piggy bank is full for today! Playing is still fun.';
+  }
 
   @override
-  String get schoolStatus => 'I\'m in class right now! See you after school.';
+  String get studyStatus => 'Page after page! Studying is faster with you.';
+
+  @override
+  String get mathTitle => 'Maths class';
+
+  @override
+  String mathHint(String name) {
+    return '$name brought maths homework! Pick a level and tap the right answer. No rush, and mistakes don\'t matter.';
+  }
+
+  @override
+  String get mathLevelSums => 'Sums to 10';
+
+  @override
+  String get mathLevelUpTo20 => 'Up to 20';
+
+  @override
+  String get mathLevelUpTo100 => 'Up to 100';
+
+  @override
+  String get mathLevelTables => 'Times tables';
+
+  @override
+  String get mathLevelMultiplyDivide => 'Multiply and divide';
+
+  @override
+  String get mathLevelFractions => 'Fractions and decimals';
+
+  @override
+  String get mathLevelIntegers => 'Negatives and powers';
+
+  @override
+  String get mathLevelEquations => 'Equations and %';
+
+  @override
+  String get mathTryAgain => 'Almost! Try another one.';
+
+  @override
+  String mathRightFirstTime(int count, int total) {
+    return '$count of $total right first time!';
+  }
+
+  @override
+  String get mathOf => 'of';
+
+  @override
+  String get mathTimes => '×';
+
+  @override
+  String get mathDivide => '÷';
+
+  @override
+  String get mathDecimalPoint => '.';
+
+  @override
+  String mathPercent(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get itemStickerPizza => 'Pizza sticker';
+
+  @override
+  String get itemStickerBurger => 'Burger sticker';
+
+  @override
+  String get itemStickerRamen => 'Ramen sticker';
+
+  @override
+  String get itemStickerCroissant => 'Croissant sticker';
+
+  @override
+  String get itemStickerCake => 'Cake sticker';
+
+  @override
+  String get itemStickerCookie => 'Cookie sticker';
+
+  @override
+  String get itemStickerCocoa => 'Hot chocolate sticker';
+
+  @override
+  String get itemStickerMoon => 'Moon sticker';
+
+  @override
+  String get itemStickerSun => 'Sun sticker';
+
+  @override
+  String get itemStickerEarth => 'Earth sticker';
+
+  @override
+  String get itemStickerSatellite => 'Satellite sticker';
+
+  @override
+  String get itemStickerGalaxy => 'Galaxy sticker';
+
+  @override
+  String get itemStickerSparkles => 'Sparkles sticker';
+
+  @override
+  String get itemStickerDpad => 'D-pad sticker';
+
+  @override
+  String get itemStickerRobot => 'Robot sticker';
+
+  @override
+  String get itemStickerPuzzle => 'Puzzle piece sticker';
+
+  @override
+  String get itemStickerDice => 'Dice sticker';
+
+  @override
+  String get itemStickerChip => 'Chip sticker';
+
+  @override
+  String get itemStickerKeyboard => 'Keyboard sticker';
+
+  @override
+  String get itemStickerTrophy => 'Trophy sticker';
+
+  @override
+  String get itemStickerLeaf => 'Leaf sticker';
+
+  @override
+  String get itemStickerFlower => 'Flower sticker';
+
+  @override
+  String get itemStickerLotus => 'Lotus sticker';
+
+  @override
+  String get itemStickerDrop => 'Water drop sticker';
+
+  @override
+  String get itemStickerWaves => 'Waves sticker';
+
+  @override
+  String get itemStickerForest => 'Forest sticker';
+
+  @override
+  String get itemStickerPaw => 'Paw print sticker';
+
+  @override
+  String get itemStickerBee => 'Bee sticker';
+
+  @override
+  String get itemStickerPiano => 'Piano sticker';
+
+  @override
+  String get itemStickerHeadphones => 'Headphones sticker';
+
+  @override
+  String get itemStickerMic => 'Microphone sticker';
+
+  @override
+  String get itemStickerVinyl => 'Record sticker';
+
+  @override
+  String get itemStickerPalette => 'Paint palette sticker';
+
+  @override
+  String get itemStickerBrush => 'Paintbrush sticker';
+
+  @override
+  String get itemStickerMasks => 'Theatre masks sticker';
+
+  @override
+  String get itemStickerBook => 'Book sticker';
+
+  @override
+  String get itemStickerPencil => 'Pencil sticker';
+
+  @override
+  String get itemStickerCalculator => 'Calculator sticker';
+
+  @override
+  String get itemStickerFlask => 'Science sticker';
+
+  @override
+  String get itemStickerIdea => 'Bright idea sticker';
+
+  @override
+  String get itemStickerBackpack => 'School bag sticker';
+
+  @override
+  String get itemStickerGradCap => 'Graduation cap sticker';
+
+  @override
+  String get itemStickerRuler => 'Set square sticker';
+
+  @override
+  String get itemStickerRainbow => 'Rainbow sticker';
+
+  @override
+  String get itemStickerCloud => 'Cloud sticker';
+
+  @override
+  String get itemStickerSmiley => 'Smiley sticker';
+
+  @override
+  String get itemStickerGift => 'Present sticker';
+
+  @override
+  String get itemStickerParty => 'Confetti sticker';
+
+  @override
+  String get itemStickerUmbrella => 'Umbrella sticker';
+
+  @override
+  String get itemStickerDiamond => 'Gem sticker';
+
+  @override
+  String get albumPageFood => 'Snacks';
+
+  @override
+  String get albumPageSpace => 'Space';
+
+  @override
+  String get albumPageGames => 'Games';
+
+  @override
+  String get albumPageNature => 'Nature';
+
+  @override
+  String get albumPageMusic => 'Music and art';
+
+  @override
+  String get albumPageSchool => 'School';
+
+  @override
+  String get albumPageCute => 'Cute things';
+
+  @override
+  String get achievementsTitle => 'Achievements';
+
+  @override
+  String get achievementUnlocked => 'New achievement!';
+
+  @override
+  String get achievementWhere => 'You\'ll find it in the album.';
+
+  @override
+  String get achievementOk => 'Yay!';
+
+  @override
+  String achievementsCount(int count, int total) {
+    return '$count of $total';
+  }
+
+  @override
+  String get achievementCollector => 'The collector';
+
+  @override
+  String get achievementCollectorHow => 'Buy every sticker in the shop.';
+
+  @override
+  String get achievementFruitMuncher => 'Fruit muncher';
+
+  @override
+  String achievementFruitMuncherHow(int count) {
+    return 'Catch $count or more fruits in a round without a single stone.';
+  }
+
+  @override
+  String get achievementCleanestInPond => 'Cleanest in the pond';
+
+  @override
+  String achievementCleanestInPondHow(String name) {
+    return 'Give $name a whole bath without picking a wrong thing even once.';
+  }
+
+  @override
+  String get achievementCapybaraEye => 'Capybara eye';
+
+  @override
+  String achievementCapybaraEyeHow(String name) {
+    return 'Find $name in every turn of hide and seek.';
+  }
+
+  @override
+  String get achievementCapybaraMemory => 'Capybara memory';
+
+  @override
+  String get achievementCapybaraMemoryHow =>
+      'Finish a memory game without missing a pair you had already seen.';
+
+  @override
+  String get achievementMathWhiz => 'Maths whiz';
+
+  @override
+  String get achievementMathWhizHow =>
+      'Get all ten right the first time in maths class.';
+
+  @override
+  String get albumPreviousPage => 'Previous page';
+
+  @override
+  String get albumNextPage => 'Next page';
+
+  @override
+  String get albumOtherPages => 'More loose stickers wait on other pages.';
+
+  @override
+  String get renameButton => 'Change name';
+
+  @override
+  String renameTitle(String name) {
+    return 'What shall we call $name?';
+  }
+
+  @override
+  String get renameField => 'Name';
+
+  @override
+  String get renameFirstFree =>
+      'This first name is free; after that you can change it once a month.';
+
+  @override
+  String get renameMonthly => 'You can change the name once a month.';
+
+  @override
+  String get renameWait => 'You can choose a new name again next month.';
+
+  @override
+  String get renameSave => 'Save';
+
+  @override
+  String get renameCancel => 'Cancel';
+
+  @override
+  String renamedStatus(String name) {
+    return 'Hmmm… $name. I think I could get used to this new name.';
+  }
+
+  @override
+  String get schoolStatus =>
+      'Class time! I\'m studying hard, but a little game sounds fun too.';
 }

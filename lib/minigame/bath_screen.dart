@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../game/achievements.dart';
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show coinsForSpots;
 import '../l10n/app_localizations.dart';
@@ -10,6 +11,7 @@ import '../sound/sound_effects.dart';
 import '../ui/bath_art.dart';
 import '../ui/chigui_view.dart';
 import '../ui/palette.dart';
+import '../ui/pet_name.dart';
 import 'bath_game.dart';
 import 'game_parts.dart';
 
@@ -58,7 +60,7 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
   Timer? _hintTimer;
   Reaction? _reaction;
   int _reactionId = 0;
-  RoundPay _pay = (earned: 0, piggyBankFull: false);
+  RoundPay _pay = noPay;
 
   /// Chigüi's square in the stage, from the last layout.
   Rect _chigui = Rect.zero;
@@ -184,7 +186,11 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
     if (!await _wait(const Duration(milliseconds: 1400))) return;
     sfx.play(Sfx.reward);
     setState(() {
-      _pay = payRound(widget.controller, coinsForSpots(_game.spots.length));
+      _pay = payRound(
+        widget.controller,
+        coinsForSpots(_game.spots.length),
+        achievement: _game.wrongTools == 0 ? Achievement.cleanestInPond : null,
+      );
       _baths++;
       _phase = _Phase.done;
     });
@@ -277,7 +283,7 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
       child: switch (_phase) {
         _Phase.ready => GameIntro(
           title: l10n.bathTitle,
-          hint: l10n.bathHint,
+          hint: l10n.bathHint(l10n.petName(widget.controller.state)),
           start: [
             GameButton(
               icon: Icons.play_arrow,
@@ -291,6 +297,7 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
           builder: (context, _) => _playArea(l10n),
         ),
         _Phase.done => RoundResult(
+          name: l10n.petName(widget.controller.state),
           summary: l10n.bathSpots(_game.spots.length),
           pay: _pay,
           onPlayAgain: _start,
@@ -300,12 +307,14 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
   }
 
   String _status(AppLocalizations l10n) => switch (_game.stage) {
-    BathStage.arrive when _moving == _Move.run => l10n.bathArrive,
-    BathStage.arrive => l10n.bathHopIn,
+    BathStage.arrive when _moving == _Move.run => l10n.bathArrive(
+      l10n.petName(widget.controller.state),
+    ),
+    BathStage.arrive => l10n.bathHopIn(l10n.petName(widget.controller.state)),
     BathStage.wash => l10n.bathWash,
     BathStage.yuzu => l10n.bathYuzu,
     BathStage.soak => l10n.bathSoak,
-    BathStage.dry => l10n.bathDry,
+    BathStage.dry => l10n.bathDry(l10n.petName(widget.controller.state)),
     BathStage.done => l10n.bathDone,
   };
 

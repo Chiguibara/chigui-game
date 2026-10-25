@@ -26,6 +26,8 @@ import 'reminders_dialog.dart';
 import 'whats_new.dart';
 import 'game_frame.dart';
 import 'sprites.dart';
+import 'pet_name.dart';
+import 'rename_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -219,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _react(Reaction? reaction) {
     if (reaction == null) return;
-    _refusedForSchool = false;
+    _renamed = false;
     _clearReaction?.cancel();
     setState(() {
       _reaction = reaction;
@@ -227,12 +229,29 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  /// A cuddle; a sleeping Chigüi wakes up with a big yawn.
+  /// True while Chigüi is happy about a new name.
+  bool _renamed = false;
+
+  Future<void> _onRename() async {
+    if (!await showRenameDialog(context, _pet) || !mounted) return;
+    sfx.play(Sfx.sparkle);
+    _react(Reaction.love);
+    _renamed = true;
+  }
+
+  /// A cuddle; a sleeping Chigüi wakes up with a big yawn, and in class
+  /// Chigüi turns the pages faster instead.
   void _onPet() {
     final woke = _pet.asleep;
     _pet.pet();
     sfx.play(Sfx.pet);
-    _react(woke ? Reaction.yawn : Reaction.love);
+    _react(
+      woke
+          ? Reaction.yawn
+          : _pet.inSchool
+          ? Reaction.study
+          : Reaction.love,
+    );
   }
 
   void _onFeed() {
@@ -286,16 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MaterialPageRoute<void>(builder: (_) => AlbumScreen(controller: _pet)),
   );
 
-  /// True when the last "no" was because it is class time.
-  bool _refusedForSchool = false;
-
   void _onPlay() {
-    if (_pet.inSchool) {
-      sfx.play(Sfx.refuse);
-      _react(Reaction.refuse);
-      _refusedForSchool = true;
-      return;
-    }
     _pet.wake();
     Navigator.of(context).push(
       MaterialPageRoute<void>(builder: (_) => GamesScreen(controller: _pet)),
@@ -328,33 +338,34 @@ class _HomeScreenState extends State<HomeScreen> {
   String _status(AppLocalizations l10n) {
     final state = _pet.state;
     return switch (_reaction) {
+      Reaction.love when _renamed => l10n.renamedStatus(l10n.petName(state)),
       Reaction.love => switch (state.level(Need.affection)) {
-        < wishLevel => l10n.pettedLowStatus,
+        < wishLevel => l10n.pettedLowStatus(l10n.petName(_pet.state)),
         < happyLevel => l10n.pettedMidStatus,
-        _ => l10n.lovedStatus,
+        _ => l10n.lovedStatus(l10n.petName(_pet.state)),
       },
-      Reaction.refuse =>
-        _refusedForSchool ? l10n.schoolStatus : l10n.fullStatus,
+      Reaction.refuse => l10n.fullStatus(l10n.petName(_pet.state)),
+      Reaction.study => l10n.studyStatus,
       Reaction.relief => l10n.reliefStatus,
       Reaction.cured => l10n.curedStatus,
       Reaction.cleaned => l10n.cleanedStatus,
       Reaction.chomp => l10n.ateStatus,
       Reaction.walk => l10n.walkedStatus,
-      Reaction.yawn => l10n.yawnStatus,
+      Reaction.yawn => l10n.yawnStatus(l10n.petName(_pet.state)),
       // Only the minigame's stones bonk Chigüi.
       Reaction.ouch => l10n.ouchSound,
-      null when _pet.asleep => l10n.asleepStatus,
-      null when state.sick => l10n.sickStatus,
-      null when state.needsPotty => l10n.pottyStatus,
-      null when _pet.sleepy => l10n.sleepyStatus,
+      null when _pet.asleep => l10n.asleepStatus(l10n.petName(_pet.state)),
+      null when state.sick => l10n.sickStatus(l10n.petName(_pet.state)),
+      null when state.needsPotty => l10n.pottyStatus(l10n.petName(_pet.state)),
+      null when _pet.sleepy => l10n.sleepyStatus(l10n.petName(_pet.state)),
       null when _pet.pendingMeal != null => l10n.mealtimeStatus,
       null when _pet.inSchool => l10n.schoolStatus,
       null when state.messes > 0 => l10n.messStatus,
       null => switch (_pet.wish) {
-        Need.food => l10n.wantsFood,
-        Need.affection => l10n.wantsAffection,
-        Need.fun => l10n.wantsFun,
-        null => l10n.tapHint,
+        Need.food => l10n.wantsFood(l10n.petName(_pet.state)),
+        Need.affection => l10n.wantsAffection(l10n.petName(_pet.state)),
+        Need.fun => l10n.wantsFun(l10n.petName(_pet.state)),
+        null => l10n.tapHint(l10n.petName(_pet.state)),
       },
     };
   }
@@ -398,12 +409,29 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _title(AppLocalizations l10n, TextTheme textTheme) => Text(
-    l10n.chiguiName,
-    style: textTheme.headlineMedium?.copyWith(
-      color: Palette.ink,
-      fontWeight: FontWeight.w700,
-    ),
+  /// The pet's name, with a pencil to change it.
+  Widget _title(AppLocalizations l10n, TextTheme textTheme) => Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      const SizedBox(width: 48),
+      Flexible(
+        child: Text(
+          l10n.petName(_pet.state),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: textTheme.headlineMedium?.copyWith(
+            color: Palette.ink,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      IconButton(
+        onPressed: _onRename,
+        tooltip: l10n.renameButton,
+        icon: const Icon(Icons.edit, size: 20),
+        color: Palette.ink.withValues(alpha: 0.6),
+      ),
+    ],
   );
 
   Widget _chigui(double size) {
@@ -415,6 +443,7 @@ class _HomeScreenState extends State<HomeScreen> {
       wearing: state.equipped,
       bubble: _bubble,
       messes: state.messes,
+      name: AppLocalizations.of(context).petName(state),
       onTap: _onPet,
       onCleanMess: _onClean,
       reaction: _reaction,

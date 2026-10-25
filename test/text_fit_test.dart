@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:chigui_game/game/achievements.dart';
+import 'package:chigui_game/game/catalog.dart';
 import 'package:chigui_game/l10n/app_localizations.dart';
+import 'package:chigui_game/shop/item_display.dart';
+import 'package:chigui_game/ui/achievements_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -23,6 +27,9 @@ void main() {
 
   // The phone frame on a 360×740 screen is 341 px wide.
   const frame = 341.0;
+
+  // A long name players might give Chigüi.
+  const name = 'Bartolomeo';
 
   bool fits(
     String text, {
@@ -76,26 +83,28 @@ void main() {
 
       // Home status line: two lines, 24 px padding each side.
       for (final (name, text) in [
-        ('tapHint', l.tapHint),
-        ('lovedStatus', l.lovedStatus),
-        ('pettedLowStatus', l.pettedLowStatus),
+        ('tapHint', l.tapHint(name)),
+        ('lovedStatus', l.lovedStatus(name)),
+        ('pettedLowStatus', l.pettedLowStatus(name)),
         ('pettedMidStatus', l.pettedMidStatus),
         ('ateStatus', l.ateStatus),
-        ('fullStatus', l.fullStatus),
-        ('wantsFood', l.wantsFood),
-        ('wantsAffection', l.wantsAffection),
-        ('wantsFun', l.wantsFun),
-        ('asleepStatus', l.asleepStatus),
-        ('sickStatus', l.sickStatus),
-        ('pottyStatus', l.pottyStatus),
-        ('sleepyStatus', l.sleepyStatus),
+        ('fullStatus', l.fullStatus(name)),
+        ('wantsFood', l.wantsFood(name)),
+        ('wantsAffection', l.wantsAffection(name)),
+        ('wantsFun', l.wantsFun(name)),
+        ('asleepStatus', l.asleepStatus(name)),
+        ('sickStatus', l.sickStatus(name)),
+        ('pottyStatus', l.pottyStatus(name)),
+        ('sleepyStatus', l.sleepyStatus(name)),
         ('mealtimeStatus', l.mealtimeStatus),
-        ('yawnStatus', l.yawnStatus),
+        ('yawnStatus', l.yawnStatus(name)),
         ('messStatus', l.messStatus),
         ('reliefStatus', l.reliefStatus),
         ('curedStatus', l.curedStatus),
         ('cleanedStatus', l.cleanedStatus),
         ('walkedStatus', l.walkedStatus),
+        ('studyStatus', l.studyStatus),
+        ('renamedStatus', l.renamedStatus(name)),
         ('schoolStatus', l.schoolStatus),
       ]) {
         check(
@@ -110,23 +119,75 @@ void main() {
 
       // Hide-and-seek and bath statuses, and the game list's cards: two lines, large.
       for (final (name, text, width) in [
-        ('hideWatch', l.hideWatch, frame - 32),
-        ('hidePick', l.hidePick, frame - 32),
+        ('hideWatch', l.hideWatch(name), frame - 32),
+        ('hidePick', l.hidePick(name), frame - 32),
         ('hideFound', l.hideFound, frame - 32),
         ('hideMissed', l.hideMissed, frame - 32),
         ('minigameTitle', l.minigameTitle, 300 - 32 - 64 - 16.0),
         ('memoryTitle', l.memoryTitle, 300 - 32 - 64 - 16.0),
         ('hideTitle', l.hideTitle, 300 - 32 - 64 - 16.0),
         ('bathTitle', l.bathTitle, 300 - 32 - 64 - 16.0),
-        ('bathArrive', l.bathArrive, frame - 32),
-        ('bathHopIn', l.bathHopIn, frame - 32),
+        ('mathTitle', l.mathTitle, 300 - 32 - 64 - 16.0),
+        ('mathTryAgain', l.mathTryAgain, frame - 32),
+        ('bathArrive', l.bathArrive(name), frame - 32),
+        ('bathHopIn', l.bathHopIn(name), frame - 32),
         ('bathWash', l.bathWash, frame - 32),
         ('bathYuzu', l.bathYuzu, frame - 32),
         ('bathSoak', l.bathSoak, frame - 32),
-        ('bathDry', l.bathDry, frame - 32),
+        ('bathDry', l.bathDry(name), frame - 32),
         ('bathDone', l.bathDone, frame - 32),
       ]) {
         check(name, text, width: width, lines: 2, size: 22);
+      }
+
+      // Maths levels: one line, 14 px medium, beside up to four coins.
+      for (final (name, text) in [
+        ('mathLevelSums', l.mathLevelSums),
+        ('mathLevelUpTo20', l.mathLevelUpTo20),
+        ('mathLevelUpTo100', l.mathLevelUpTo100),
+        ('mathLevelTables', l.mathLevelTables),
+        ('mathLevelMultiplyDivide', l.mathLevelMultiplyDivide),
+        ('mathLevelFractions', l.mathLevelFractions),
+        ('mathLevelIntegers', l.mathLevelIntegers),
+        ('mathLevelEquations', l.mathLevelEquations),
+      ]) {
+        check(
+          name,
+          text,
+          width: 300 - 32 - 8 - 4 * 20.0,
+          lines: 1,
+          size: 14,
+          weight: FontWeight.w500,
+        );
+      }
+
+      // Album page titles, between the arrows, with "· 8/8": one line.
+      for (final page in AlbumPage.values) {
+        check(
+          page.name,
+          '${l.albumPageName(page)} · 8/8',
+          width: 3 * 96 + 2 * 8 + 2 * 8 - 2 * 48,
+          lines: 1,
+          size: 16,
+          weight: FontWeight.w700,
+        );
+      }
+
+      // Sticker names under their album spots: two lines, 12 px.
+      for (final item in stickers) {
+        check(item.id, l.itemName(item), width: 96, lines: 2, size: 12);
+      }
+
+      // Achievement cards: the name on one line, beside the medal.
+      for (final a in Achievement.values) {
+        check(
+          a.name,
+          l.achievementName(a),
+          width: 320 - 24 - 72 - 12,
+          lines: 1,
+          size: 16,
+          weight: FontWeight.w700,
+        );
       }
 
       // Shop message: three lines, 16 px padding each side.
@@ -152,6 +213,7 @@ void main() {
         ('albumStuck', l.albumStuck),
         ('albumAllStuck', l.albumAllStuck),
         ('albumComplete', l.albumComplete),
+        ('albumOtherPages', l.albumOtherPages),
       ]) {
         check(
           name,

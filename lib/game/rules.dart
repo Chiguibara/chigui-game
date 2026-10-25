@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'achievements.dart';
 import 'catalog.dart';
 import 'game_event.dart';
 import 'pet_state.dart';
@@ -19,18 +20,39 @@ const playFunGain = 0.3;
 
 /// Minigames pay a little, so the shop lasts: fruit catch one coin per
 /// [fruitsPerCoin] fruits, memory one per [pairsPerCoin] pairs,
-/// hide-and-seek [coinsPerFind] per find, and the bath one per
-/// [spotsPerCoin] spots cleaned (rounded up).
+/// hide-and-seek [coinsPerFind] per find, the bath one per
+/// [spotsPerCoin] spots cleaned (rounded up), and maths up to
+/// [mathCoinsPerRound] for a round all right the first time, by level: the
+/// easier the level, the fewer coins.
 const fruitsPerCoin = 5;
 const pairsPerCoin = 2;
 const coinsPerFind = 1;
 const spotsPerCoin = 2;
+const mathCoinsPerRound = [
+  1,
+  1,
+  2,
+  2,
+  3,
+  3,
+  4,
+  4,
+];
 
 int coinsForFruits(int caught) => caught ~/ fruitsPerCoin;
 
 int coinsForPairs(int pairs) => pairs ~/ pairsPerCoin;
 
 int coinsForSpots(int spots) => (spots + spotsPerCoin - 1) ~/ spotsPerCoin;
+
+/// Coins for [right] of [questions] answered right the first time at
+/// [level] (its index), in proportion and rounded.
+int coinsForMath(int level, int right, int questions) =>
+    (2 * right * mathCoinsPerRound[level] + questions) ~/ (2 * questions);
+
+/// Zampafrutas: a fruit catch round with no stone bonks needs at least this
+/// many fruits eaten, so standing still and dodging does not count.
+const fruitMuncherFruits = 25;
 
 /// The minigames stop giving coins after this many in a day (all games
 /// together); playing stays fun (and still raises fun), the piggy bank is
@@ -328,7 +350,14 @@ Outcome visitVet(PetState state, DateTime now) {
 
 /// A finished minigame round: more fun, plus the [coins] it was worth, up to
 /// what the daily limit allows.
-Outcome finishRound(PetState state, DateTime now, {required int coins}) {
+/// Ends a minigame round worth [coins]; a flawless round also earns its
+/// [achievement].
+Outcome finishRound(
+  PetState state,
+  DateTime now, {
+  required int coins,
+  Achievement? achievement,
+}) {
   final current = advance(state, now);
   final s = _together(current.state, now);
   final left = max(0, minigameCoinsLeft(s, now));
@@ -339,6 +368,7 @@ Outcome finishRound(PetState state, DateTime now, {required int coins}) {
       coins: s.coins + earned,
       minigameCoinsToday: maxMinigameCoinsPerDay - left + earned,
       minigameDay: DateTime(local.year, local.month, local.day),
+      achievements: {...s.achievements, ?achievement},
     ),
     events: [...current.events, GameEvent(EventType.played, now)],
     ok: true,
@@ -371,6 +401,11 @@ Outcome buy(PetState state, DateTime now, Item item) {
         : {...s.equipped, item.slot: item.id},
   );
   if (item.season != null) next = _raise(next, Need.fun, seasonalFunGain);
+  if (stickers.every((s) => next.owned.contains(s.id))) {
+    next = next.copyWith(
+      achievements: {...next.achievements, Achievement.collector},
+    );
+  }
   return (
     state: next,
     events: [...current.events, GameEvent(EventType.bought, now)],
@@ -526,4 +561,50 @@ Need? wish(PetState state) {
     }
   }
   return lowest;
+}
+
+/// Longest name Chigüi can be given, in characters (Unicode code points).
+const maxPetNameLength = 12;
+
+/// [name] tidied up (spaces trimmed and collapsed, cut to
+/// [maxPetNameLength]), or null when nothing is left.
+String? cleanPetName(String name) {
+  final clean = name.trim().replaceAll(RegExp(r'\s+'), ' ');
+  if (clean.isEmpty) return null;
+  final runes = clean.runes;
+  return runes.length <= maxPetNameLength
+      ? clean
+      : String.fromCharCodes(runes.take(maxPetNameLength)).trimRight();
+}
+
+/// When the name can next be changed: now for a new game's free naming or
+/// a month without a change, otherwise the first day of next month.
+DateTime nextRename(PetState state, DateTime now) {
+  final last = state.renamedAt?.toLocal();
+  final local = now.toLocal();
+  if (state.freeRename ||
+      last == null ||
+      (last.year, last.month) != (local.year, local.month)) {
+    return now;
+  }
+  return DateTime(local.year, local.month + 1);
+}
+
+bool canRename(PetState state, DateTime now) =>
+    !nextRename(state, now).isAfter(now);
+
+/// Gives Chigüi a new name: a new game's free naming first, then once a
+/// calendar month.
+Outcome rename(PetState state, DateTime now, String name) {
+  final clean = cleanPetName(name);
+  if (clean == null || !canRename(state, now)) {
+    return (state: state, events: const [], ok: false);
+  }
+  return (
+    state: state.freeRename
+        ? state.copyWith(name: clean, freeRename: false)
+        : state.copyWith(name: clean, renamedAt: now),
+    events: const [],
+    ok: true,
+  );
 }

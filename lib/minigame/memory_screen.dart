@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../game/achievements.dart';
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show coinsForPairs;
 import '../l10n/app_localizations.dart';
@@ -13,6 +14,7 @@ import '../ui/sprites.dart';
 import 'catch_game.dart' show FruitKind;
 import 'game_parts.dart';
 import 'memory_game.dart';
+import '../ui/pet_name.dart';
 
 enum _Phase { ready, playing, done }
 
@@ -35,7 +37,7 @@ class _MemoryScreenState extends State<MemoryScreen> {
   int _pairs = memoryBoards.first;
   Timer? _hideMiss;
   int _reactionId = 0;
-  RoundPay _pay = (earned: 0, piggyBankFull: false);
+  RoundPay _pay = noPay;
 
   @override
   void dispose() {
@@ -79,7 +81,11 @@ class _MemoryScreenState extends State<MemoryScreen> {
     if (!mounted) return;
     sfx.play(Sfx.reward);
     setState(() {
-      _pay = payRound(widget.controller, coinsForPairs(_game.pairsFound));
+      _pay = payRound(
+        widget.controller,
+        coinsForPairs(_game.pairsFound),
+        achievement: _game.slips == 0 ? Achievement.capybaraMemory : null,
+      );
       _phase = _Phase.done;
     });
   }
@@ -105,6 +111,7 @@ class _MemoryScreenState extends State<MemoryScreen> {
         ),
         _Phase.playing => _board(l10n),
         _Phase.done => RoundResult(
+          name: l10n.petName(widget.controller.state),
           summary: l10n.pairsFound(_game.pairsFound),
           pay: _pay,
           onPlayAgain: () => _start(_pairs),

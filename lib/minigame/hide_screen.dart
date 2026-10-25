@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../game/achievements.dart';
 import '../game/pet_controller.dart';
 import '../game/rules.dart' show coinsPerFind;
 import '../l10n/app_localizations.dart';
@@ -11,6 +12,7 @@ import '../ui/chigui_view.dart';
 import '../ui/sprites.dart';
 import 'game_parts.dart';
 import 'hide_game.dart';
+import '../ui/pet_name.dart';
 
 enum _Phase { ready, playing, done }
 
@@ -50,7 +52,7 @@ class _HideScreenState extends State<HideScreen> with TickerProviderStateMixin {
   var _revealed = <int>[];
   bool _right = false;
   int _reactionId = 0;
-  RoundPay _pay = (earned: 0, piggyBankFull: false);
+  RoundPay _pay = noPay;
 
   @override
   void initState() {
@@ -170,7 +172,11 @@ class _HideScreenState extends State<HideScreen> with TickerProviderStateMixin {
     }
     sfx.play(Sfx.reward);
     setState(() {
-      _pay = payRound(widget.controller, _game.found * coinsPerFind);
+      _pay = payRound(
+        widget.controller,
+        _game.found * coinsPerFind,
+        achievement: _game.found == hideTurns ? Achievement.capybaraEye : null,
+      );
       _phase = _Phase.done;
     });
   }
@@ -182,7 +188,7 @@ class _HideScreenState extends State<HideScreen> with TickerProviderStateMixin {
       child: switch (_phase) {
         _Phase.ready => GameIntro(
           title: l10n.hideTitle,
-          hint: l10n.hideHint,
+          hint: l10n.hideHint(l10n.petName(widget.controller.state)),
           start: [
             GameButton(
               icon: Icons.play_arrow,
@@ -196,7 +202,11 @@ class _HideScreenState extends State<HideScreen> with TickerProviderStateMixin {
           builder: (context, _) => _playArea(l10n),
         ),
         _Phase.done => RoundResult(
-          summary: l10n.timesFound(_game.found),
+          name: l10n.petName(widget.controller.state),
+          summary: l10n.timesFound(
+            _game.found,
+            l10n.petName(widget.controller.state),
+          ),
           pay: _pay,
           onPlayAgain: _start,
         ),
@@ -205,8 +215,10 @@ class _HideScreenState extends State<HideScreen> with TickerProviderStateMixin {
   }
 
   String _status(AppLocalizations l10n) => switch (_step) {
-    _Step.show || _Step.cover || _Step.swap => l10n.hideWatch,
-    _Step.pick => l10n.hidePick,
+    _Step.show ||
+    _Step.cover ||
+    _Step.swap => l10n.hideWatch(l10n.petName(widget.controller.state)),
+    _Step.pick => l10n.hidePick(l10n.petName(widget.controller.state)),
     _Step.reveal => _right ? l10n.hideFound : l10n.hideMissed,
   };
 

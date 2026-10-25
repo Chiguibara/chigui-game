@@ -119,26 +119,26 @@ abstract class AppLocalizations {
   /// Idle prompt under the pet inviting the player to tap it.
   ///
   /// In en, this message translates to:
-  /// **'Tap Chigüi to say hi'**
-  String get tapHint;
+  /// **'Tap {name} to say hi'**
+  String tapHint(String name);
 
   /// Screen reader hint for the tap action on the pet.
   ///
   /// In en, this message translates to:
-  /// **'pet Chigüi'**
-  String get petAction;
+  /// **'pet {name}'**
+  String petAction(String name);
 
   /// After petting once affection is high.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi is happy!'**
-  String get lovedStatus;
+  /// **'{name} is happy!'**
+  String lovedStatus(String name);
 
   /// After petting while affection is still low: invites more petting, never sad.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi liked that! More cuddles, please?'**
-  String get pettedLowStatus;
+  /// **'{name} liked that! More cuddles, please?'**
+  String pettedLowStatus(String name);
 
   /// After petting while affection is medium.
   ///
@@ -155,26 +155,26 @@ abstract class AppLocalizations {
   /// Shown when the player feeds Chigüi while full. Friendly, never scolding.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi has had enough for now'**
-  String get fullStatus;
+  /// **'{name} has had enough for now'**
+  String fullStatus(String name);
 
   /// Gentle hint when food is low. Must not sound urgent or guilt-inducing.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi could go for a snack'**
-  String get wantsFood;
+  /// **'{name} could go for a snack'**
+  String wantsFood(String name);
 
   /// Gentle hint when affection is low.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi would love some cuddles'**
-  String get wantsAffection;
+  /// **'{name} would love some cuddles'**
+  String wantsAffection(String name);
 
   /// Gentle hint when fun is low.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi feels like playing'**
-  String get wantsFun;
+  /// **'{name} feels like playing'**
+  String wantsFun(String name);
 
   /// Button that gives Chigüi a snack.
   ///
@@ -227,26 +227,26 @@ abstract class AppLocalizations {
   /// Shown while Chigüi sleeps at night. Nothing is blocked: tapping or playing wakes Chigüi up.
   ///
   /// In en, this message translates to:
-  /// **'Shh… Chigüi is sleeping'**
-  String get asleepStatus;
+  /// **'Shh… {name} is sleeping'**
+  String asleepStatus(String name);
 
   /// Shown while Chigüi is sick. Calm, never scary or guilt-inducing.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi doesn\'t feel well. Time for the vet!'**
-  String get sickStatus;
+  /// **'{name} doesn\'t feel well. Time for the vet!'**
+  String sickStatus(String name);
 
   /// Shown while Chigüi needs to poop.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi needs the toilet!'**
-  String get pottyStatus;
+  /// **'{name} needs the toilet!'**
+  String pottyStatus(String name);
 
   /// Shown at night while Chigüi is awake after being woken up, until falling asleep again.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi is sleepy'**
-  String get sleepyStatus;
+  /// **'{name} is sleepy'**
+  String sleepyStatus(String name);
 
   /// Shown during a mealtime window before Chigüi has eaten.
   ///
@@ -257,8 +257,8 @@ abstract class AppLocalizations {
   /// Shown when a cuddle wakes a sleeping Chigüi, who yawns. Cheerful, never a reproach for waking them.
   ///
   /// In en, this message translates to:
-  /// **'Yaaawn… Chigüi woke up!'**
-  String get yawnStatus;
+  /// **'Yaaawn… {name} woke up!'**
+  String yawnStatus(String name);
 
   /// Shown while there is an uncleaned accident.
   ///
@@ -305,8 +305,8 @@ abstract class AppLocalizations {
   /// How to play, shown before starting.
   ///
   /// In en, this message translates to:
-  /// **'Drag to move Chigüi: catch the fruit and dodge the stones!'**
-  String get minigameHint;
+  /// **'Drag to move {name}: catch the fruit and dodge the stones!'**
+  String minigameHint(String name);
 
   /// Added under how to play fruit catch and the walk, on the web on a computer: the arrow keys move Chigüi or step with each foot.
   ///
@@ -335,8 +335,8 @@ abstract class AppLocalizations {
   /// Coins earned in the round.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0{Chigüi had fun anyway!} =1{+1 coin} other{+{count} coins}}'**
-  String coinsEarned(int count);
+  /// **'{count, plural, =0{{name} had fun anyway!} =1{+1 coin} other{+{count} coins}}'**
+  String coinsEarned(int count, String name);
 
   /// Title on the results screen.
   ///
@@ -407,20 +407,20 @@ abstract class AppLocalizations {
   /// How to play hide-and-seek, shown before starting.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi hides under a box, then the boxes move. Keep your eyes on it!'**
-  String get hideHint;
+  /// **'{name} hides under a box, then the boxes move. Keep your eyes on it!'**
+  String hideHint(String name);
 
   /// Hide-and-seek, while the boxes move.
   ///
   /// In en, this message translates to:
-  /// **'Keep your eyes on Chigüi\'s box…'**
-  String get hideWatch;
+  /// **'Keep your eyes on {name}\'s box…'**
+  String hideWatch(String name);
 
   /// Hide-and-seek, when the player picks a box.
   ///
   /// In en, this message translates to:
-  /// **'Where is Chigüi?'**
-  String get hidePick;
+  /// **'Where is {name}?'**
+  String hidePick(String name);
 
   /// Hide-and-seek, Chigüi was under the picked box. Chigüi speaks.
   ///
@@ -443,8 +443,8 @@ abstract class AppLocalizations {
   /// Hide-and-seek result. Never discouraging.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0{Chigüi is great at hiding!} =1{You found Chigüi once} other{You found Chigüi {count} times}}'**
-  String timesFound(int count);
+  /// **'{count, plural, =0{{name} is great at hiding!} =1{You found {name} once} other{You found {name} {count} times}}'**
+  String timesFound(int count, String name);
 
   /// Title of the bath minigame (a game card and its intro). Short and cute.
   ///
@@ -455,20 +455,20 @@ abstract class AppLocalizations {
   /// Bath minigame intro: how to play. Chigüi got dirty having fun, never by neglect.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi got super messy playing! Pop Chigüi into the tub, then pick the right things to clean off the sticky spots.'**
-  String get bathHint;
+  /// **'{name} got super messy playing! Pop {name} into the tub, then pick the right things to clean off the sticky spots.'**
+  String bathHint(String name);
 
   /// Bath minigame status while Chigüi runs in, covered in sticky tar and gravel. Funny, never a reproach.
   ///
   /// In en, this message translates to:
-  /// **'Here comes Chigüi, sticky up to the ears!'**
-  String get bathArrive;
+  /// **'Here comes {name}, sticky up to the ears!'**
+  String bathArrive(String name);
 
   /// Bath minigame status: tap Chigüi to jump into the wooden tub.
   ///
   /// In en, this message translates to:
-  /// **'Tap Chigüi to hop into the tub!'**
-  String get bathHopIn;
+  /// **'Tap {name} to hop into the tub!'**
+  String bathHopIn(String name);
 
   /// Bath minigame status while cleaning: pick a tool (soap, brush, ladle) and clean the sticky spots. Does not say which tool.
   ///
@@ -491,8 +491,8 @@ abstract class AppLocalizations {
   /// Bath minigame status: Chigüi hopped out, rub them dry with the towel.
   ///
   /// In en, this message translates to:
-  /// **'Out of the water! Dry Chigüi with the towel'**
-  String get bathDry;
+  /// **'Out of the water! Dry {name} with the towel'**
+  String bathDry(String name);
 
   /// Bath minigame status at the end: Chigüi is clean and dry.
   ///
@@ -569,8 +569,8 @@ abstract class AppLocalizations {
   /// Shop screen title.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi\'s shop'**
-  String get shopTitle;
+  /// **'{name}\'s shop'**
+  String shopTitle(String name);
 
   /// Default line in the shop.
   ///
@@ -635,8 +635,8 @@ abstract class AppLocalizations {
   /// Title of the sticker album screen.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi\'s album'**
-  String get albumTitle;
+  /// **'{name}\'s album'**
+  String albumTitle(String name);
 
   /// Album status line while there are loose stickers to drag onto their spots.
   ///
@@ -893,8 +893,8 @@ abstract class AppLocalizations {
   /// Walk scene title.
   ///
   /// In en, this message translates to:
-  /// **'Walk with Chigüi'**
-  String get walkTitle;
+  /// **'Walk with {name}'**
+  String walkTitle(String name);
 
   /// Explains the walk scene before starting.
   ///
@@ -905,8 +905,8 @@ abstract class AppLocalizations {
   /// Explains the walk scene on PCs, where there is no motion sensor.
   ///
   /// In en, this message translates to:
-  /// **'Tap the feet to walk with Chigüi, as fast as you like!'**
-  String get walkIntroTapping;
+  /// **'Tap the feet to walk with {name}, as fast as you like!'**
+  String walkIntroTapping(String name);
 
   /// Starts the walk.
   ///
@@ -959,8 +959,8 @@ abstract class AppLocalizations {
   /// When the daily walk rewards are used up. Half geeky, half funny; steps still count.
   ///
   /// In en, this message translates to:
-  /// **'So many walks! Chigüi\'s batteries are flat. More tomorrow!'**
-  String get walksCapped;
+  /// **'So many walks! {name}\'s batteries are flat. More tomorrow!'**
+  String walksCapped(String name);
 
   /// Tooltip of the button that turns sound effects off.
   ///
@@ -983,8 +983,8 @@ abstract class AppLocalizations {
   /// Reminder settings while off: what reminders do. Calm, no pressure.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.'**
-  String get remindersOffInfo;
+  /// **'{name} can send a gentle reminder at mealtimes and when it\'s toilet time, never during class or at night. They are off for now.'**
+  String remindersOffInfo(String name);
 
   /// Reminder settings while on.
   ///
@@ -1007,8 +1007,8 @@ abstract class AppLocalizations {
   /// Shown when the phone does not allow notifications for the app.
   ///
   /// In en, this message translates to:
-  /// **'Notifications for Chigüi are blocked in the phone\'s settings.'**
-  String get remindersDenied;
+  /// **'Notifications for {name} are blocked in the phone\'s settings.'**
+  String remindersDenied(String name);
 
   /// Button under the blocked-notifications message that opens the phone's notification settings for the app.
   ///
@@ -1019,14 +1019,14 @@ abstract class AppLocalizations {
   /// Notification at the start of a mealtime, while the game is closed. Gentle, never guilt-tripping.
   ///
   /// In en, this message translates to:
-  /// **'It\'s mealtime! Chigüi would love something yummy.'**
-  String get reminderMeal;
+  /// **'It\'s mealtime! {name} would love something yummy.'**
+  String reminderMeal(String name);
 
   /// Notification when Chigüi needs the toilet, while the game is closed. Gentle, never guilt-tripping.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi needs the toilet! Can you help?'**
-  String get reminderPotty;
+  /// **'{name} needs the toilet! Can you help?'**
+  String reminderPotty(String name);
 
   /// Name of the notification channel, shown in the phone's notification settings.
   ///
@@ -1205,19 +1205,643 @@ abstract class AppLocalizations {
   /// In the walk, when tapped feet have reached their daily limit of walks: Chigüi pants, out of breath. Funny, never scolding; real steps still count.
   ///
   /// In en, this message translates to:
-  /// **'Phew, phew! Chigüi is out of breath from so much tapping. More tomorrow, or go for a real walk!'**
-  String get tapsCapped;
+  /// **'Phew, phew! {name} is out of breath from so much tapping. More tomorrow, or go for a real walk!'**
+  String tapsCapped(String name);
 
   /// Minigame results when the daily coin limit is reached. Cheerful: playing still raises fun; never 'you can't'.
   ///
   /// In en, this message translates to:
-  /// **'Chigüi\'s piggy bank is full for today! Playing is still fun.'**
-  String get piggyBankFull;
+  /// **'{name}\'s piggy bank is full for today! Playing is still fun.'**
+  String piggyBankFull(String name);
 
-  /// Chigüi speaking, during class time (weekday mornings outside school holidays), when the minigame waits until after school.
+  /// Chigüi speaking after being petted during class time, while happily turning the pages of the book faster.
   ///
   /// In en, this message translates to:
-  /// **'I\'m in class right now! See you after school.'**
+  /// **'Page after page! Studying is faster with you.'**
+  String get studyStatus;
+
+  /// Title of the maths minigame (a game card and its intro). Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Maths class'**
+  String get mathTitle;
+
+  /// Maths minigame intro: how to play. Calm, no pressure; mistakes cost nothing.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} brought maths homework! Pick a level and tap the right answer. No rush, and mistakes don\'t matter.'**
+  String mathHint(String name);
+
+  /// Maths level button: first sums, results up to 10.
+  ///
+  /// In en, this message translates to:
+  /// **'Sums to 10'**
+  String get mathLevelSums;
+
+  /// Maths level button: sums and subtractions up to 20.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 20'**
+  String get mathLevelUpTo20;
+
+  /// Maths level button: sums and subtractions up to 100, with carrying.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to 100'**
+  String get mathLevelUpTo100;
+
+  /// Maths level button: the times tables and dividing by them.
+  ///
+  /// In en, this message translates to:
+  /// **'Times tables'**
+  String get mathLevelTables;
+
+  /// Maths level button: two-digit multiplications and long divisions.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiply and divide'**
+  String get mathLevelMultiplyDivide;
+
+  /// Maths level button: simple fractions and decimals.
+  ///
+  /// In en, this message translates to:
+  /// **'Fractions and decimals'**
+  String get mathLevelFractions;
+
+  /// Maths level button: negative numbers, powers, square roots, order of operations (first year of secondary school).
+  ///
+  /// In en, this message translates to:
+  /// **'Negatives and powers'**
+  String get mathLevelIntegers;
+
+  /// Maths level button: first-degree equations, percentages, brackets (second year of secondary school).
+  ///
+  /// In en, this message translates to:
+  /// **'Equations and %'**
+  String get mathLevelEquations;
+
+  /// Maths minigame, after a wrong answer: gentle, the player just picks again.
+  ///
+  /// In en, this message translates to:
+  /// **'Almost! Try another one.'**
+  String get mathTryAgain;
+
+  /// Maths result: answers right on the first try.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total} right first time!'**
+  String mathRightFirstTime(int count, int total);
+
+  /// Maths notation: 'of' in '3/4 of 20' and '25% of 80'. Lowercase, one word.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get mathOf;
+
+  /// Maths notation: the multiplication sign used at school in this language.
+  ///
+  /// In en, this message translates to:
+  /// **'×'**
+  String get mathTimes;
+
+  /// Maths notation: the division sign used at school in this language.
+  ///
+  /// In en, this message translates to:
+  /// **'÷'**
+  String get mathDivide;
+
+  /// Maths notation: the decimal separator, e.g. 2.5.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get mathDecimalPoint;
+
+  /// Maths notation: a percentage, with this language's spacing.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String mathPercent(int percent);
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Pizza sticker'**
+  String get itemStickerPizza;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Burger sticker'**
+  String get itemStickerBurger;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Ramen sticker'**
+  String get itemStickerRamen;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Croissant sticker'**
+  String get itemStickerCroissant;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Cake sticker'**
+  String get itemStickerCake;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Cookie sticker'**
+  String get itemStickerCookie;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Hot chocolate sticker'**
+  String get itemStickerCocoa;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Moon sticker'**
+  String get itemStickerMoon;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun sticker'**
+  String get itemStickerSun;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Earth sticker'**
+  String get itemStickerEarth;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Satellite sticker'**
+  String get itemStickerSatellite;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Galaxy sticker'**
+  String get itemStickerGalaxy;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Sparkles sticker'**
+  String get itemStickerSparkles;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'D-pad sticker'**
+  String get itemStickerDpad;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Robot sticker'**
+  String get itemStickerRobot;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Puzzle piece sticker'**
+  String get itemStickerPuzzle;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Dice sticker'**
+  String get itemStickerDice;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Chip sticker'**
+  String get itemStickerChip;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Keyboard sticker'**
+  String get itemStickerKeyboard;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Trophy sticker'**
+  String get itemStickerTrophy;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaf sticker'**
+  String get itemStickerLeaf;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Flower sticker'**
+  String get itemStickerFlower;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Lotus sticker'**
+  String get itemStickerLotus;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Water drop sticker'**
+  String get itemStickerDrop;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Waves sticker'**
+  String get itemStickerWaves;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Forest sticker'**
+  String get itemStickerForest;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Paw print sticker'**
+  String get itemStickerPaw;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Bee sticker'**
+  String get itemStickerBee;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Piano sticker'**
+  String get itemStickerPiano;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Headphones sticker'**
+  String get itemStickerHeadphones;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Microphone sticker'**
+  String get itemStickerMic;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Record sticker'**
+  String get itemStickerVinyl;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Paint palette sticker'**
+  String get itemStickerPalette;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Paintbrush sticker'**
+  String get itemStickerBrush;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Theatre masks sticker'**
+  String get itemStickerMasks;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Book sticker'**
+  String get itemStickerBook;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Pencil sticker'**
+  String get itemStickerPencil;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Calculator sticker'**
+  String get itemStickerCalculator;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Science sticker'**
+  String get itemStickerFlask;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Bright idea sticker'**
+  String get itemStickerIdea;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'School bag sticker'**
+  String get itemStickerBackpack;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Graduation cap sticker'**
+  String get itemStickerGradCap;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Set square sticker'**
+  String get itemStickerRuler;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Rainbow sticker'**
+  String get itemStickerRainbow;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud sticker'**
+  String get itemStickerCloud;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Smiley sticker'**
+  String get itemStickerSmiley;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Present sticker'**
+  String get itemStickerGift;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Confetti sticker'**
+  String get itemStickerParty;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Umbrella sticker'**
+  String get itemStickerUmbrella;
+
+  /// Shop item.
+  ///
+  /// In en, this message translates to:
+  /// **'Gem sticker'**
+  String get itemStickerDiamond;
+
+  /// Title of a themed page of the sticker album, and of its shop section: Food: snacks and treats. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Snacks'**
+  String get albumPageFood;
+
+  /// Title of a themed page of the sticker album, and of its shop section: Space. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Space'**
+  String get albumPageSpace;
+
+  /// Title of a themed page of the sticker album, and of its shop section: Video games and geeky things. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Games'**
+  String get albumPageGames;
+
+  /// Title of a themed page of the sticker album, and of its shop section: Nature and the pond. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Nature'**
+  String get albumPageNature;
+
+  /// Title of a themed page of the sticker album, and of its shop section: Music and art. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Music and art'**
+  String get albumPageMusic;
+
+  /// Title of a themed page of the sticker album, and of its shop section: School and maths. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'School'**
+  String get albumPageSchool;
+
+  /// Title of a themed page of the sticker album, and of its shop section: Cute, happy things. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Cute things'**
+  String get albumPageCute;
+
+  /// Title of the achievements screen, and the album's button (tooltip) that opens it.
+  ///
+  /// In en, this message translates to:
+  /// **'Achievements'**
+  String get achievementsTitle;
+
+  /// Shown with the medal when an achievement is earned. Cheerful.
+  ///
+  /// In en, this message translates to:
+  /// **'New achievement!'**
+  String get achievementUnlocked;
+
+  /// After earning an achievement: where to see it (the trophy button in the sticker album).
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll find it in the album.'**
+  String get achievementWhere;
+
+  /// Button that closes the new achievement message.
+  ///
+  /// In en, this message translates to:
+  /// **'Yay!'**
+  String get achievementOk;
+
+  /// Achievements screen: how many are earned.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of {total}'**
+  String achievementsCount(int count, int total);
+
+  /// Achievement name.
+  ///
+  /// In en, this message translates to:
+  /// **'The collector'**
+  String get achievementCollector;
+
+  /// How to earn the collector achievement.
+  ///
+  /// In en, this message translates to:
+  /// **'Buy every sticker in the shop.'**
+  String get achievementCollectorHow;
+
+  /// Achievement name, for the fruit catch minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Fruit muncher'**
+  String get achievementFruitMuncher;
+
+  /// How to earn the fruit muncher achievement.
+  ///
+  /// In en, this message translates to:
+  /// **'Catch {count} or more fruits in a round without a single stone.'**
+  String achievementFruitMuncherHow(int count);
+
+  /// Achievement name, for the bath minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleanest in the pond'**
+  String get achievementCleanestInPond;
+
+  /// How to earn the cleanest in the pond achievement.
+  ///
+  /// In en, this message translates to:
+  /// **'Give {name} a whole bath without picking a wrong thing even once.'**
+  String achievementCleanestInPondHow(String name);
+
+  /// Achievement name, for hide and seek.
+  ///
+  /// In en, this message translates to:
+  /// **'Capybara eye'**
+  String get achievementCapybaraEye;
+
+  /// How to earn the capybara eye achievement.
+  ///
+  /// In en, this message translates to:
+  /// **'Find {name} in every turn of hide and seek.'**
+  String achievementCapybaraEyeHow(String name);
+
+  /// Achievement name, for the memory minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Capybara memory'**
+  String get achievementCapybaraMemory;
+
+  /// How to earn the capybara memory achievement: no avoidable misses.
+  ///
+  /// In en, this message translates to:
+  /// **'Finish a memory game without missing a pair you had already seen.'**
+  String get achievementCapybaraMemoryHow;
+
+  /// Achievement name, for the maths minigame.
+  ///
+  /// In en, this message translates to:
+  /// **'Maths whiz'**
+  String get achievementMathWhiz;
+
+  /// How to earn the maths whiz achievement.
+  ///
+  /// In en, this message translates to:
+  /// **'Get all ten right the first time in maths class.'**
+  String get achievementMathWhizHow;
+
+  /// Album button (tooltip) to turn back a page.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get albumPreviousPage;
+
+  /// Album button (tooltip) to turn to the next page.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get albumNextPage;
+
+  /// Album status line when this page's loose stickers are all stuck but other pages still have loose ones.
+  ///
+  /// In en, this message translates to:
+  /// **'More loose stickers wait on other pages.'**
+  String get albumOtherPages;
+
+  /// Home screen button (tooltip) next to the pet's name that opens the rename dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Change name'**
+  String get renameButton;
+
+  /// Title of the rename dialog; name is the current name.
+  ///
+  /// In en, this message translates to:
+  /// **'What shall we call {name}?'**
+  String renameTitle(String name);
+
+  /// Label of the text field for the new name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get renameField;
+
+  /// Rename dialog in a new game: the first name does not use the monthly change.
+  ///
+  /// In en, this message translates to:
+  /// **'This first name is free; after that you can change it once a month.'**
+  String get renameFirstFree;
+
+  /// Rename dialog: the rule.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change the name once a month.'**
+  String get renameMonthly;
+
+  /// Rename dialog when this month's change is used. Gentle.
+  ///
+  /// In en, this message translates to:
+  /// **'You can choose a new name again next month.'**
+  String get renameWait;
+
+  /// Rename dialog button that saves the new name.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get renameSave;
+
+  /// Rename dialog button that closes it without changes.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get renameCancel;
+
+  /// Chigüi speaking right after being given a new name: thoughtful, then happy.
+  ///
+  /// In en, this message translates to:
+  /// **'Hmmm… {name}. I think I could get used to this new name.'**
+  String renamedStatus(String name);
+
+  /// Chigüi speaking, during class time (weekday mornings outside school holidays), while studying with a book. Playing is still allowed (e.g. children home sick), so never say to come back later.
+  ///
+  /// In en, this message translates to:
+  /// **'Class time! I\'m studying hard, but a little game sounds fun too.'**
   String get schoolStatus;
 }
 
