@@ -26,6 +26,8 @@ The web and Android versions exist; Windows (for players) may follow, see `CLAUD
 
 Every push to `main` and every pull request runs the checks. Publishing happens with a version tag (`git tag v0.2.0 && git push origin v0.2.0`): if the checks pass, the web build goes to https://juego.chiguibara.es and the Android app to Google Play production; a release candidate tag (`v0.2.0-rc.1`) sends the app only to Play's closed testing and a beta tag (`v0.2.0-beta.1`) only to internal testing (`.github/workflows/deploy.yml`, configuration in `wrangler.jsonc`). To publish only the web of a tag already pushed (for example a release candidate still in testing), run the workflow by hand from the Actions tab (**Test and deploy → Run workflow**, on `main`) and type the tag in **web_tag**: it checks and builds that tag and deploys only https://juego.chiguibara.es, never Google Play. Before tagging a new version, update its Google Play "What's new" notes in `distribution/whatsnew/` (one file per store listing language, 500 characters at most); the workflow fails if they have not changed since the previous production tag. It is a static Cloudflare Worker, separate from the website; `web/_headers` lets only chiguibara.es embed it.
 
+The real-money packs are Google Play one-time products, created and activated by hand with **Actions → Google Play products → Run workflow** (`tools/play_products.py`; tick **dry_run** to only see the prices). It needs a payments profile in Play Console and the `PLAY_SERVICE_ACCOUNT_JSON` service account allowed to manage the app's products. Running it again only updates them.
+
 One-time setup:
 
 1. In Cloudflare, create an API token from the **Edit Cloudflare Workers** template, limited to your account and the `chiguibara.es` zone.

@@ -1,0 +1,32 @@
+# Creates or updates the real-money packs as Google Play one-time products
+# and activates them (tools/play_products.py). Only run by hand: Actions →
+# Google Play products → Run workflow. Needs a payments profile in Play
+# Console, and the PLAY_SERVICE_ACCOUNT_JSON service account allowed to manage
+# the app's products (Users and permissions).
+name: Google Play products
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Only print the prices, change nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  products:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: tools
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      - run: pip install google-auth==2.40.3 requests==2.32.5
+      - run: python3 tools/play_products.py ${{ inputs.dry_run && '--dry-run' || '' }}
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
