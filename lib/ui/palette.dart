@@ -86,4 +86,11 @@ abstract final class Palette {
   static const bristle = Color(0xFFEFE2BC);
   static const towel = Color(0xFF7FC8E8);
   static const outside = Color(0xFF2E4A3F);
+  static const orangePeel = Color(0xFFD9822B);
+  static const croc = Color(0xFF6FAF5F);
+  static const crocDark = Color(0xFF4F8A45);
+  static const crocBelly = Color(0xFFE6E4A6);
+  static const gull = Color(0xFFF4F6F8);
+  static const gullWing = Color(0xFFAEB9C4);
+  static const beak = Color(0xFFF2C230);
 }

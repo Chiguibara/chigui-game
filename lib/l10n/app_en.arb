@@ -1488,6 +1488,18 @@
       }
     }
   },
+  "itemOrange": "Orange",
+  "@itemOrange": {
+    "description": "Shop item: an orange Chigüi balances on the head, the classic capybara look."
+  },
+  "itemSeagull": "Seagull",
+  "@itemSeagull": {
+    "description": "Shop item: a seagull Chigüi sits on (it gets a bit squashed). Short."
+  },
+  "itemCrocodile": "Crocodile",
+  "@itemCrocodile": {
+    "description": "Shop item: a calm crocodile Chigüi sits on, like a sofa. Short."
+  },
   "schoolStatus": "Class time! I'm studying hard, but a little game sounds fun too.",
   "@schoolStatus": {
     "description": "Chigüi speaking, during class time (weekday mornings outside school holidays), while studying with a book. Playing is still allowed (e.g. children home sick), so never say to come back later."

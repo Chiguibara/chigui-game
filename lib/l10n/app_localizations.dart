@@ -1838,6 +1838,24 @@ abstract class AppLocalizations {
   /// **'Hmmm… {name}. I think I could get used to this new name.'**
   String renamedStatus(String name);
 
+  /// Shop item: an orange Chigüi balances on the head, the classic capybara look.
+  ///
+  /// In en, this message translates to:
+  /// **'Orange'**
+  String get itemOrange;
+
+  /// Shop item: a seagull Chigüi sits on (it gets a bit squashed). Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Seagull'**
+  String get itemSeagull;
+
+  /// Shop item: a calm crocodile Chigüi sits on, like a sofa. Short.
+  ///
+  /// In en, this message translates to:
+  /// **'Crocodile'**
+  String get itemCrocodile;
+
   /// Chigüi speaking, during class time (weekday mornings outside school holidays), while studying with a book. Playing is still allowed (e.g. children home sick), so never say to come back later.
   ///
   /// In en, this message translates to:

@@ -2,8 +2,8 @@
 // minigame earns roughly 1–7 coins (20 a day at most) and a walk 5.
 
 /// Where an item goes. One accessory per slot can be worn at a time;
-/// stickers are collected, not worn.
-enum Slot { head, face, neck, body, side, sticker }
+/// stickers are collected, not worn. A seat is something Chigüi sits on.
+enum Slot { head, face, neck, body, side, seat, sticker }
 
 /// Seasons recur every year, so a seasonal item always comes back.
 enum Season {
@@ -91,6 +91,9 @@ const catalog = [
   Item('balloon', Slot.side, 35),
   Item('skateboard', Slot.side, 75),
   Item('retroConsole', Slot.side, 100),
+  Item('orange', Slot.head, 20),
+  Item('seagull', Slot.seat, 80),
+  Item('crocodile', Slot.seat, 110),
   Item('ghost', Slot.body, 40, season: Season.spooktober),
   Item('pumpkin', Slot.side, 30, season: Season.spooktober),
   Item('santaHat', Slot.head, 35, season: Season.christmas),

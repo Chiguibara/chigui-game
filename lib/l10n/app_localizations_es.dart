@@ -1062,6 +1062,15 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get itemOrange => 'Naranja';
+
+  @override
+  String get itemSeagull => 'Gaviota';
+
+  @override
+  String get itemCrocodile => 'Cocodrilo';
+
+  @override
   String get schoolStatus =>
       '¡Hora de clase! Estoy estudiando mucho, pero un jueguecito también me apetece.';
 }

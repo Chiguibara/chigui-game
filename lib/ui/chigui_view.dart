@@ -774,6 +774,24 @@ class _ChiguiPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final seat = wearing[Slot.seat];
+    if (seat == null) return _paintChigui(canvas, size, shadow: true);
+    // Sitting on something: drawn smaller, paws on top of it.
+    paintSeat(canvas, size, seat);
+    final (top, scale) = seatTop(seat);
+    const centerX = 0.45;
+    const paws = 0.95;
+    canvas.save();
+    canvas.translate(
+      size.width * centerX * (1 - scale),
+      size.height * (top - paws * scale),
+    );
+    canvas.scale(scale);
+    _paintChigui(canvas, size, shadow: false);
+    canvas.restore();
+  }
+
+  void _paintChigui(Canvas canvas, Size size, {required bool shadow}) {
     final w = size.width;
     final h = size.height;
     final fur = Paint()
@@ -795,10 +813,12 @@ class _ChiguiPainter extends CustomPainter {
     _accessories(canvas, size, Layer.behind);
 
     // Ground shadow.
-    canvas.drawOval(
-      Rect.fromLTRB(w * 0.1, h * 0.88, w * 0.82, h * 0.98),
-      Paint()..color = Palette.ink.withValues(alpha: 0.12),
-    );
+    if (shadow) {
+      canvas.drawOval(
+        Rect.fromLTRB(w * 0.1, h * 0.88, w * 0.82, h * 0.98),
+        Paint()..color = Palette.ink.withValues(alpha: 0.12),
+      );
+    }
 
     // Legs step forward in turn while walking.
     final nearLift = math.max(0.0, legLift) * h * 0.05;

@@ -1061,6 +1061,15 @@ class AppLocalizationsCa extends AppLocalizations {
   }
 
   @override
+  String get itemOrange => 'Taronja';
+
+  @override
+  String get itemSeagull => 'Gavina';
+
+  @override
+  String get itemCrocodile => 'Cocodril';
+
+  @override
   String get schoolStatus =>
       'Hora de classe! Estudio de valent, però una partideta també em ve de gust.';
 }

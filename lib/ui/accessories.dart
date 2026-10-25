@@ -22,6 +22,60 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
   Offset p(double x, double y) => Offset(w * x, h * y);
 
   switch ((id, layer)) {
+    case ('orange', Layer.overHead):
+      // The classic capybara look: an orange balanced on the head.
+      final c = p(0.6, 0.11);
+      final r = w * 0.095;
+      canvas.drawCircle(c, r, fill(Palette.orange));
+      // Peel dimples and a shine.
+      for (final (dx, dy) in [
+        (-0.04, 0.02),
+        (0.03, 0.04),
+        (0.0, -0.01),
+        (0.045, -0.02),
+      ]) {
+        canvas.drawCircle(
+          c + Offset(w * dx, h * dy),
+          w * 0.008,
+          fill(Palette.orangePeel),
+        );
+      }
+      canvas.drawArc(
+        Rect.fromCircle(center: c, radius: r * 0.7),
+        math.pi * 1.1,
+        math.pi * 0.35,
+        false,
+        Paint()
+          ..color = Palette.cloud.withValues(alpha: 0.7)
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeWidth = w * 0.018,
+      );
+      canvas.drawCircle(c, r, outline);
+      // Stem and a leaf.
+      canvas.drawLine(
+        c.translate(0, -r),
+        c.translate(w * 0.008, -r - h * 0.025),
+        outline,
+      );
+      final leaf = Path()
+        ..moveTo(c.dx + w * 0.008, c.dy - r - h * 0.02)
+        ..quadraticBezierTo(
+          c.dx + w * 0.05,
+          c.dy - r - h * 0.06,
+          c.dx + w * 0.09,
+          c.dy - r - h * 0.025,
+        )
+        ..quadraticBezierTo(
+          c.dx + w * 0.05,
+          c.dy - r + h * 0.005,
+          c.dx + w * 0.008,
+          c.dy - r - h * 0.02,
+        )
+        ..close();
+      canvas.drawPath(leaf, fill(Palette.leaf));
+      canvas.drawPath(leaf, outline);
+
     case ('beanie', Layer.overHead):
       final dome = Rect.fromLTRB(w * 0.36, h * 0.08, w * 0.76, h * 0.38);
       canvas.drawArc(dome, math.pi, math.pi, true, fill(Palette.beanie));
@@ -797,4 +851,214 @@ void _star(Canvas canvas, Offset c, double r, Paint paint) {
     i == 0 ? path.moveTo(point.dx, point.dy) : path.lineTo(point.dx, point.dy);
   }
   canvas.drawPath(path..close(), paint);
+}
+
+/// How high Chigüi sits on [seat] (where the bottom of the paws lands, as a
+/// fraction of the height) and how much smaller Chigüi is drawn to fit.
+(double, double) seatTop(String seat) => switch (seat) {
+  'crocodile' => (0.79, 0.78),
+  _ => (0.83, 0.82),
+};
+
+/// Draws something Chigüi sits on, below where Chigüi is drawn, with the
+/// ground shadow.
+void paintSeat(Canvas canvas, Size size, String id) {
+  final w = size.width;
+  final h = size.height;
+  final outline = Paint()
+    ..color = Palette.furOutline
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = w * 0.012
+    ..strokeJoin = StrokeJoin.round
+    ..strokeCap = StrokeCap.round;
+  Paint fill(Color c) => Paint()..color = c;
+  Offset p(double x, double y) => Offset(w * x, h * y);
+
+  canvas.drawOval(
+    Rect.fromLTRB(w * 0.02, h * 0.92, w * 0.98, h * 1.0),
+    fill(Palette.ink.withValues(alpha: 0.12)),
+  );
+
+  switch (id) {
+    case 'crocodile':
+      // A calm crocodile facing right, happy to be a sofa.
+      void leg(double x, Color color) {
+        final r = RRect.fromLTRBR(
+          w * x,
+          h * 0.86,
+          w * (x + 0.08),
+          h * 0.97,
+          Radius.circular(w * 0.03),
+        );
+        canvas.drawRRect(r, fill(color));
+        canvas.drawRRect(r, outline);
+      }
+
+      leg(0.28, Palette.crocDark);
+      leg(0.6, Palette.crocDark);
+      final tail = Path()
+        ..moveTo(w * 0.26, h * 0.78)
+        ..quadraticBezierTo(w * 0.12, h * 0.8, w * 0.02, h * 0.9)
+        ..quadraticBezierTo(w * 0.14, h * 0.9, w * 0.26, h * 0.92)
+        ..close();
+      canvas.drawPath(tail, fill(Palette.croc));
+      canvas.drawPath(tail, outline);
+      // Head: a long snout ending in a round nose.
+      final snout = RRect.fromLTRBAndCorners(
+        w * 0.66,
+        h * 0.8,
+        w * 0.99,
+        h * 0.91,
+        topLeft: Radius.circular(w * 0.04),
+        topRight: Radius.circular(w * 0.05),
+        bottomRight: Radius.circular(w * 0.05),
+        bottomLeft: Radius.circular(w * 0.04),
+      );
+      canvas.drawRRect(snout, fill(Palette.croc));
+      canvas.drawRRect(snout, outline);
+      final body = RRect.fromLTRBR(
+        w * 0.2,
+        h * 0.76,
+        w * 0.76,
+        h * 0.93,
+        Radius.circular(w * 0.08),
+      );
+      canvas.drawRRect(body, fill(Palette.croc));
+      // A pale belly and bumps along the back.
+      canvas.drawRRect(
+        RRect.fromLTRBR(
+          w * 0.24,
+          h * 0.88,
+          w * 0.72,
+          h * 0.93,
+          Radius.circular(w * 0.03),
+        ),
+        fill(Palette.crocBelly),
+      );
+      for (var x = 0.06; x < 0.24; x += 0.045) {
+        canvas.drawCircle(
+          p(x + 0.04, 0.855 - x * 0.25),
+          w * 0.012,
+          fill(Palette.crocDark),
+        );
+      }
+      canvas.drawRRect(body, outline);
+      leg(0.24, Palette.croc);
+      leg(0.56, Palette.croc);
+      // Smile, two tiny teeth, nostril, and a sleepy-happy eye on a bump.
+      canvas.drawArc(
+        Rect.fromLTRB(w * 0.72, h * 0.8, w * 0.96, h * 0.885),
+        0.3,
+        math.pi * 0.55,
+        false,
+        outline,
+      );
+      for (final x in [0.8, 0.87]) {
+        final tooth = Path()
+          ..moveTo(w * x, h * 0.877)
+          ..lineTo(w * (x + 0.02), h * 0.877)
+          ..lineTo(w * (x + 0.01), h * 0.9)
+          ..close();
+        canvas.drawPath(tooth, fill(Palette.cloud));
+      }
+      canvas.drawCircle(p(0.95, 0.825), w * 0.008, fill(Palette.ink));
+      final bump = p(0.74, 0.79);
+      canvas.drawCircle(bump, w * 0.04, fill(Palette.croc));
+      canvas.drawArc(
+        Rect.fromCircle(center: bump, radius: w * 0.04),
+        math.pi,
+        math.pi,
+        false,
+        outline,
+      );
+      canvas.drawArc(
+        Rect.fromCircle(
+          center: bump.translate(0, h * 0.008),
+          radius: w * 0.017,
+        ),
+        math.pi,
+        math.pi,
+        false,
+        outline,
+      );
+
+    case 'seagull':
+      // A seagull Chigüi sat on: a bit flattened, wings splayed, and not
+      // quite sure how this happened.
+      // Wings splayed out to both sides, black tips up.
+      for (final (root, tip, low) in [
+        (0.26, 0.03, 0.2),
+        (0.66, 0.9, 0.72),
+      ]) {
+        final wing = Path()
+          ..moveTo(w * root, h * 0.85)
+          ..quadraticBezierTo(
+            w * (root + tip) / 2,
+            h * 0.74,
+            w * tip,
+            h * 0.73,
+          )
+          ..quadraticBezierTo(
+            w * (tip + low) / 2,
+            h * 0.84,
+            w * low,
+            h * 0.92,
+          )
+          ..close();
+        canvas.drawPath(wing, fill(Palette.gullWing));
+        canvas.save();
+        canvas.clipPath(wing);
+        canvas.drawCircle(p(tip, 0.73), w * 0.07, fill(Palette.ink));
+        canvas.restore();
+        // A few feather lines.
+        for (final t in [0.35, 0.6]) {
+          canvas.drawLine(
+            p(root + (tip - root) * t * 0.6, 0.85 - 0.06 * t),
+            p(low + (tip - low) * t, 0.92 - 0.15 * t),
+            outline,
+          );
+        }
+        canvas.drawPath(wing, outline);
+      }
+      for (final x in [0.36, 0.52]) {
+        final foot = Path()
+          ..moveTo(w * x, h * 0.93)
+          ..lineTo(w * (x - 0.03), h * 0.985)
+          ..lineTo(w * (x + 0.05), h * 0.985)
+          ..close();
+        canvas.drawPath(foot, fill(Palette.orange));
+        canvas.drawPath(foot, outline);
+      }
+      final body = Rect.fromLTRB(w * 0.16, h * 0.81, w * 0.8, h * 0.96);
+      canvas.drawOval(body, fill(Palette.gull));
+      canvas.drawOval(body, outline);
+      // Head poking out in front, with a squeezed eye and a sweat drop.
+      final head = p(0.84, 0.84);
+      canvas.drawCircle(head, w * 0.065, fill(Palette.gull));
+      canvas.drawCircle(head, w * 0.065, outline);
+      final beak = Path()
+        ..moveTo(w * 0.89, h * 0.835)
+        ..lineTo(w * 0.99, h * 0.855)
+        ..lineTo(w * 0.89, h * 0.875)
+        ..close();
+      canvas.drawPath(beak, fill(Palette.beak));
+      canvas.drawCircle(p(0.95, 0.86), w * 0.007, fill(Palette.santaRed));
+      canvas.drawPath(beak, outline);
+      final squint = Paint()
+        ..color = Palette.ink
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = w * 0.01
+        ..strokeCap = StrokeCap.round;
+      canvas.drawLine(p(0.83, 0.815), p(0.86, 0.83), squint);
+      canvas.drawLine(p(0.83, 0.845), p(0.86, 0.83), squint);
+      canvas.drawCircle(p(0.8, 0.79), w * 0.012, fill(Palette.sweat));
+      // Little squash lines.
+      for (final (x, dir) in [(0.12, -1.0), (0.86, 1.0)]) {
+        canvas.drawLine(
+          p(x, 0.79),
+          p(x + dir * 0.03, 0.77),
+          squint..color = Palette.ink.withValues(alpha: 0.4),
+        );
+      }
+  }
 }

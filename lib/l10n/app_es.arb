@@ -289,5 +289,8 @@
   "renameSave": "Guardar",
   "renameCancel": "Cancelar",
   "renamedStatus": "Mmm… {name}. Creo que podría acostumbrarme a este nuevo nombre.",
+  "itemOrange": "Naranja",
+  "itemSeagull": "Gaviota",
+  "itemCrocodile": "Cocodrilo",
   "schoolStatus": "¡Hora de clase! Estoy estudiando mucho, pero un jueguecito también me apetece."
 }

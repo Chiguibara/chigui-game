@@ -289,5 +289,8 @@
   "renameSave": "Desa",
   "renameCancel": "Cancel·la",
   "renamedStatus": "Mmm… {name}. Crec que podria acostumar-me a aquest nom nou.",
+  "itemOrange": "Taronja",
+  "itemSeagull": "Gavina",
+  "itemCrocodile": "Cocodril",
   "schoolStatus": "Hora de classe! Estudio de valent, però una partideta també em ve de gust."
 }
