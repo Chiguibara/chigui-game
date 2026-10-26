@@ -163,10 +163,12 @@ class JsonGameRepository implements GameRepository {
           for (final id in list)
             if (id is String && packsById.containsKey(id)) id,
       },
+      // Each item goes in its current slot, so an item that moved slot
+      // (the skateboard became a seat) stays worn without doubling up.
       equipped: {
-        for (final MapEntry(:key, :value) in equipped.entries)
-          if (Slot.values.asNameMap()[key] case final slot?)
-            if (value is String && owned.contains(value)) slot: value,
+        for (final value in equipped.values)
+          if (value is String && owned.contains(value))
+            itemsById[value]!.slot: value,
       },
       stuckStickers: {
         if (json['stuckStickers'] case final List list)

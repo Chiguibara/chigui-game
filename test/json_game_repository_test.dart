@@ -109,6 +109,19 @@ void main() {
     expect(state.equipped, {Slot.head: 'beanie'});
   });
 
+  test('wears items in their current slot', () async {
+    // Before 1.0.4 the skateboard was a side item, worn with a seat.
+    final repo = await repoWith({
+      JsonGameRepository.stateKey: jsonEncode({
+        'owned': ['balloon', 'skateboard', 'crocodile'],
+        'equipped': {'side': 'skateboard', 'seat': 'crocodile'},
+      }),
+    });
+
+    final state = (await repo.loadState())!;
+    expect(state.equipped, {Slot.seat: 'crocodile'});
+  });
+
   test('keeps an unreadable save aside and reports no state', () async {
     final repo = await repoWith({JsonGameRepository.stateKey: '{not json'});
 

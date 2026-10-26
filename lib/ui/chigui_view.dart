@@ -149,6 +149,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
           final (scaleX, scaleY) = _scales(reaction);
           final (dx, dy) = _offset(reaction);
           final walking = reaction == Reaction.walk && !_reduceMotion;
+          final riding = walking && _seat != null;
           final panting = widget.panting && reaction == null;
           return Stack(
             clipBehavior: Clip.none,
@@ -179,7 +180,11 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                           cheekPuff: reaction == Reaction.chomp
                               ? _chompPuff(t)
                               : 0,
-                          legLift: walking ? math.sin(t * 4 * math.pi) : 0,
+                          // On a seat, the seat does the walking.
+                          legLift: walking && !riding
+                              ? math.sin(t * 4 * math.pi)
+                              : 0,
+                          ride: riding ? t : 0,
                           wearing: widget.wearing,
                           studying: widget.studying,
                           pageTurn: reaction == Reaction.study && !_reduceMotion
@@ -215,7 +220,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
               if (reaction == Reaction.cured) ..._vet(size, t),
               if (reaction == Reaction.chomp) ..._chomp(size, t, l10n),
               if (reaction == Reaction.ouch) ..._ouch(size, t, l10n),
-              if (reaction == Reaction.walk)
+              if (reaction == Reaction.walk &&
+                  (_seat == null || _seat == 'crocodile'))
                 Positioned(
                   left: size * (0.05 + 0.1 * t),
                   top: size * 0.86,
@@ -234,6 +240,9 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       ),
     );
   }
+
+  /// What Chigüi sits on, if anything; it carries Chigüi on walks.
+  String? get _seat => widget.wearing[Slot.seat];
 
   /// Pages flipped by one [Reaction.study].
   static const _pagesTurned = 3;
@@ -290,7 +299,7 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       final k = math.sin(_react.value * math.pi);
       return (1 - 0.05 * k, 1 + 0.08 * k);
     }
-    if (reaction == Reaction.walk) {
+    if (reaction == Reaction.walk && _seat == null) {
       final landing = 1 - math.sin(_react.value * 4 * math.pi).abs();
       return (1 + 0.03 * landing, 1 - 0.04 * landing);
     }
@@ -323,6 +332,8 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       Reaction.refuse => (math.sin(t * 6 * math.pi) * size * 0.03 * (1 - t), 0),
       // A dizzy little wobble after the bonk.
       Reaction.ouch => (math.sin(t * 4 * math.pi) * size * 0.02 * (1 - t), 0),
+      // On a seat, the painter moves the seat (see seatRide).
+      Reaction.walk when _seat != null => (0, 0),
       // Four little hops forward and back.
       Reaction.walk => (
         math.sin(t * 2 * math.pi) * size * 0.08,
@@ -731,6 +742,7 @@ class _ChiguiPainter extends CustomPainter {
     this.mouthOpen = 0,
     this.cheekPuff = 0,
     this.legLift = 0,
+    this.ride = 0,
     this.wearing = const {},
     this.studying = false,
     this.pageTurn,
@@ -755,6 +767,9 @@ class _ChiguiPainter extends CustomPainter {
   /// Accessories worn, by slot.
   final Map<Slot, String> wearing;
 
+  /// 0 … 1 over one step of a walk on a seat (see [seatRide]).
+  final double ride;
+
   final bool studying;
 
   /// 0 … 1 while a page of the book turns from right to left.
@@ -776,12 +791,18 @@ class _ChiguiPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final seat = wearing[Slot.seat];
     if (seat == null) return _paintChigui(canvas, size, shadow: true);
-    // Sitting on something: drawn smaller, paws on top of it.
-    paintSeat(canvas, size, seat);
+    // Sitting on something: drawn smaller, paws on top of it, and carried
+    // along on walks while the shadow stays on the ground.
+    final (dx, dy, tilt) = seatRide(seat, ride);
+    paintSeatShadow(canvas, size, dx: dx, dy: dy);
+    canvas.save();
+    canvas.translate(size.width * (0.5 + dx), size.height * (0.95 + dy));
+    canvas.rotate(tilt);
+    canvas.translate(-size.width * 0.5, -size.height * 0.95);
+    paintSeat(canvas, size, seat, ride: ride);
     final (top, scale) = seatTop(seat);
     const centerX = 0.45;
     const paws = 0.95;
-    canvas.save();
     canvas.translate(
       size.width * centerX * (1 - scale),
       size.height * (top - paws * scale),
@@ -1132,6 +1153,7 @@ class _ChiguiPainter extends CustomPainter {
       old.mouthOpen != mouthOpen ||
       old.cheekPuff != cheekPuff ||
       old.legLift != legLift ||
+      old.ride != ride ||
       old.tongue != tongue ||
       !mapEquals(old.wearing, wearing) ||
       old.studying != studying ||

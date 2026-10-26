@@ -575,21 +575,6 @@ void paintAccessory(Canvas canvas, Size size, String id, Layer layer) {
       canvas.drawPath(heart, outline);
       canvas.drawCircle(p(0.87, 0.07), w * 0.012, fill(Palette.cloud));
 
-    case ('skateboard', Layer.front):
-      final deck = RRect.fromLTRBR(
-        w * 0.6,
-        h * 0.885,
-        w * 0.99,
-        h * 0.935,
-        Radius.circular(w * 0.025),
-      );
-      canvas.drawRRect(deck, fill(Palette.santaRed));
-      canvas.drawRRect(deck, outline);
-      for (final x in [0.67, 0.92]) {
-        canvas.drawCircle(p(x, 0.955), w * 0.022, fill(Palette.ink));
-        canvas.drawCircle(p(x, 0.955), w * 0.008, fill(Palette.cloud));
-      }
-
     case ('retroConsole', Layer.front):
       final body = RRect.fromLTRBR(
         w * 0.77,
@@ -857,12 +842,50 @@ void _star(Canvas canvas, Offset c, double r, Paint paint) {
 /// fraction of the height) and how much smaller Chigüi is drawn to fit.
 (double, double) seatTop(String seat) => switch (seat) {
   'crocodile' => (0.79, 0.78),
+  'skateboard' => (0.86, 0.88),
   _ => (0.83, 0.82),
 };
 
-/// Draws something Chigüi sits on, below where Chigüi is drawn, with the
-/// ground shadow.
-void paintSeat(Canvas canvas, Size size, String id) {
+/// How [seat] carries Chigüi on a walk, [ride] going 0 … 1 over one step:
+/// sideways and up (fractions of the size) and a tilt (radians).
+(double, double, double) seatRide(String seat, double ride) {
+  final arc = math.sin(ride * math.pi);
+  return switch (seat) {
+    // Rolls forward and back.
+    'skateboard' => (0.06 * arc, 0.0, 0.0),
+    // Struggles up with a capybara on its back: lurches, dips, and wobbles.
+    'seagull' => (
+      0.03 * math.sin(ride * 3 * math.pi) * arc,
+      -arc * (0.1 + 0.035 * math.sin(ride * 14 * math.pi)),
+      0.14 * math.sin(ride * 5 * math.pi) * arc,
+    ),
+    // Strolls along smoothly, with a gentle sway.
+    'crocodile' => (
+      0.07 * arc,
+      -0.008 * math.sin(ride * 4 * math.pi).abs(),
+      0.0,
+    ),
+    _ => (0.0, 0.0, 0.0),
+  };
+}
+
+/// The ground shadow under a seat, smaller the higher it is ([dy] < 0).
+void paintSeatShadow(Canvas canvas, Size size, {double dx = 0, double dy = 0}) {
+  final k = (1 + dy * 3).clamp(0.4, 1.0);
+  canvas.drawOval(
+    Rect.fromCenter(
+      center: Offset(size.width * (0.5 + dx), size.height * 0.96),
+      width: size.width * 0.96 * k,
+      height: size.height * 0.08 * k,
+    ),
+    Paint()..color = Palette.ink.withValues(alpha: 0.12 * k),
+  );
+}
+
+/// Draws something Chigüi sits on, below where Chigüi is drawn. [ride]
+/// (0 … 1 over one step of a walk) moves it: wheels turn, wings flap, legs
+/// step.
+void paintSeat(Canvas canvas, Size size, String id, {double ride = 0}) {
   final w = size.width;
   final h = size.height;
   final outline = Paint()
@@ -874,32 +897,78 @@ void paintSeat(Canvas canvas, Size size, String id) {
   Paint fill(Color c) => Paint()..color = c;
   Offset p(double x, double y) => Offset(w * x, h * y);
 
-  canvas.drawOval(
-    Rect.fromLTRB(w * 0.02, h * 0.92, w * 0.98, h * 1.0),
-    fill(Palette.ink.withValues(alpha: 0.12)),
-  );
-
   switch (id) {
+    case 'skateboard':
+      // A deck as long as Chigüi, kicked up at both ends, on two trucks.
+      for (final x in [0.22, 0.74]) {
+        final truck = Rect.fromLTRB(
+          w * (x - 0.05),
+          h * 0.885,
+          w * (x + 0.05),
+          h * 0.915,
+        );
+        canvas.drawRect(truck, fill(Palette.console));
+        canvas.drawRect(truck, outline);
+      }
+      final deck = Path()
+        ..moveTo(w * 0.04, h * 0.835)
+        ..quadraticBezierTo(w * 0.07, h * 0.88, w * 0.15, h * 0.88)
+        ..lineTo(w * 0.85, h * 0.88)
+        ..quadraticBezierTo(w * 0.93, h * 0.88, w * 0.96, h * 0.835);
+      Paint stroke(Color c, double width) => Paint()
+        ..color = c
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = width
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round;
+      canvas.drawPath(deck, stroke(Palette.furOutline, h * 0.035 + w * 0.024));
+      canvas.drawPath(deck, stroke(Palette.santaRed, h * 0.035));
+      canvas.drawPath(deck, stroke(Palette.cloud, h * 0.006));
+      // Wheels with a hub and a dot that shows them turning: two turns a
+      // step, easing in and out.
+      final wheelTurn = (1 - math.cos(ride * math.pi)) * 2 * math.pi;
+      for (final x in [0.22, 0.74]) {
+        final c = p(x, 0.935);
+        final r = w * 0.035;
+        canvas.drawCircle(c, r, fill(Palette.ink));
+        canvas.drawCircle(c, r * 0.45, fill(Palette.cloud));
+        canvas.drawCircle(
+          c + Offset(math.cos(wheelTurn), math.sin(wheelTurn)) * r * 0.72,
+          r * 0.18,
+          fill(Palette.sparkle),
+        );
+      }
+
     case 'crocodile':
-      // A calm crocodile facing right, happy to be a sofa.
-      void leg(double x, Color color) {
+      // A calm crocodile facing right, happy to be a sofa. On a walk its
+      // legs step in diagonal pairs and the tail swishes.
+      final stride = math.sin(ride * 4 * math.pi);
+      final swish = 0.03 * math.sin(ride * 4 * math.pi - 1);
+      void leg(double x, Color color, double phase) {
+        final step = stride * phase;
+        final lift = math.max(0.0, step) * 0.025;
         final r = RRect.fromLTRBR(
-          w * x,
-          h * 0.86,
-          w * (x + 0.08),
-          h * 0.97,
+          w * (x + 0.025 * step),
+          h * (0.86 - lift),
+          w * (x + 0.08 + 0.025 * step),
+          h * (0.97 - lift),
           Radius.circular(w * 0.03),
         );
         canvas.drawRRect(r, fill(color));
         canvas.drawRRect(r, outline);
       }
 
-      leg(0.28, Palette.crocDark);
-      leg(0.6, Palette.crocDark);
+      leg(0.28, Palette.crocDark, -1);
+      leg(0.6, Palette.crocDark, 1);
       final tail = Path()
         ..moveTo(w * 0.26, h * 0.78)
-        ..quadraticBezierTo(w * 0.12, h * 0.8, w * 0.02, h * 0.9)
-        ..quadraticBezierTo(w * 0.14, h * 0.9, w * 0.26, h * 0.92)
+        ..quadraticBezierTo(
+          w * 0.12,
+          h * (0.8 + swish),
+          w * 0.02,
+          h * (0.9 + swish),
+        )
+        ..quadraticBezierTo(w * 0.14, h * (0.9 + swish), w * 0.26, h * 0.92)
         ..close();
       canvas.drawPath(tail, fill(Palette.croc));
       canvas.drawPath(tail, outline);
@@ -943,8 +1012,8 @@ void paintSeat(Canvas canvas, Size size, String id) {
         );
       }
       canvas.drawRRect(body, outline);
-      leg(0.24, Palette.croc);
-      leg(0.56, Palette.croc);
+      leg(0.24, Palette.croc, 1);
+      leg(0.56, Palette.croc, -1);
       // Smile, two tiny teeth, nostril, and a sleepy-happy eye on a bump.
       canvas.drawArc(
         Rect.fromLTRB(w * 0.72, h * 0.8, w * 0.96, h * 0.885),
@@ -985,7 +1054,9 @@ void paintSeat(Canvas canvas, Size size, String id) {
     case 'seagull':
       // A seagull Chigüi sat on: a bit flattened, wings splayed, and not
       // quite sure how this happened.
-      // Wings splayed out to both sides, black tips up.
+      // Wings splayed out to both sides, black tips up. On a walk they flap
+      // frantically: a capybara is heavy.
+      final flap = 0.12 * math.sin(ride * 16 * math.pi);
       for (final (root, tip, low) in [
         (0.26, 0.03, 0.2),
         (0.66, 0.9, 0.72),
@@ -994,13 +1065,13 @@ void paintSeat(Canvas canvas, Size size, String id) {
           ..moveTo(w * root, h * 0.85)
           ..quadraticBezierTo(
             w * (root + tip) / 2,
-            h * 0.74,
+            h * (0.74 + flap / 2),
             w * tip,
-            h * 0.73,
+            h * (0.73 + flap),
           )
           ..quadraticBezierTo(
             w * (tip + low) / 2,
-            h * 0.84,
+            h * (0.84 + flap / 3),
             w * low,
             h * 0.92,
           )
@@ -1008,13 +1079,13 @@ void paintSeat(Canvas canvas, Size size, String id) {
         canvas.drawPath(wing, fill(Palette.gullWing));
         canvas.save();
         canvas.clipPath(wing);
-        canvas.drawCircle(p(tip, 0.73), w * 0.07, fill(Palette.ink));
+        canvas.drawCircle(p(tip, 0.73 + flap), w * 0.07, fill(Palette.ink));
         canvas.restore();
         // A few feather lines.
         for (final t in [0.35, 0.6]) {
           canvas.drawLine(
-            p(root + (tip - root) * t * 0.6, 0.85 - 0.06 * t),
-            p(low + (tip - low) * t, 0.92 - 0.15 * t),
+            p(root + (tip - root) * t * 0.6, 0.85 - 0.06 * t + flap * t / 2),
+            p(low + (tip - low) * t, 0.92 - 0.15 * t + flap * t),
             outline,
           );
         }

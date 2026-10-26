@@ -89,7 +89,7 @@ const catalog = [
   Item('medal', Slot.neck, 60),
   Item('cape', Slot.body, 90),
   Item('balloon', Slot.side, 35),
-  Item('skateboard', Slot.side, 75),
+  Item('skateboard', Slot.seat, 75),
   Item('retroConsole', Slot.side, 100),
   Item('orange', Slot.head, 20),
   Item('seagull', Slot.seat, 80),

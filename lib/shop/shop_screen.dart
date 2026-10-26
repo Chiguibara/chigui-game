@@ -39,7 +39,19 @@ class ShopScreen extends StatefulWidget {
   State<ShopScreen> createState() => _ShopScreenState();
 }
 
+/// The shop's tabs, so each kind of thing has its own page.
+enum _Tab {
+  accessories,
+  seasonal,
+  stickers,
+  packs,
+}
+
 class _ShopScreenState extends State<ShopScreen> {
+  // New stickers from an update open their tab.
+  late _Tab _tab = widget.newStickers.isEmpty
+      ? _Tab.accessories
+      : _Tab.stickers;
   String? _message;
   Reaction? _reaction;
   int _reactionId = 0;
@@ -181,30 +193,32 @@ class _ShopScreenState extends State<ShopScreen> {
                     SliverToBoxAdapter(
                       child: _header(l10n, textTheme, constraints),
                     ),
-                    if (widget.newStickers.isNotEmpty) ..._stickerSection,
-                    if (_packs?.available ?? false)
-                      ..._packSection(l10n, textTheme),
-                    ..._section(
-                      l10n.seasonalSection,
-                      seasonal,
-                      l10n,
-                      textTheme,
-                    ),
-                    ..._section(
-                      l10n.accessoriesSection,
-                      [
-                        for (final item in catalog)
-                          // Pack items show up here once their pack is owned.
-                          if (item.season == null &&
-                              item.slot != Slot.sticker &&
-                              (item.pack == null ||
-                                  _pet.state.owned.contains(item.id)))
-                            item,
-                      ],
-                      l10n,
-                      textTheme,
-                    ),
-                    if (widget.newStickers.isEmpty) ..._stickerSection,
+                    SliverToBoxAdapter(child: _tabs(l10n)),
+                    ...switch (_shownTab) {
+                      _Tab.accessories => _section(
+                        null,
+                        [
+                          for (final item in catalog)
+                            // Pack items show up here once their pack is
+                            // owned.
+                            if (item.season == null &&
+                                item.slot != Slot.sticker &&
+                                (item.pack == null ||
+                                    _pet.state.owned.contains(item.id)))
+                              item,
+                        ],
+                        l10n,
+                        textTheme,
+                      ),
+                      _Tab.seasonal => _section(
+                        null,
+                        seasonal,
+                        l10n,
+                        textTheme,
+                      ),
+                      _Tab.stickers => _stickerSection,
+                      _Tab.packs => _packSection(l10n, textTheme),
+                    },
                     const SliverToBoxAdapter(child: SizedBox(height: 24)),
                   ],
                 ),
@@ -216,13 +230,60 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  /// The stickers, a section per album page.
+  /// The selected tab, or Accessories if packs are not sold here.
+  _Tab get _shownTab => _tab == _Tab.packs && !(_packs?.available ?? false)
+      ? _Tab.accessories
+      : _tab;
+
+  /// A row of big buttons, one per tab.
+  Widget _tabs(AppLocalizations l10n) => Padding(
+    padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+    child: Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8,
+      children: [
+        for (final tab in _Tab.values)
+          if (tab != _Tab.packs || (_packs?.available ?? false))
+            ChoiceChip(
+              label: Text(switch (tab) {
+                _Tab.accessories => l10n.accessoriesSection,
+                _Tab.seasonal => l10n.seasonalSection,
+                _Tab.stickers => l10n.stickersSection,
+                _Tab.packs => l10n.packsSection,
+              }),
+              selected: _shownTab == tab,
+              onSelected: (_) => setState(() => _tab = tab),
+              showCheckmark: false,
+              backgroundColor: Palette.cloud.withValues(alpha: 0.55),
+              selectedColor: Palette.ink,
+              side: const BorderSide(color: Palette.ink, width: 2),
+              labelStyle: TextStyle(
+                color: _shownTab == tab ? Palette.mint : Palette.ink,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+      ],
+    ),
+  );
+
+  /// The stickers, a section per album page, new ones' pages first.
   List<Widget> get _stickerSection {
     final l10n = AppLocalizations.of(context);
+    final pages = [...AlbumPage.values]
+      ..sort((a, b) {
+        int rank(AlbumPage page) =>
+            stickers.any(
+              (item) =>
+                  item.page == page && widget.newStickers.contains(item.id),
+            )
+            ? 0
+            : 1;
+        return rank(a).compareTo(rank(b));
+      });
     return [
-      for (final page in AlbumPage.values)
+      for (final page in pages)
         ..._section(
-          '${l10n.stickersSection}: ${l10n.albumPageName(page)}',
+          l10n.albumPageName(page),
           [
             for (final item in stickers)
               if (item.page == page) item,
@@ -235,19 +296,7 @@ class _ShopScreenState extends State<ShopScreen> {
 
   List<Widget> _packSection(AppLocalizations l10n, TextTheme textTheme) => [
     SliverPadding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      sliver: SliverToBoxAdapter(
-        child: Text(
-          l10n.packsSection,
-          style: textTheme.titleMedium?.copyWith(
-            color: Palette.ink,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    ),
-    SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.fromLTRB(12, 16, 12, 0),
       sliver: SliverList.separated(
         itemCount: packs.length,
         separatorBuilder: (_, _) => const SizedBox(height: 8),
@@ -416,22 +465,25 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
+  /// A grid of items, under a [title] if given.
   List<Widget> _section(
-    String title,
+    String? title,
     List<Item> items,
     AppLocalizations l10n,
     TextTheme textTheme,
   ) => [
     SliverPadding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: EdgeInsets.fromLTRB(16, 16, 16, title == null ? 0 : 8),
       sliver: SliverToBoxAdapter(
-        child: Text(
-          title,
-          style: textTheme.titleMedium?.copyWith(
-            color: Palette.ink,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        child: title == null
+            ? null
+            : Text(
+                title,
+                style: textTheme.titleMedium?.copyWith(
+                  color: Palette.ink,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
       ),
     ),
     SliverPadding(

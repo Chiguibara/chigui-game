@@ -274,12 +274,17 @@ void main() {
     expect(find.text("Chigüi's shop"), findsOneWidget);
 
     // 12 October: Spooktober items are on sale, Christmas ones are not.
+    expect(find.text('Santa hat'), findsNothing, reason: 'Accessories tab');
+    await tester.tap(find.text('Seasonal'));
+    await tester.pump();
     expect(find.text('Spooktober'), findsWidgets);
     await tester.tap(find.text('Santa hat'));
     await tester.pump();
     expect(find.textContaining('compiling the presents'), findsOneWidget);
     await tester.pump(const Duration(seconds: 2));
 
+    await tester.tap(find.text('Accessories'));
+    await tester.pump();
     await tester.tap(find.text('Headphones'));
     await tester.pump();
     expect(find.textContaining('Error 402: 5 coins missing'), findsOneWidget);
@@ -545,6 +550,8 @@ void main() {
       await tester.tap(find.text('Shop'));
       await tester.pump();
       await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.text('Packs'));
+      await tester.pump();
       expect(find.text('Geek pack'), findsOneWidget);
 
       await tester.tap(find.text('0,99 €').first);
@@ -569,12 +576,11 @@ void main() {
       expect(find.text('Yours!'), findsOneWidget);
       await tester.pump(const Duration(seconds: 2));
 
-      // The shop is long; scroll to the new item in Accessories.
-      await tester.scrollUntilVisible(
-        find.text('Wizard hat'),
-        300,
-        scrollable: find.byType(Scrollable).first,
-      );
+      // The new item is in Accessories, further down.
+      await tester.tap(find.text('Accessories'));
+      await tester.pump();
+      await tester.ensureVisible(find.text('Wizard hat'));
+      await tester.pump();
       await tester.tap(find.text('Wizard hat'));
       await tester.pump(const Duration(seconds: 2));
       expect(controller.state.equipped[Slot.head], 'wizardHat');
