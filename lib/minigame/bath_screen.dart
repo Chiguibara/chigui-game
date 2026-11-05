@@ -56,6 +56,9 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
   Timer? _touchTimer;
   double _rubbed = 0;
   bool _hintedThisRub = false;
+
+  /// Whether the current rub has already touched Chigüi with a tool.
+  bool _rubGoingOn = false;
   bool _hint = false;
   Timer? _hintTimer;
   Reaction? _reaction;
@@ -218,7 +221,14 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
     final x = (at.dx - _chigui.left) / _chigui.width;
     final y = (at.dy - _chigui.top) / _chigui.height;
     final before = [for (final s in _game.spots) s.state];
-    final result = _game.use(tool, x, y, rub: rub);
+    final result = _game.use(
+      tool,
+      x,
+      y,
+      rub: rub,
+      goingOn: rub > 0 && _rubGoingOn,
+    );
+    if (rub > 0) _rubGoingOn = true;
     _showTouch(at);
     switch (result) {
       case BathUse.wrong:
@@ -482,7 +492,10 @@ class _BathScreenState extends State<BathScreen> with TickerProviderStateMixin {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTapUp: (d) => _use(d.localPosition),
-      onPanStart: (_) => _hintedThisRub = false,
+      onPanStart: (_) {
+        _hintedThisRub = false;
+        _rubGoingOn = false;
+      },
       onPanUpdate: (d) => _use(d.localPosition, rub: d.delta.distance / size),
       child: Stack(
         clipBehavior: Clip.none,

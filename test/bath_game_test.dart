@@ -101,4 +101,34 @@ void main() {
     game.use(BathTool.towel, 0.5, 0.5);
     expect(game.wrongTools, 1);
   });
+
+  test('rubbing on after the last gritty spot is done is not a mistake', () {
+    final game = BathGame(random: Random(3))..hopIn();
+    for (final spot in game.spots) {
+      spot.state = SpotState.tar;
+    }
+    final gritty = game.spots.first..state = SpotState.gravel;
+    var result = BathUse.rubbing;
+    var goingOn = false;
+    while (result == BathUse.rubbing) {
+      result = game.use(
+        BathTool.brush,
+        gritty.x,
+        gritty.y,
+        rub: 0.1,
+        goingOn: goingOn,
+      );
+      goingOn = true;
+    }
+    expect(result, BathUse.step);
+    // The same rub goes on, but nothing needs the brush now.
+    expect(
+      game.use(BathTool.brush, gritty.x, gritty.y, rub: 0.1, goingOn: true),
+      BathUse.wrong,
+    );
+    expect(game.wrongTools, 0);
+    // A new rub with the brush is a wrong tool.
+    game.use(BathTool.brush, gritty.x, gritty.y, rub: 0.1);
+    expect(game.wrongTools, 1);
+  });
 }

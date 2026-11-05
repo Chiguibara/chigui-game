@@ -185,18 +185,27 @@ class BathGame {
     if (stage == BathStage.soak) stage = BathStage.dry;
   }
 
-  /// Times a wrong tool was picked while washing, adding yuzus, or drying;
-  /// none earns "the cleanest in the pond".
+  /// Times a wrong tool was used while washing, adding yuzus, or drying;
+  /// none earns "the cleanest in the pond". A rub counts only if it starts
+  /// with the wrong tool: going on rubbing after the last spot needing that
+  /// tool moved on (e.g. the gravel came off the tar) is not a mistake.
   int wrongTools = 0;
 
-  /// Uses [tool] at ([x], [y]); [rub] is how far it was rubbed, 0 for a tap.
-  BathUse use(BathTool tool, double x, double y, {double rub = 0}) {
+  /// Uses [tool] at ([x], [y]); [rub] is how far it was rubbed, 0 for a tap,
+  /// and [goingOn] is true for the rest of a rub after its first touch.
+  BathUse use(
+    BathTool tool,
+    double x,
+    double y, {
+    double rub = 0,
+    bool goingOn = false,
+  }) {
     final waiting = switch (stage) {
       BathStage.arrive || BathStage.soak || BathStage.done => true,
       _ => false,
     };
     final result = _use(tool, x, y, rub);
-    if (result == BathUse.wrong && !waiting) wrongTools++;
+    if (result == BathUse.wrong && !waiting && !goingOn) wrongTools++;
     return result;
   }
 
