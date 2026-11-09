@@ -44,11 +44,12 @@ void main() {
       );
     });
 
-    test('never drop below the floor', () {
-      final o = advance(pet0(at(9), level: 1), at(9, 0, 20));
+    test('reach zero and stay there, without harming Chigüi', () {
+      final o = advance(pet0(at(9), level: 1), at(9, 0, 30));
       for (final need in Need.values) {
-        expect(o.state.level(need), needFloor);
+        expect(o.state.level(need), 0);
       }
+      expect(o.state.sick, isFalse);
     });
 
     test('a clock moved backwards counts as no time', () {
@@ -240,23 +241,202 @@ void main() {
   });
 
   group('time away', () {
-    test('counts at most one accident and one missed meal', () {
+    test('accidents pile up, but only one counts towards getting sick', () {
       final o = advance(pet0(at(16)), at(20, 59));
-      expect(
-        types(o).where((t) => t == EventType.accident).length,
-        lessThanOrEqualTo(1),
-      );
+      final accidents = types(o).where((t) => t == EventType.accident);
+      expect(accidents, hasLength(urges.length));
+      expect(o.state.messes, urges.length);
+      expect(o.state.recentAccidents.length, lessThanOrEqualTo(1));
       expect(types(o).where((t) => t == EventType.mealMissed), hasLength(1));
       expect(o.state.sick, isFalse);
     });
 
-    test('the routine pauses after a day without playing', () {
+    test('mealtimes pause after a day without playing; accidents do not', () {
       final start = at(16);
-      final o = advance(pet0(start), at(23, 0, 18));
+      final o = advance(pet0(start), at(23, 0, 13));
       final pauseAt = start.add(routinePause);
-      expect(o.events.every((e) => !e.at.isAfter(pauseAt)), isTrue);
+      expect(
+        o.events
+            .where((e) => e.type == EventType.mealMissed)
+            .every((e) => !e.at.isAfter(pauseAt)),
+        isTrue,
+      );
+      expect(
+        o.events.any(
+          (e) => e.type == EventType.accident && e.at.isAfter(pauseAt),
+        ),
+        isTrue,
+      );
       expect(o.state.sick, isFalse);
-      expect(o.state.updatedAt, at(23, 0, 18));
+      expect(o.state.updatedAt, at(23, 0, 13));
+    });
+  });
+
+  group('leaving a dirty home', () {
+    /// The moment of the [n]th accident (from 1) on a game left closed
+    /// from Monday 16:00.
+    DateTime nthAccident(int n) => advance(
+      pet0(at(16)),
+      at(23, 0, 18),
+    ).events.where((e) => e.type == EventType.accident).elementAt(n - 1).at;
+
+    test('two huge poops left there: Chigüi leaves a while later', () {
+      final sixth = nthAccident(messesToLeave);
+      final before = advance(
+        pet0(at(16)),
+        sixth.add(const Duration(minutes: 59)),
+      );
+      expect(before.state.gone, isFalse);
+      expect(before.state.messes, messesToLeave);
+
+      final o = advance(pet0(at(16)), sixth.add(leaveAfter));
+      expect(o.state.gone, isTrue);
+      expect(o.state.leftAt, sixth.add(leaveAfter));
+      expect(types(o), contains(EventType.leftHome));
+      expect(o.state.messes, messesToLeave, reason: 'the poops stay');
+      expect(o.state.needsPotty, isFalse);
+      expect(o.state.sick, isFalse);
+
+      // Nothing more piles up while Chigüi is gone.
+      final later = advance(o.state, at(23, 0, 16));
+      expect(later.state.messes, messesToLeave);
+      expect(types(later), isNot(contains(EventType.accident)));
+    });
+
+    test('cleaning up in time keeps Chigüi home', () {
+      final sixth = nthAccident(messesToLeave);
+      var s = advance(pet0(at(16)), sixth).state;
+      s = cleanUp(s, sixth.add(const Duration(minutes: 30))).state;
+      expect(s.messes, messesToLeave - 1);
+      expect(advance(s, sixth.add(leaveAfter * 2)).state.gone, isFalse);
+    });
+
+    PetState goneAt(DateTime when) {
+      final s = advance(pet0(at(16)), when).state;
+      expect(s.gone, isTrue);
+      return s;
+    }
+
+    PetState cleanAll(PetState s, DateTime now) {
+      while (s.messes > 0) {
+        s = cleanUp(s, now).state;
+      }
+      return s;
+    }
+
+    PetState careFor(PetState s, DateTime now) {
+      s = feed(s, now).state;
+      s = finishRound(s, now, coins: 0).state;
+      return pet(s, now).state;
+    }
+
+    test('while gone: fruit piles up, cuddles are calls, games still pay', () {
+      var s = goneAt(at(23, 0, 14));
+      final affection = s.level(Need.affection);
+      for (var i = 0; i < maxFoodLeft + 2; i++) {
+        s = feed(s, at(23, 1, 14)).state;
+      }
+      expect(s.foodLeft, maxFoodLeft);
+      final called = pet(s, at(23, 2, 14));
+      expect(called.ok, isTrue);
+      expect(called.state.level(Need.affection), lessThanOrEqualTo(affection));
+      final played = finishRound(called.state, at(23, 3, 14), coins: 3);
+      expect(played.state.coins, 3);
+      expect(played.state.careDays, 1);
+      expect(wake(played.state, at(23, 4, 14)).ok, isFalse);
+      expect(asleep(played.state, at(23, 4, 14)), isFalse);
+    });
+
+    test('a day of care and a clean spot bring Chigüi back next morning', () {
+      var s = cleanAll(goneAt(at(23, 0, 14)), at(18, 0, 15));
+      s = careFor(s, at(18, 0, 15));
+      expect(advance(s, at(23, 0, 15)).state.gone, isTrue);
+
+      final o = advance(s, at(10, 0, 16));
+      expect(o.state.gone, isFalse);
+      expect(types(o), contains(EventType.cameBack));
+      final morning = scheduleFor(at(0, 0, 15), seed).wakeUp;
+      expect(o.state.cameBackAt, morning);
+      expect(o.state.foodLeft, 0);
+    });
+
+    test('with the poops still there, Chigüi comes back once cleaned', () {
+      var s = careFor(goneAt(at(23, 0, 14)), at(18, 0, 15));
+      s = advance(s, at(12, 0, 17)).state;
+      expect(s.gone, isTrue);
+      expect(s.inShelter, isFalse, reason: 'a day of care was done');
+      final o = cleanUp(s, at(12, 5, 17));
+      expect(o.state.messes, messesToLeave - 1);
+      s = cleanAll(o.state, at(12, 5, 17));
+      expect(s.gone, isFalse);
+      expect(s.cameBackAt, at(12, 5, 17));
+    });
+
+    test('a care day needs fruit, a game and a call on the same day', () {
+      var s = cleanAll(goneAt(at(23, 0, 14)), at(18, 0, 15));
+      s = feed(s, at(18, 0, 15)).state;
+      s = finishRound(s, at(18, 0, 15), coins: 0).state;
+      s = pet(s, at(10, 0, 16)).state;
+      expect(s.careDays, 0);
+      expect(s.gone, isTrue);
+    });
+
+    test('days gone without care: the shelter, and three days back', () {
+      var s = pet0(at(16)).copyWith(bestFriends: true);
+      s = advance(s, at(23, 0, 14)).state;
+      final leftAt = s.leftAt!;
+      final o = advance(s, leftAt.add(shelterAfter));
+      expect(o.state.inShelter, isTrue);
+      expect(o.state.bestFriends, isFalse, reason: 'the sticker comes off');
+      expect(types(o), contains(EventType.wentToShelter));
+
+      s = cleanAll(o.state, at(18, 0, 18));
+      expect(careDaysLeft(s), careDaysFromShelter);
+      for (final day in [18, 19, 20]) {
+        s = careFor(s, at(18, 0, day));
+        s = advance(s, at(23, 0, day)).state;
+        expect(s.gone, isTrue);
+      }
+      expect(careDaysLeft(s), 0);
+      s = advance(s, at(12, 0, 21)).state;
+      expect(s.gone, isFalse);
+      expect(s.inShelter, isFalse);
+      expect(s.level(Need.affection), 0, reason: 'a bit shy');
+    });
+  });
+
+  group('best friends', () {
+    /// Takes Chigüi to the toilet at every urge from [from] for [days] days.
+    PetState goodDays(PetState s, int fromDay, int days) {
+      for (var day = fromDay; day < fromDay + days; day++) {
+        for (final urge in scheduleFor(at(0, 0, day), seed).pottyUrges) {
+          s = takeToToilet(s, urge.add(const Duration(minutes: 1))).state;
+        }
+      }
+      return s;
+    }
+
+    test('seven days in a row without a mess at bedtime', () {
+      var s = goodDays(pet0(at(9)), 12, bestFriendsDays - 1);
+      s = advance(s, at(23, 0, 12 + bestFriendsDays - 2)).state;
+      expect(s.bestFriends, isFalse);
+      s = goodDays(s, 12 + bestFriendsDays - 1, 1);
+      final o = advance(s, at(23, 0, 12 + bestFriendsDays - 1));
+      expect(o.state.bestFriends, isTrue);
+      expect(types(o), contains(EventType.bestFriends));
+    });
+
+    test('a mess left at bedtime starts the run again', () {
+      var s = goodDays(pet0(at(9)), 12, 3);
+      // Day 15: no toilet, so a mess is left at bedtime.
+      s = advance(s, at(23, 0, 15)).state;
+      s = cleanUp(cleanUp(s, at(23, 1, 15)).state, at(23, 1, 15)).state;
+      s = goodDays(s, 16, bestFriendsDays - 1);
+      s = advance(s, at(23, 0, 16 + bestFriendsDays - 2)).state;
+      expect(s.bestFriends, isFalse);
+      s = goodDays(s, 16 + bestFriendsDays - 1, 1);
+      s = advance(s, at(23, 0, 16 + bestFriendsDays - 1)).state;
+      expect(s.bestFriends, isTrue);
     });
   });
 
@@ -353,7 +533,7 @@ void main() {
     });
 
     test('tapping until out of breath fills fun, even from its lowest', () {
-      var s = pet0(at(12), level: needFloor);
+      var s = pet0(at(12), level: 0);
       for (var i = 0; i < 1000 && tapStepsLeft(s, at(12)) > 0; i++) {
         s = addSteps(s, at(12), stepsPerFootTap, tapped: true).state;
       }

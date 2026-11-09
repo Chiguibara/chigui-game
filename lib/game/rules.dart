@@ -8,9 +8,6 @@ import 'routine.dart';
 
 // Provisional tuning; adjust after playtests.
 
-/// Needs never drop below this on their own.
-const needFloor = 0.25;
-
 /// How much each need drops per hour.
 const decayPerHour = {Need.food: 0.08, Need.affection: 0.06, Need.fun: 0.07};
 
@@ -113,13 +110,40 @@ const missedMealsToGetSick = 2;
 /// A gap longer than this between updates means the player was away.
 const awayAfter = Duration(minutes: 10);
 
-/// Per absence, at most this many accidents and missed meals count.
+/// Per absence, at most this many accidents (towards getting sick) and
+/// missed meals count.
 const maxAccidentsWhileAway = 1;
 const maxMissedMealsWhileAway = 1;
 
-/// After this long without playing, the routine pauses until the player is
-/// back, so a holiday never ends with a sick Chigüi.
+/// After this long without playing, mealtimes (and so sickness) pause until
+/// the player is back. Potty accidents keep piling up, also while the game
+/// is closed, so neglect has consequences: see [messesToLeave].
 const routinePause = Duration(hours: 24);
+
+/// Uncleaned accidents pile up: every this many make one huge poop.
+const messesPerHugePoop = 3;
+
+/// With this many messes (two huge poops), Chigüi has had enough of the
+/// dirt: capybaras are very clean animals. If they are still there
+/// [leaveAfter] later, Chigüi leaves a note and goes.
+const messesToLeave = 6;
+const leaveAfter = Duration(hours: 1);
+
+/// Chigüi comes back the morning after the player, with the spot clean,
+/// has left fruit, played a game, and called Chigüi on this many days...
+const careDaysToComeBack = 1;
+
+/// ...or on this many days once Chigüi is in the vet's shelter, where
+/// Chigüi goes after [shelterAfter] gone without a single such day.
+const careDaysFromShelter = 3;
+const shelterAfter = Duration(days: 3);
+
+/// Fruit left for Chigüi while gone piles up to this many.
+const maxFoodLeft = 8;
+
+/// The best-friends sticker takes this many days in a row with Chigüi at
+/// home and no mess left at bedtime.
+const bestFriendsDays = 7;
 
 /// A new state plus what happened, for the history log. [ok] is false when an
 /// action did not apply (e.g. feeding a full Chigüi).
@@ -136,9 +160,16 @@ Outcome advance(PetState state, DateTime now) {
   final routineEnd = now.isBefore(pauseAt) ? now : pauseAt;
 
   final replay = _Replay(state, away: away);
-  for (final step in _steps(state, state.updatedAt, routineEnd)) {
+  for (final (at, step) in _steps(
+    state,
+    state.updatedAt,
+    now,
+    mealsUntil: routineEnd,
+  )) {
+    replay.catchUp(at);
     step(replay);
   }
+  replay.catchUp(now);
   final hours = now.difference(state.updatedAt).inMilliseconds / 3600000;
   return (
     state: replay.state.copyWith(
@@ -156,26 +187,86 @@ Outcome advance(PetState state, DateTime now) {
 /// At night Chigüi sleeps, unless played with in the last [stayAwakeFor].
 /// Sleeping never blocks anything: doing something together wakes them up.
 bool asleep(PetState state, DateTime now) =>
-    isNight(now, state.seed) && !state.keptAwakeAt(now);
+    !state.gone && isNight(now, state.seed) && !state.keptAwakeAt(now);
 
 /// Awake at night after being woken up, until falling asleep again.
 bool sleepy(PetState state, DateTime now) =>
-    isNight(now, state.seed) && state.keptAwakeAt(now);
+    !state.gone && isNight(now, state.seed) && state.keptAwakeAt(now);
 
 /// Doing something together keeps (or makes) Chigüi awake for a while.
 PetState _together(PetState state, DateTime now) =>
     state.copyWith(awakeUntil: now.add(stayAwakeFor));
 
-double _decay(double level, double amount) {
-  if (level <= needFloor) return level;
-  return max(needFloor, level - amount);
+/// Days of care still needed for Chigüi to come back.
+int careDaysLeft(PetState state) => max(
+  0,
+  (state.inShelter ? careDaysFromShelter : careDaysToComeBack) - state.careDays,
+);
+
+/// Records [kind] of care for a gone Chigüi; a day with every kind counts.
+PetState _cared(PetState state, DateTime now, Care kind) {
+  if (!state.gone) return state;
+  final local = now.toLocal();
+  final today = DateTime(local.year, local.month, local.day);
+  final sameDay = state.careDay?.isAtSameMomentAs(today) ?? false;
+  final before = sameDay ? state.care : const <Care>{};
+  final care = {...before, kind};
+  final completed =
+      care.length == Care.values.length && before.length < care.length;
+  return state.copyWith(
+    care: care,
+    careDay: today,
+    careDays: state.careDays + (completed ? 1 : 0),
+  );
 }
 
-/// Routine moments in (from, to], in time order.
-List<void Function(_Replay)> _steps(PetState s, DateTime from, DateTime to) {
+/// Brings Chigüi home once enough days of care are done and the spot is
+/// clean: the morning after the last of those days (or right when the spot
+/// is cleaned, if later). Chigüi eats the fruit left; back from the
+/// shelter, Chigüi is a bit shy and needs cuddles again.
+PetState _cameBack(PetState state, DateTime at, List<GameEvent> events) {
+  final day = state.careDay;
+  if (!state.gone || careDaysLeft(state) > 0 || state.messes > 0) {
+    return state;
+  }
+  if (day == null) return state;
+  final morning = scheduleFor(day.toLocal(), state.seed).wakeUp;
+  if (morning.isAfter(at)) return state;
+  // Clean since the last update (messes never grow while Chigüi is gone):
+  // back in the morning; cleaned just now: back right away.
+  final cameBack = morning.isAfter(state.updatedAt) ? morning : at;
+  events.add(GameEvent(EventType.cameBack, cameBack));
+  final fed = state.foodLeft > 0
+      ? _raise(state, Need.food, feedGain * state.foodLeft)
+      : state;
+  return fed.copyWith(
+    leftAt: null,
+    inShelter: false,
+    foodLeft: 0,
+    care: {},
+    careDays: 0,
+    cameBackAt: cameBack,
+    needs: state.inShelter ? {...fed.needs, Need.affection: 0.0} : fed.needs,
+  );
+}
+
+double _decay(double level, double amount) {
+  return max(0, level - amount);
+}
+
+/// Routine moments in (from, to], in time order; mealtimes only until
+/// [mealsUntil].
+List<(DateTime, void Function(_Replay))> _steps(
+  PetState s,
+  DateTime from,
+  DateTime to, {
+  required DateTime mealsUntil,
+}) {
   final moments = <(DateTime, void Function(_Replay))>[];
-  void add(DateTime time, void Function(_Replay) step) {
-    if (time.isAfter(from) && !time.isAfter(to)) moments.add((time, step));
+  void add(DateTime time, void Function(_Replay) step, {DateTime? until}) {
+    if (time.isAfter(from) && !time.isAfter(until ?? to)) {
+      moments.add((time, step));
+    }
   }
 
   final first = from.toLocal();
@@ -190,11 +281,12 @@ List<void Function(_Replay)> _steps(PetState s, DateTime from, DateTime to) {
       add(urge.add(pottyWait), (r) => r.pottyDeadline(urge));
     }
     for (final meal in schedule.meals) {
-      add(meal.end, (r) => r.mealEnded(meal));
+      add(meal.end, (r) => r.mealEnded(meal), until: mealsUntil);
     }
+    add(schedule.bedtime, (r) => r.bedtime(day));
   }
   moments.sort((a, b) => a.$1.compareTo(b.$1));
-  return [for (final m in moments) m.$2];
+  return moments;
 }
 
 class _Replay {
@@ -208,7 +300,7 @@ class _Replay {
   int _missesLeft;
 
   void pottyUrge(DateTime at) {
-    if (asleep(state, at) || state.needsPotty) return;
+    if (state.gone || asleep(state, at) || state.needsPotty) return;
     state = state.copyWith(pottyUrgeSince: at);
   }
 
@@ -216,19 +308,80 @@ class _Replay {
     final since = state.pottyUrgeSince;
     if (since == null || !since.isAtSameMomentAs(urge)) return;
     final at = urge.add(pottyWait);
-    state = state.copyWith(pottyUrgeSince: null);
-    // Beyond the cap for time away, Chigüi manages alone.
-    if (_accidentsLeft <= 0) return;
-    _accidentsLeft--;
+    final messes = state.messes + 1;
     state = state.copyWith(
-      messes: state.messes + 1,
-      recentAccidents: [...state.recentAccidents, at],
+      pottyUrgeSince: null,
+      messes: messes,
+      messyAt: messes >= messesToLeave ? state.messyAt ?? at : null,
     );
     events.add(GameEvent(EventType.accident, at));
+    // Beyond the cap for time away, accidents pile up but do not make
+    // Chigüi sick.
+    if (_accidentsLeft <= 0) return;
+    _accidentsLeft--;
+    state = state.copyWith(recentAccidents: [...state.recentAccidents, at]);
     _checkSick(at);
   }
 
+  /// At bedtime, a day with Chigüi at home and no mess left adds to the run
+  /// for the best-friends sticker; any other day starts it again tomorrow.
+  void bedtime(DateTime day) {
+    if (state.gone || state.messes > 0) {
+      state = state.copyWith(
+        goodSince: DateTime(day.year, day.month, day.day + 1),
+      );
+      return;
+    }
+    final since = state.goodSince ?? day;
+    state = state.copyWith(goodSince: since);
+    final days = DateTime(
+      day.year,
+      day.month,
+      day.day,
+    ).difference(since).inHours;
+    // Hours, rounded, so a daylight saving change does not lose a day.
+    if (!state.bestFriends && (days / 24).round() + 1 >= bestFriendsDays) {
+      state = state.copyWith(bestFriends: true);
+      events.add(GameEvent(EventType.bestFriends, schedule(day).bedtime));
+    }
+  }
+
+  DaySchedule schedule(DateTime day) => scheduleFor(day, state.seed);
+
+  /// Moments that depend on the state rather than the clock, up to [at]:
+  /// coming back, leaving a dirty home, and going to the shelter.
+  void catchUp(DateTime at) {
+    state = _cameBack(state, at, events);
+    final messyAt = state.messyAt;
+    if (!state.gone && messyAt != null) {
+      final leave = messyAt.add(leaveAfter);
+      if (!leave.isAfter(at)) {
+        state = state.copyWith(
+          leftAt: leave,
+          messyAt: null,
+          pottyUrgeSince: null,
+          sick: false,
+          recentAccidents: [],
+          missedMealsInARow: 0,
+          foodLeft: 0,
+          care: {},
+          careDays: 0,
+        );
+        events.add(GameEvent(EventType.leftHome, leave));
+      }
+    }
+    final leftAt = state.leftAt;
+    if (leftAt != null && !state.inShelter && state.careDays == 0) {
+      final shelter = leftAt.add(shelterAfter);
+      if (!shelter.isAfter(at)) {
+        state = state.copyWith(inShelter: true, bestFriends: false);
+        events.add(GameEvent(EventType.wentToShelter, shelter));
+      }
+    }
+  }
+
   void mealEnded(TimeWindow meal) {
+    if (state.gone) return;
     final served = state.lastMealServed;
     if (served != null && served.isAtSameMomentAs(meal.start)) return;
     if (_missesLeft <= 0) return;
@@ -260,6 +413,7 @@ class _Replay {
 Outcome wake(PetState state, DateTime now) {
   final current = advance(state, now);
   final s = current.state;
+  if (s.gone) return (state: s, events: current.events, ok: false);
   return (
     state: _together(s, now),
     events: current.events,
@@ -267,8 +421,16 @@ Outcome wake(PetState state, DateTime now) {
   );
 }
 
+/// A cuddle; with Chigüi gone, calling Chigüi back instead.
 Outcome pet(PetState state, DateTime now) {
   final current = advance(state, now);
+  if (current.state.gone) {
+    return (
+      state: _cared(current.state, now, Care.call),
+      events: current.events,
+      ok: true,
+    );
+  }
   return (
     state: _together(_raise(current.state, Need.affection, petGain), now),
     events: current.events,
@@ -294,6 +456,18 @@ bool isFull(PetState state) => state.level(Need.food) >= fullLevel;
 /// one it is a snack, refused when full.
 Outcome feed(PetState state, DateTime now) {
   final current = advance(state, now);
+  if (current.state.gone) {
+    final s = current.state;
+    return (
+      state: _cared(
+        s.copyWith(foodLeft: min(maxFoodLeft, s.foodLeft + 1)),
+        now,
+        Care.food,
+      ),
+      events: current.events,
+      ok: true,
+    );
+  }
   final s = _together(current.state, now);
   final events = [...current.events];
 
@@ -330,11 +504,13 @@ Outcome cleanUp(PetState state, DateTime now) {
   final current = advance(state, now);
   final s = _together(current.state, now);
   if (s.messes == 0) return (state: s, events: current.events, ok: false);
-  return (
-    state: s.copyWith(messes: s.messes - 1),
-    events: [...current.events, GameEvent(EventType.cleaned, now)],
-    ok: true,
+  final messes = s.messes - 1;
+  final events = [...current.events, GameEvent(EventType.cleaned, now)];
+  final cleaned = s.copyWith(
+    messes: messes,
+    messyAt: messes >= messesToLeave ? s.messyAt : null,
   );
+  return (state: _cameBack(cleaned, now, events), events: events, ok: true);
 }
 
 Outcome visitVet(PetState state, DateTime now) {
@@ -359,7 +535,7 @@ Outcome finishRound(
   Achievement? achievement,
 }) {
   final current = advance(state, now);
-  final s = _together(current.state, now);
+  final s = _cared(_together(current.state, now), now, Care.play);
   final left = max(0, minigameCoinsLeft(s, now));
   final earned = min(max(0, coins), left);
   final local = now.toLocal();
@@ -553,6 +729,7 @@ PetState _raise(PetState state, Need need, double amount) => state.copyWith(
 
 /// The need Chigüi would most like help with, if any is low enough to show.
 Need? wish(PetState state) {
+  if (state.gone) return null;
   Need? lowest;
   for (final need in Need.values) {
     if (state.level(need) < wishLevel &&

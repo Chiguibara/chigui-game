@@ -9,6 +9,7 @@ import 'package:chigui_game/store/pack_store.dart';
 import 'package:chigui_game/store/packs_controller.dart';
 import 'package:chigui_game/ui/action_tile.dart';
 import 'package:chigui_game/ui/chigui_view.dart';
+import 'package:chigui_game/ui/empty_spot.dart';
 import 'package:chigui_game/ui/home_screen.dart';
 import 'package:chigui_game/walk/pedometer.dart';
 import 'package:chigui_game/walk/step_watcher.dart';
@@ -724,6 +725,49 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Fruit catch'), findsOneWidget);
     });
+  });
+
+  testWidgets('a gone Chigüi: poops to clean, a note, fruit and calls', (
+    tester,
+  ) async {
+    final controller = await start(
+      tester,
+      (s) => s.copyWith(
+        name: 'Pelusa',
+        messes: 6,
+        leftAt: noon.subtract(const Duration(hours: 1)),
+      ),
+    );
+    expect(controller.gone, isTrue);
+    expect(find.text('Phew, what a stink! Where did Pelusa go?'), findsOne);
+    expect(find.byType(Poop), findsNWidgets(2), reason: 'two huge poops');
+
+    for (var i = 0; i < 6; i++) {
+      await tester.tap(find.bySemanticsLabel('clean up').first);
+      await tester.pump();
+    }
+    await finishReaction(tester);
+    expect(find.byType(Poop), findsNothing);
+    expect(find.text("I'm off to find a cleaner pond.\nPelusa"), findsOne);
+    expect(
+      find.text('Leave fruit, play and call Pelusa. Back tomorrow, maybe!'),
+      findsOne,
+    );
+
+    await tester.tap(find.byType(EmptySpot));
+    await tester.pump();
+    expect(find.text('I miss you, Pelusa!'), findsOne);
+    await finishReaction(tester);
+
+    await tester.tap(find.text('Feed'));
+    await tester.pump();
+    expect(
+      find.text('You leave some fruit for Pelusa, just in case.'),
+      findsOne,
+    );
+    expect(controller.state.foodLeft, 1);
+    expect(controller.state.care, {Care.food, Care.call});
+    await finishReaction(tester);
   });
 
   testWidgets('Chigüi can be renamed, and likes the new name', (

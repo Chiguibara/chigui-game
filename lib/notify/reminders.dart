@@ -18,9 +18,12 @@ enum ReminderKind {
 typedef Reminder = ({ReminderKind kind, DateTime at});
 
 /// The reminders ahead of [now]: each mealtime and potty urge, but only
-/// until the routine pauses (a day after the game was last open), and never
-/// in class or at night, so they stop by themselves.
+/// until the routine pauses (a day after the game was last open), never in
+/// class or at night, and none while Chigüi is gone, so they stop by
+/// themselves.
 List<Reminder> upcomingReminders(PetState state, DateTime now) {
+  // Nothing to remind while Chigüi is gone.
+  if (state.gone) return [];
   final until = state.updatedAt.add(routinePause);
   final local = now.toLocal();
   final all = <Reminder>[

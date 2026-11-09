@@ -5,6 +5,10 @@ import 'catalog.dart';
 /// satisfied.
 enum Need { food, affection, fun }
 
+/// What the player did for Chigüi on a day while Chigüi was gone: fruit
+/// left, a game played, and a call.
+enum Care { food, play, call }
+
 const _keep = Object();
 
 class PetState {
@@ -35,6 +39,16 @@ class PetState {
     this.name,
     this.renamedAt,
     this.freeRename = false,
+    this.messyAt,
+    this.leftAt,
+    this.inShelter = false,
+    this.foodLeft = 0,
+    this.care = const {},
+    this.careDay,
+    this.careDays = 0,
+    this.cameBackAt,
+    this.goodSince,
+    this.bestFriends = false,
   }) : seenStickers = seenStickers ?? {for (final item in stickers) item.id};
 
   factory PetState.fresh(DateTime now, {required int seed}) => PetState(
@@ -119,6 +133,40 @@ class PetState {
   /// A new game may name Chigüi once without using the month's change.
   final bool freeRename;
 
+  /// When the messes reached two huge poops; Chigüi leaves a while later
+  /// if they are still there.
+  final DateTime? messyAt;
+
+  /// When Chigüi left a dirty home; null while Chigüi is here.
+  final DateTime? leftAt;
+
+  /// Gone so long that Chigüi went to the vet's shelter.
+  final bool inShelter;
+
+  /// Fruit the player left for Chigüi while gone, piling up in the spot.
+  final int foodLeft;
+
+  /// What the player did for Chigüi on [careDay] while Chigüi was gone.
+  final Set<Care> care;
+
+  /// The local day of [care].
+  final DateTime? careDay;
+
+  /// Days on which the player did every kind of [Care] since Chigüi left.
+  final int careDays;
+
+  /// When Chigüi last came back home.
+  final DateTime? cameBackAt;
+
+  /// The local day the current run of well-cared-for days started.
+  final DateTime? goodSince;
+
+  /// The best-friends sticker: earned with a run of well-cared-for days,
+  /// lost if Chigüi goes to the shelter, and earned again the same way.
+  final bool bestFriends;
+
+  bool get gone => leftAt != null;
+
   double level(Need need) => needs[need] ?? initialLevel;
 
   bool keptAwakeAt(DateTime time) =>
@@ -152,6 +200,16 @@ class PetState {
     String? name,
     DateTime? renamedAt,
     bool? freeRename,
+    Object? messyAt = _keep,
+    Object? leftAt = _keep,
+    bool? inShelter,
+    int? foodLeft,
+    Set<Care>? care,
+    DateTime? careDay,
+    int? careDays,
+    DateTime? cameBackAt,
+    DateTime? goodSince,
+    bool? bestFriends,
   }) => PetState(
     needs: needs ?? this.needs,
     updatedAt: updatedAt ?? this.updatedAt,
@@ -183,5 +241,15 @@ class PetState {
     name: name ?? this.name,
     renamedAt: renamedAt ?? this.renamedAt,
     freeRename: freeRename ?? this.freeRename,
+    messyAt: identical(messyAt, _keep) ? this.messyAt : messyAt as DateTime?,
+    leftAt: identical(leftAt, _keep) ? this.leftAt : leftAt as DateTime?,
+    inShelter: inShelter ?? this.inShelter,
+    foodLeft: foodLeft ?? this.foodLeft,
+    care: care ?? this.care,
+    careDay: careDay ?? this.careDay,
+    careDays: careDays ?? this.careDays,
+    cameBackAt: cameBackAt ?? this.cameBackAt,
+    goodSince: goodSince ?? this.goodSince,
+    bestFriends: bestFriends ?? this.bestFriends,
   );
 }

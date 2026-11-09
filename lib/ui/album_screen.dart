@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../game/catalog.dart';
 import '../game/pet_controller.dart';
+import '../game/rules.dart' show bestFriendsDays;
 import '../l10n/app_localizations.dart';
 import '../shop/item_display.dart';
 import '../sound/sound_effects.dart';
@@ -156,6 +157,7 @@ class _AlbumScreenState extends State<AlbumScreen> {
             ),
           ),
         ),
+        _bestFriends(l10n),
         IconButton(
           onPressed: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
@@ -170,6 +172,35 @@ class _AlbumScreenState extends State<AlbumScreen> {
       ],
     ),
   );
+
+  /// The best-friends sticker, never sold: earned by caring well for
+  /// Chigüi some days in a row, and lost if Chigüi goes to the shelter.
+  /// Tapping it (or its empty spot) says how it is earned.
+  Widget _bestFriends(AppLocalizations l10n) {
+    final state = _pet.state;
+    final name = l10n.petName(state);
+    final earned = state.bestFriends;
+    return Semantics(
+      button: true,
+      label: l10n.bestFriendsLabel,
+      excludeSemantics: true,
+      child: InkResponse(
+        onTap: () {
+          sfx.play(Sfx.pop);
+          setState(
+            () => _message = earned
+                ? l10n.bestFriendsEarned(name)
+                : l10n.bestFriendsHint(bestFriendsDays, name),
+          );
+        },
+        radius: 28,
+        child: SizedBox.square(
+          dimension: 48,
+          child: Center(child: BestFriendsSticker(size: 40, earned: earned)),
+        ),
+      ),
+    );
+  }
 
   Widget _statusLine(AppLocalizations l10n, TextTheme textTheme) {
     final style = textTheme.titleMedium?.copyWith(
@@ -383,4 +414,68 @@ class _AlbumScreenState extends State<AlbumScreen> {
 
   /// A small, stable tilt per sticker.
   static double _tilt(Item item) => (_jitter(item) - 0.5) * math.pi / 15;
+}
+
+/// Two hearts on a round sticker with a white border; while not earned, an
+/// empty dashed-looking spot with a faint outline instead.
+class BestFriendsSticker extends StatelessWidget {
+  const BestFriendsSticker({super.key, required this.size, this.earned = true});
+
+  final double size;
+  final bool earned;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!earned) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: Palette.ink.withValues(alpha: 0.3),
+            width: 2,
+          ),
+        ),
+        child: Icon(
+          Icons.favorite_border,
+          size: size * 0.5,
+          color: Palette.ink.withValues(alpha: 0.3),
+        ),
+      );
+    }
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Palette.blush,
+        shape: BoxShape.circle,
+        border: Border.all(color: Palette.cloud, width: size * 0.08),
+        boxShadow: const [
+          BoxShadow(color: Color(0x33000000), offset: Offset(1, 2)),
+        ],
+      ),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Transform.translate(
+            offset: Offset(-size * 0.12, -size * 0.04),
+            child: Icon(
+              Icons.favorite,
+              size: size * 0.42,
+              color: Palette.cloud,
+            ),
+          ),
+          Transform.translate(
+            offset: Offset(size * 0.13, size * 0.08),
+            child: Icon(
+              Icons.favorite,
+              size: size * 0.36,
+              color: Palette.headphones,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }

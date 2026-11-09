@@ -49,6 +49,16 @@ void main() {
       seenStickers: {'stickerStar'},
       seenNotes: '1a2b3c4d',
       achievements: {Achievement.collector, Achievement.mathWhiz},
+      messyAt: now.subtract(const Duration(days: 4)),
+      leftAt: now.subtract(const Duration(days: 3)),
+      inShelter: true,
+      foodLeft: 3,
+      care: {Care.food, Care.call},
+      careDay: now,
+      careDays: 2,
+      cameBackAt: now.subtract(const Duration(days: 9)),
+      goodSince: now.subtract(const Duration(days: 20)),
+      bestFriends: true,
     );
     await repo.saveState(saved);
 

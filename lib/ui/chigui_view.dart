@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show mapEquals;
 import 'package:flutter/material.dart';
 
 import '../game/catalog.dart';
+import '../game/rules.dart' show messesPerHugePoop;
 import '../l10n/app_localizations.dart';
 import 'accessories.dart';
 import 'palette.dart';
@@ -29,6 +30,10 @@ enum Reaction {
 
   /// Petted in class: Chigüi happily turns the book's pages faster.
   study,
+
+  /// With Chigüi gone: calling Chigüi back, and leaving fruit.
+  call,
+  leaveFood,
 }
 
 enum Face { normal, happy, asleep, sick }
@@ -57,6 +62,8 @@ class ChiguiView extends StatefulWidget {
     this.coat,
     this.panting = false,
     this.name,
+    this.away,
+    this.awayTapHint,
   });
 
   final double size;
@@ -81,6 +88,11 @@ class ChiguiView extends StatefulWidget {
 
   /// Out of breath: quick breaths, tongue out, and a sweat drop.
   final bool panting;
+
+  /// While Chigüi is gone, shown in Chigüi's place (with any messes still
+  /// on top); [onTap] then does [awayTapHint].
+  final Widget? away;
+  final String? awayTapHint;
 
   @override
   State<ChiguiView> createState() => _ChiguiViewState();
@@ -158,46 +170,55 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
                 child: Semantics(
                   button: true,
                   label: widget.name ?? l10n.chiguiName,
-                  onTapHint: l10n.petAction(widget.name ?? l10n.chiguiName),
+                  onTapHint:
+                      widget.awayTapHint ??
+                      l10n.petAction(widget.name ?? l10n.chiguiName),
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: widget.onTap,
-                    child: Transform(
-                      alignment: Alignment.bottomCenter,
-                      transform: Matrix4.translationValues(dx, dy, 0)
-                        ..multiply(Matrix4.diagonal3Values(scaleX, scaleY, 1)),
-                      child: CustomPaint(
-                        painter: _ChiguiPainter(
-                          face: _face(reaction),
-                          blink: _isBlinking(),
-                          mouthOpen: switch (reaction) {
-                            Reaction.chomp => _chompOpen(t),
-                            Reaction.yawn => _yawnOpen(t),
-                            _ when panting => 0.3 + 0.1 * _pant(),
-                            _ => 0,
-                          },
-                          tongue: panting,
-                          cheekPuff: reaction == Reaction.chomp
-                              ? _chompPuff(t)
-                              : 0,
-                          // On a seat, the seat does the walking.
-                          legLift: walking && !riding
-                              ? math.sin(t * 4 * math.pi)
-                              : 0,
-                          ride: riding ? t : 0,
-                          wearing: widget.wearing,
-                          studying: widget.studying,
-                          pageTurn: reaction == Reaction.study && !_reduceMotion
-                              ? t * _pagesTurned % 1
-                              : null,
+                    child:
+                        widget.away ??
+                        Transform(
+                          alignment: Alignment.bottomCenter,
+                          transform: Matrix4.translationValues(dx, dy, 0)
+                            ..multiply(
+                              Matrix4.diagonal3Values(scaleX, scaleY, 1),
+                            ),
+                          child: CustomPaint(
+                            painter: _ChiguiPainter(
+                              face: _face(reaction),
+                              blink: _isBlinking(),
+                              mouthOpen: switch (reaction) {
+                                Reaction.chomp => _chompOpen(t),
+                                Reaction.yawn => _yawnOpen(t),
+                                _ when panting => 0.3 + 0.1 * _pant(),
+                                _ => 0,
+                              },
+                              tongue: panting,
+                              cheekPuff: reaction == Reaction.chomp
+                                  ? _chompPuff(t)
+                                  : 0,
+                              // On a seat, the seat does the walking.
+                              legLift: walking && !riding
+                                  ? math.sin(t * 4 * math.pi)
+                                  : 0,
+                              ride: riding ? t : 0,
+                              wearing: widget.wearing,
+                              studying: widget.studying,
+                              pageTurn:
+                                  reaction == Reaction.study && !_reduceMotion
+                                  ? t * _pagesTurned % 1
+                                  : null,
+                            ),
+                            foregroundPainter: widget.coat,
+                          ),
                         ),
-                        foregroundPainter: widget.coat,
-                      ),
-                    ),
                   ),
                 ),
               ),
-              for (var i = 0; i < math.min(widget.messes, 3); i++)
+              for (var i = 0; i < widget.messes ~/ messesPerHugePoop; i++)
+                _hugeMess(size, i, l10n),
+              for (var i = 0; i < widget.messes % messesPerHugePoop; i++)
                 _mess(size, i, l10n),
               if (widget.face == Face.asleep && reaction == null)
                 ..._sleepingZs(size),
@@ -554,10 +575,31 @@ class _ChiguiViewState extends State<ChiguiView> with TickerProviderStateMixin {
       }(),
   ];
 
+  /// Every [messesPerHugePoop] uncleaned messes pile up into an enormous
+  /// poop that covers much of Chigüi; each tap cleans up one mess.
+  Widget _hugeMess(double size, int index, AppLocalizations l10n) {
+    final poopSize = size * 0.9;
+    return Positioned(
+      left: size * (index.isEven ? -0.22 : 0.3),
+      top: size * (index.isEven ? 0.16 : 0.1),
+      child: Semantics(
+        button: true,
+        label: l10n.cleanAction,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: widget.onCleanMess,
+          child: Poop(size: poopSize, smelly: true, phase: _idle.value),
+        ),
+      ),
+    );
+  }
+
   Widget _mess(double size, int index, AppLocalizations l10n) {
     final poopSize = math.max(48.0, size * 0.18);
+    // Beside a huge poop, not on it.
+    final from = widget.messes >= messesPerHugePoop ? 0.64 : -0.06;
     return Positioned(
-      left: size * (-0.06 + 0.15 * index),
+      left: size * (from + 0.15 * index),
       top: size * 0.8,
       child: Semantics(
         button: true,

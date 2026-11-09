@@ -20,6 +20,7 @@ import 'action_tile.dart';
 import 'album_screen.dart';
 import 'chigui_view.dart';
 import 'dev_panel.dart';
+import 'empty_spot.dart';
 import 'need_meter.dart';
 import 'palette.dart';
 import 'reminders_dialog.dart';
@@ -70,6 +71,9 @@ class HomeScreen extends StatefulWidget {
 
   /// A snore per slow, sleepy breath.
   static const snoreEvery = Duration(seconds: 4);
+
+  /// After coming back home, Chigüi is happy about it for this long.
+  static const cameBackFor = Duration(minutes: 30);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -232,6 +236,9 @@ class _HomeScreenState extends State<HomeScreen> {
   /// True while Chigüi is happy about a new name.
   bool _renamed = false;
 
+  /// Which call line the last call to a gone Chigüi used; they take turns.
+  int _calls = 0;
+
   Future<void> _onRename() async {
     if (!await showRenameDialog(context, _pet) || !mounted) return;
     sfx.play(Sfx.sparkle);
@@ -242,6 +249,13 @@ class _HomeScreenState extends State<HomeScreen> {
   /// A cuddle; a sleeping Chigüi wakes up with a big yawn, and in class
   /// Chigüi turns the pages faster instead.
   void _onPet() {
+    if (_pet.gone) {
+      _pet.pet();
+      sfx.play(Sfx.pop);
+      _calls++;
+      _react(Reaction.call);
+      return;
+    }
     final woke = _pet.asleep;
     _pet.pet();
     sfx.play(Sfx.pet);
@@ -255,6 +269,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onFeed() {
+    if (_pet.gone) {
+      _pet.feed();
+      sfx.play(Sfx.pop);
+      _react(Reaction.leaveFood);
+      return;
+    }
     final ate = _pet.feed();
     sfx.play(ate ? Sfx.chomp : Sfx.refuse);
     _react(ate ? Reaction.chomp : Reaction.refuse);
@@ -267,9 +287,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onClean() {
+    final wasGone = _pet.gone;
     if (!_pet.cleanUp()) return;
     sfx.play(Sfx.sparkle);
-    _react(Reaction.cleaned);
+    // Cleaning up may be the last thing Chigüi was waiting for.
+    _react(wasGone && !_pet.gone ? Reaction.love : Reaction.cleaned);
   }
 
   void _onVet() {
@@ -337,8 +359,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String _status(AppLocalizations l10n) {
     final state = _pet.state;
+    final name = l10n.petName(state);
+    if (_pet.gone) return _goneStatus(l10n, name);
+    final cameBack = state.cameBackAt;
+    final justBack =
+        cameBack != null &&
+        _pet.now.difference(cameBack) < HomeScreen.cameBackFor;
     return switch (_reaction) {
       Reaction.love when _renamed => l10n.renamedStatus(l10n.petName(state)),
+      Reaction.love when justBack => l10n.cameBackStatus(name),
       Reaction.love => switch (state.level(Need.affection)) {
         < wishLevel => l10n.pettedLowStatus(l10n.petName(_pet.state)),
         < happyLevel => l10n.pettedMidStatus,
@@ -354,6 +383,9 @@ class _HomeScreenState extends State<HomeScreen> {
       Reaction.yawn => l10n.yawnStatus(l10n.petName(_pet.state)),
       // Only the minigame's stones bonk Chigüi.
       Reaction.ouch => l10n.ouchSound,
+      // Only while Chigüi is gone.
+      Reaction.call || Reaction.leaveFood => l10n.tapHint(name),
+      null when justBack && !_pet.asleep => l10n.cameBackStatus(name),
       null when _pet.asleep => l10n.asleepStatus(l10n.petName(_pet.state)),
       null when state.sick => l10n.sickStatus(l10n.petName(_pet.state)),
       null when state.needsPotty => l10n.pottyStatus(l10n.petName(_pet.state)),
@@ -367,6 +399,22 @@ class _HomeScreenState extends State<HomeScreen> {
         Need.fun => l10n.wantsFun(l10n.petName(_pet.state)),
         null => l10n.tapHint(l10n.petName(_pet.state)),
       },
+    };
+  }
+
+  /// While Chigüi is gone: what the player just did, the dirt still there,
+  /// or what Chigüi is waiting for.
+  String _goneStatus(AppLocalizations l10n, String name) {
+    final state = _pet.state;
+    final daysLeft = _pet.careDaysLeft;
+    final calls = [l10n.goneCall1, l10n.goneCall2, l10n.goneCall3];
+    return switch (_reaction) {
+      Reaction.call => calls[_calls % calls.length](name),
+      Reaction.leaveFood => l10n.goneFoodStatus(name),
+      _ when state.messes > 0 => l10n.goneMessStatus(name),
+      _ when daysLeft == 0 => l10n.goneTomorrowStatus(name),
+      _ when state.inShelter => l10n.shelterStatus(daysLeft, name),
+      _ => l10n.goneStatus(name),
     };
   }
 
@@ -436,6 +484,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _chigui(double size) {
     final state = _pet.state;
+    final l10n = AppLocalizations.of(context);
+    final name = l10n.petName(state);
+    if (_pet.gone) {
+      return ChiguiView(
+        size: size,
+        messes: state.messes,
+        name: name,
+        away: EmptySpot(
+          size: size,
+          note: state.inShelter ? l10n.shelterNote(name) : l10n.goneNote(name),
+          foodLeft: state.foodLeft,
+        ),
+        awayTapHint: l10n.callAction(name),
+        onTap: _onPet,
+        onCleanMess: _onClean,
+        reaction: _reaction,
+        reactionId: _reactionId,
+        onReactionEnd: _onReactionEnd,
+      );
+    }
     return ChiguiView(
       size: size,
       face: _face,

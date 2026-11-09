@@ -266,6 +266,78 @@ abstract class AppLocalizations {
   /// **'Something smells… time to clean up!'**
   String get messStatus;
 
+  /// Chigüi's handwritten note left in Chigüi's spot after leaving a dirty home (two huge poops left uncleaned); the second line is the signature. Offended but sweet, never a reproach to the player.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m off to find a cleaner pond.\n{name}'**
+  String goneNote(String name);
+
+  /// Chigüi's note while staying at the vet's shelter (after days gone without care); the second line is the signature. Calm and cosy: the shelter is a nice place.
+  ///
+  /// In en, this message translates to:
+  /// **'I\'m staying at the vet\'s shelter.\n{name}'**
+  String shelterNote(String name);
+
+  /// Screen reader action on Chigüi's empty spot while Chigüi is gone: tapping calls Chigüi.
+  ///
+  /// In en, this message translates to:
+  /// **'call {name}'**
+  String callAction(String name);
+
+  /// Said by the player when tapping Chigüi's empty spot to call Chigüi back. Calls take turns. Affectionate, no guilt.
+  ///
+  /// In en, this message translates to:
+  /// **'{name}, come back!'**
+  String goneCall1(String name);
+
+  /// Another call to the gone Chigüi (see goneCall1).
+  ///
+  /// In en, this message translates to:
+  /// **'I miss you, {name}!'**
+  String goneCall2(String name);
+
+  /// Another call to the gone Chigüi (see goneCall1).
+  ///
+  /// In en, this message translates to:
+  /// **'Where are you, {name}?'**
+  String goneCall3(String name);
+
+  /// Shown when the player leaves fruit (the feed button) while Chigüi is gone; the fruit piles up in the spot.
+  ///
+  /// In en, this message translates to:
+  /// **'You leave some fruit for {name}, just in case.'**
+  String goneFoodStatus(String name);
+
+  /// Shown while Chigüi is gone and the huge poops are still there (cleaning them reveals Chigüi's note). Funny, not a reproach.
+  ///
+  /// In en, this message translates to:
+  /// **'Phew, what a stink! Where did {name} go?'**
+  String goneMessStatus(String name);
+
+  /// Shown while Chigüi is gone: what brings Chigüi back (leaving fruit, playing a minigame, and calling Chigüi by tapping the spot, on a day; Chigüi comes back the next morning). Gentle and hopeful.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave fruit, play and call {name}. Back tomorrow, maybe!'**
+  String goneStatus(String name);
+
+  /// Shown while Chigüi is gone once the player did everything needed: Chigüi will be back next morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Well done! Maybe {name} will be back tomorrow.'**
+  String goneTomorrowStatus(String name);
+
+  /// Shown while Chigüi is at the vet's shelter: leaving fruit, playing a minigame, and calling Chigüi each day, for this many more days, brings Chigüi home. Calm and hopeful.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is at the shelter. Fruit, a game and a call a day: {count, plural, =1{one more day!} other{{count} days}}'**
+  String shelterStatus(int count, String name);
+
+  /// Shown for a while after Chigüi comes back home. Joyful.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} is back! Hooray!'**
+  String cameBackStatus(String name);
+
   /// Shown after taking Chigüi to the toilet.
   ///
   /// In en, this message translates to:
@@ -649,6 +721,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No stickers yet. Buy them in the shop with your coins!'**
   String get albumEmpty;
+
+  /// Name of the special best-friends sticker in the album (the player and Chigüi). Never sold: earned by caring well for some days in a row.
+  ///
+  /// In en, this message translates to:
+  /// **'Best friends'**
+  String get bestFriendsLabel;
+
+  /// Album message when tapping the best-friends sticker once earned.
+  ///
+  /// In en, this message translates to:
+  /// **'Best friends: you and {name}, inseparable!'**
+  String bestFriendsEarned(String name);
+
+  /// Album message when tapping the best-friends sticker's empty spot: how to earn it (no mess left at bedtime and Chigüi never leaving, this many days in a row).
+  ///
+  /// In en, this message translates to:
+  /// **'Take good care of {name} {days} days in a row to earn this sticker'**
+  String bestFriendsHint(int days, String name);
 
   /// Album status line right after sticking a sticker in its spot.
   ///

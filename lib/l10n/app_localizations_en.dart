@@ -118,6 +118,72 @@ class AppLocalizationsEn extends AppLocalizations {
   String get messStatus => 'Something smells… time to clean up!';
 
   @override
+  String goneNote(String name) {
+    return 'I\'m off to find a cleaner pond.\n$name';
+  }
+
+  @override
+  String shelterNote(String name) {
+    return 'I\'m staying at the vet\'s shelter.\n$name';
+  }
+
+  @override
+  String callAction(String name) {
+    return 'call $name';
+  }
+
+  @override
+  String goneCall1(String name) {
+    return '$name, come back!';
+  }
+
+  @override
+  String goneCall2(String name) {
+    return 'I miss you, $name!';
+  }
+
+  @override
+  String goneCall3(String name) {
+    return 'Where are you, $name?';
+  }
+
+  @override
+  String goneFoodStatus(String name) {
+    return 'You leave some fruit for $name, just in case.';
+  }
+
+  @override
+  String goneMessStatus(String name) {
+    return 'Phew, what a stink! Where did $name go?';
+  }
+
+  @override
+  String goneStatus(String name) {
+    return 'Leave fruit, play and call $name. Back tomorrow, maybe!';
+  }
+
+  @override
+  String goneTomorrowStatus(String name) {
+    return 'Well done! Maybe $name will be back tomorrow.';
+  }
+
+  @override
+  String shelterStatus(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: 'one more day!',
+    );
+    return '$name is at the shelter. Fruit, a game and a call a day: $_temp0';
+  }
+
+  @override
+  String cameBackStatus(String name) {
+    return '$name is back! Hooray!';
+  }
+
+  @override
   String get reliefStatus => 'Phew, much better!';
 
   @override
@@ -395,6 +461,19 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get albumEmpty =>
       'No stickers yet. Buy them in the shop with your coins!';
+
+  @override
+  String get bestFriendsLabel => 'Best friends';
+
+  @override
+  String bestFriendsEarned(String name) {
+    return 'Best friends: you and $name, inseparable!';
+  }
+
+  @override
+  String bestFriendsHint(int days, String name) {
+    return 'Take good care of $name $days days in a row to earn this sticker';
+  }
 
   @override
   String get albumStuck => 'Stuck! Looks great.';

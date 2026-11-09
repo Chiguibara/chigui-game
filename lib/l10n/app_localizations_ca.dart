@@ -118,6 +118,72 @@ class AppLocalizationsCa extends AppLocalizations {
   String get messStatus => 'Fa una olor estranya… Toca netejar!';
 
   @override
+  String goneNote(String name) {
+    return 'Me\'n vaig a buscar una bassa neta.\n$name';
+  }
+
+  @override
+  String shelterNote(String name) {
+    return 'Soc al refugi del veterinari.\n$name';
+  }
+
+  @override
+  String callAction(String name) {
+    return 'cridar $name';
+  }
+
+  @override
+  String goneCall1(String name) {
+    return '$name, torna!';
+  }
+
+  @override
+  String goneCall2(String name) {
+    return 'T\'enyoro, $name!';
+  }
+
+  @override
+  String goneCall3(String name) {
+    return 'On ets, $name?';
+  }
+
+  @override
+  String goneFoodStatus(String name) {
+    return 'Deixes fruita per a $name, per si de cas.';
+  }
+
+  @override
+  String goneMessStatus(String name) {
+    return 'Quina pudor! On s\'ha ficat $name?';
+  }
+
+  @override
+  String goneStatus(String name) {
+    return 'Deixa fruita, juga i crida $name. Potser tornarà demà!';
+  }
+
+  @override
+  String goneTomorrowStatus(String name) {
+    return 'Molt bé! Potser $name tornarà demà.';
+  }
+
+  @override
+  String shelterStatus(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count dies',
+      one: 'un dia més!',
+    );
+    return '$name és al refugi. Fruita, un joc i una crida al dia: $_temp0';
+  }
+
+  @override
+  String cameBackStatus(String name) {
+    return '$name ha tornat! Visca!';
+  }
+
+  @override
   String get reliefStatus => 'Uf, quin descans!';
 
   @override
@@ -396,6 +462,19 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get albumEmpty =>
       'Encara no tens adhesius. Compra\'ls a la botiga amb les teves monedes!';
+
+  @override
+  String get bestFriendsLabel => 'Millors amics';
+
+  @override
+  String bestFriendsEarned(String name) {
+    return 'Millors amics: tu i $name, inseparables!';
+  }
+
+  @override
+  String bestFriendsHint(int days, String name) {
+    return 'Cuida bé $name $days dies seguits per guanyar aquest adhesiu';
+  }
 
   @override
   String get albumStuck => 'Enganxat! Queda genial.';

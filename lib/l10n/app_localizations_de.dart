@@ -118,6 +118,72 @@ class AppLocalizationsDe extends AppLocalizations {
   String get messStatus => 'Hier riecht\'s komisch… Zeit zum Saubermachen!';
 
   @override
+  String goneNote(String name) {
+    return 'Ich suche mir einen sauberen Teich.\n$name';
+  }
+
+  @override
+  String shelterNote(String name) {
+    return 'Ich bin im Tierheim beim Tierarzt.\n$name';
+  }
+
+  @override
+  String callAction(String name) {
+    return '$name rufen';
+  }
+
+  @override
+  String goneCall1(String name) {
+    return '$name, komm zurück!';
+  }
+
+  @override
+  String goneCall2(String name) {
+    return 'Ich vermisse dich, $name!';
+  }
+
+  @override
+  String goneCall3(String name) {
+    return 'Wo bist du, $name?';
+  }
+
+  @override
+  String goneFoodStatus(String name) {
+    return 'Du legst Obst für $name hin, für alle Fälle.';
+  }
+
+  @override
+  String goneMessStatus(String name) {
+    return 'Puh, was für ein Gestank! Wo ist $name nur?';
+  }
+
+  @override
+  String goneStatus(String name) {
+    return 'Leg Obst hin, spiel und ruf $name. Vielleicht ist $name morgen zurück!';
+  }
+
+  @override
+  String goneTomorrowStatus(String name) {
+    return 'Super! Vielleicht ist $name morgen zurück.';
+  }
+
+  @override
+  String shelterStatus(int count, String name) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'noch $count Tage',
+      one: 'noch ein Tag!',
+    );
+    return '$name ist im Tierheim. Obst, ein Spiel und ein Ruf pro Tag: $_temp0';
+  }
+
+  @override
+  String cameBackStatus(String name) {
+    return '$name ist wieder da! Juhu!';
+  }
+
+  @override
   String get reliefStatus => 'Puh, viel besser!';
 
   @override
@@ -394,6 +460,19 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get albumEmpty =>
       'Noch keine Sticker. Kauf sie im Laden mit deinen Münzen!';
+
+  @override
+  String get bestFriendsLabel => 'Beste Freunde';
+
+  @override
+  String bestFriendsEarned(String name) {
+    return 'Beste Freunde: du und $name, unzertrennlich!';
+  }
+
+  @override
+  String bestFriendsHint(int days, String name) {
+    return 'Kümmere dich $days Tage am Stück gut um $name, dann gibt es diesen Sticker';
+  }
 
   @override
   String get albumStuck => 'Klebt! Sieht super aus.';

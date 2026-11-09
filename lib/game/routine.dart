@@ -104,17 +104,19 @@ DaySchedule scheduleFor(DateTime day, int seed) {
   );
 }
 
-/// One random time in each equal slice of the potty hours, so urges are
-/// spread out and each one can run its full [pottyWait] before bedtime.
+/// One random time in each equal slice of the potty hours, early enough
+/// that each urge runs its full [pottyWait] within its slice: urges never
+/// overlap (so every one of them counts) and all end before bedtime.
 List<DateTime> _pottyUrges(DateTime date, int seed, (int, int) hours) {
   final random = Random(
     seed ^ (date.year * 10000 + date.month * 100 + date.day),
   );
   final start = DateTime(date.year, date.month, date.day, hours.$1);
   final slice = (hours.$2 - hours.$1) * 60 ~/ pottyUrgesPerDay;
+  final latest = slice - pottyWait.inMinutes;
   return [
     for (var i = 0; i < pottyUrgesPerDay; i++)
-      start.add(Duration(minutes: i * slice + random.nextInt(slice))),
+      start.add(Duration(minutes: i * slice + random.nextInt(latest))),
   ];
 }
 

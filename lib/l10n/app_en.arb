@@ -194,6 +194,129 @@
   "@messStatus": {
     "description": "Shown while there is an uncleaned accident."
   },
+  "goneNote": "I'm off to find a cleaner pond.\n{name}",
+  "@goneNote": {
+    "description": "Chigüi's handwritten note left in Chigüi's spot after leaving a dirty home (two huge poops left uncleaned); the second line is the signature. Offended but sweet, never a reproach to the player.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "shelterNote": "I'm staying at the vet's shelter.\n{name}",
+  "@shelterNote": {
+    "description": "Chigüi's note while staying at the vet's shelter (after days gone without care); the second line is the signature. Calm and cosy: the shelter is a nice place.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "callAction": "call {name}",
+  "@callAction": {
+    "description": "Screen reader action on Chigüi's empty spot while Chigüi is gone: tapping calls Chigüi.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneCall1": "{name}, come back!",
+  "@goneCall1": {
+    "description": "Said by the player when tapping Chigüi's empty spot to call Chigüi back. Calls take turns. Affectionate, no guilt.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneCall2": "I miss you, {name}!",
+  "@goneCall2": {
+    "description": "Another call to the gone Chigüi (see goneCall1).",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneCall3": "Where are you, {name}?",
+  "@goneCall3": {
+    "description": "Another call to the gone Chigüi (see goneCall1).",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneFoodStatus": "You leave some fruit for {name}, just in case.",
+  "@goneFoodStatus": {
+    "description": "Shown when the player leaves fruit (the feed button) while Chigüi is gone; the fruit piles up in the spot.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneMessStatus": "Phew, what a stink! Where did {name} go?",
+  "@goneMessStatus": {
+    "description": "Shown while Chigüi is gone and the huge poops are still there (cleaning them reveals Chigüi's note). Funny, not a reproach.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneStatus": "Leave fruit, play and call {name}. Back tomorrow, maybe!",
+  "@goneStatus": {
+    "description": "Shown while Chigüi is gone: what brings Chigüi back (leaving fruit, playing a minigame, and calling Chigüi by tapping the spot, on a day; Chigüi comes back the next morning). Gentle and hopeful.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "goneTomorrowStatus": "Well done! Maybe {name} will be back tomorrow.",
+  "@goneTomorrowStatus": {
+    "description": "Shown while Chigüi is gone once the player did everything needed: Chigüi will be back next morning.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "shelterStatus": "{name} is at the shelter. Fruit, a game and a call a day: {count, plural, =1{one more day!} other{{count} days}}",
+  "@shelterStatus": {
+    "description": "Shown while Chigüi is at the vet's shelter: leaving fruit, playing a minigame, and calling Chigüi each day, for this many more days, brings Chigüi home. Calm and hopeful.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "cameBackStatus": "{name} is back! Hooray!",
+  "@cameBackStatus": {
+    "description": "Shown for a while after Chigüi comes back home. Joyful.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
   "reliefStatus": "Phew, much better!",
   "@reliefStatus": {
     "description": "Shown after taking Chigüi to the toilet."
@@ -567,6 +690,33 @@
   "albumEmpty": "No stickers yet. Buy them in the shop with your coins!",
   "@albumEmpty": {
     "description": "Album status line when the player owns no stickers yet. Gentle, never pushy."
+  },
+  "bestFriendsLabel": "Best friends",
+  "@bestFriendsLabel": {
+    "description": "Name of the special best-friends sticker in the album (the player and Chigüi). Never sold: earned by caring well for some days in a row."
+  },
+  "bestFriendsEarned": "Best friends: you and {name}, inseparable!",
+  "@bestFriendsEarned": {
+    "description": "Album message when tapping the best-friends sticker once earned.",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
+  },
+  "bestFriendsHint": "Take good care of {name} {days} days in a row to earn this sticker",
+  "@bestFriendsHint": {
+    "description": "Album message when tapping the best-friends sticker's empty spot: how to earn it (no mess left at bedtime and Chigüi never leaving, this many days in a row).",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String",
+        "example": "Chigüi"
+      }
+    }
   },
   "albumStuck": "Stuck! Looks great.",
   "@albumStuck": {

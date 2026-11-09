@@ -118,6 +118,16 @@ class JsonGameRepository implements GameRepository {
     'name': s.name,
     'renamedAt': _encodeTime(s.renamedAt),
     'freeRename': s.freeRename,
+    'messyAt': _encodeTime(s.messyAt),
+    'leftAt': _encodeTime(s.leftAt),
+    'inShelter': s.inShelter,
+    'foodLeft': s.foodLeft,
+    'care': [for (final c in s.care) c.name],
+    'careDay': _encodeTime(s.careDay),
+    'careDays': s.careDays,
+    'cameBackAt': _encodeTime(s.cameBackAt),
+    'goodSince': _encodeTime(s.goodSince),
+    'bestFriends': s.bestFriends,
   };
 
   /// Reads any schema version so far; version 1 only had needs and
@@ -195,6 +205,19 @@ class JsonGameRepository implements GameRepository {
       renamedAt: _decodeTime(json['renamedAt']),
       // Saves from before names: their free naming is long gone.
       freeRename: json['freeRename'] == true,
+      messyAt: _decodeTime(json['messyAt']),
+      leftAt: _decodeTime(json['leftAt']),
+      inShelter: json['inShelter'] == true,
+      foodLeft: _count(json['foodLeft']),
+      care: {
+        if (json['care'] case final List list)
+          for (final name in list) ?Care.values.asNameMap()[name],
+      },
+      careDay: _decodeTime(json['careDay']),
+      careDays: _count(json['careDays']),
+      cameBackAt: _decodeTime(json['cameBackAt']),
+      goodSince: _decodeTime(json['goodSince']),
+      bestFriends: json['bestFriends'] == true,
     );
   }
 

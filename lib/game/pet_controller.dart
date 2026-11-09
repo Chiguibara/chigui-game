@@ -58,6 +58,13 @@ class PetController extends ChangeNotifier {
   PetState get state => _state;
 
   Need? get wish => rules.wish(_state);
+
+  /// Chigüi left a dirty home (see `rules.messesToLeave`).
+  bool get gone => _state.gone;
+
+  /// Days of care (fruit, a game, a call) still needed for Chigüi to come
+  /// back.
+  int get careDaysLeft => rules.careDaysLeft(_state);
   bool get asleep => rules.asleep(_state, now);
   bool get sleepy => rules.sleepy(_state, now);
 

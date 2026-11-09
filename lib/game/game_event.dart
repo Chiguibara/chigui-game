@@ -13,6 +13,10 @@ enum EventType {
   bought,
   packBought,
   packRemoved,
+  leftHome,
+  wentToShelter,
+  cameBack,
+  bestFriends,
 }
 
 class GameEvent {
